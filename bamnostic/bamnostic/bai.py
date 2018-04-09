@@ -1,5 +1,78 @@
+from __future__ import print_function
+from __future__ import absolute_import
+from __future__ import division
+import struct
+import os
+import warnings
+from collections import namedtuple
+from functools import lru_cache
+
+from bamnostic.utils import *
+# from bamnostic.bgzf import make_virtual_offset
+
+
+def format_warnings(message, category, filename, lineno, file=None, line=None):
+    return ' {}:{}: {}:{}'.format(filename, lineno, category.__name__, message)
+
+warnings.formatwarning = format_warnings
+
+# Namedtuples for future-proofing and readability
+RefIdx = namedtuple('RefIdx', ('start_offset', 'end_offset', 'n_bins'))
+Bin = namedtuple('Bin', ('bin_id', 'chunks'))
+Chunk = namedtuple('Chunk', ('voffset_beg', 'voffset_end'))
+Ref = namedtuple('Ref', ('bins', 'intervals'))
+Unmapped = namedtuple('Unmapped', ('unmmaped_beg', 'unmapped_end', 'n_mapped', 'n_unmapped'))
+
+
+def reg2bin(beg: int, end: int):
+    """Finds the largest superset bin of region. Numeric values taken from hts-specs
+    
+    Args:
+        beg (int): inclusive beginning position of region
+        end (int): exclusive end position of region
+    
+    Returns:
+        (int): distinct bin ID for largest superset bin of region
+    """
+    left_shift = 15
+    for i in range(14, 27, 3):
+        if beg >> i == (end-1) >> i: 
+            return int(((1<<left_shift)-1)/7 + (beg >> i))
+        left_shift -= 3
+    else:
+        return 0
+
+def reg2bins(beg: int, end: int):
+    """Generates bin ids which overlap the specified region.
+    
+    Args:
+        beg (int): inclusive beginning position of region
+        end (int): exclusive end position of region
+    
+    Yields:
+        (int): bin IDs for overlapping bins of region
+    """
+    # Based off the algorithm presented in:
+    # https://samtools.github.io/hts-specs/SAMv1.pdf
+    
+    # Bin calculation constants.
+    BIN_ID_STARTS = (0, 1, 9, 73, 585, 4681)
+    
+    # Maximum range supported by specifications.
+    MAX_RNG = (2 ** 29) - 1
+    
+    assert 0 <= rbeg <= rend <= MAX_RNG, 'Invalid region {}, {}'.format(rbeg, rend)
+    
+    for start, shift in zip(BIN_ID_STARTS, range(29,13, -3)):
+        i = beg >> shift if beg > 0 else 0
+        j = end >> shift if end < MAX_RNG else MAX_RNG >> shift
+        
+        for bin_id_offset in range(i, j+1):
+            yield start + bin_id_offset
+
+
 class Bai:
-    """ This class defines the bam index file object.
+    """ This class defines the bam index file object and its interface.
     
     The purpose of this class is the binary parsing of the bam index file (BAI) associated with 
     a given bam file. When queried, the Bai object identifies the bins of data that overlap the 
@@ -22,116 +95,155 @@ class Bai:
         Raises:
             OSError (Exception): if the BAI file is not found or does not exist
         """
-        if os.path.isfile(f'{filename}.bai'):
-            self.io = open(f'{filename}.bai', 'rb')
+        if os.path.isfile(filename):
+            self._io = open(filename, 'rb')
         else:
-            raise OSError('f{filename}.bai not found. Please change your directory or index your BAM file')
+            raise OSError('{} not found. Please change check your path or index your BAM file'.format(filename))
+        self._io = open(filename, 'rb')
         
-        # the 'magic' attribute is just a 4 character string that says the file type in the beginning of the file
-        # n_refs is an 'int32_t' type object
-        self.magic, self.n_refs = struct.unpack("<4si", self.io.read(struct.calcsize("<4si")))
+        # Constant for linear index window size
+        self._LINEAR_INDEX_WINDOW = 16384
+        self._UNMAP_BIN = 37450
         
-        # the refID_pos attribute is a dictionary of each reference sequence and the byte positions of its corresponding data within the BAI file
-        self.refID_pos = {ref[0]:(ref[1], ref[2]) for ref in self.refs(skip = True)}
+        self.magic, self.n_refs = struct.unpack("<4sl", self._io.read(struct.calcsize('<4sl')))
+        assert self.magic == b'BAI\x01', 'Wrong BAI magic header'
+        
+        
+        self.unmapped = {}
+        self.current_ref = None
+        self.ref_indices = {ref: self.get_ref(ref, idx=True) for ref in range(self.n_refs)}
+        
+        # Get the n_no_coor if it is present
+        nnc_dat = self._io.read(8)
+        self.n_no_coor = unpack('<Q', nnc_dat)[0] if nnc_dat else None
+            
+        self.last_pos = self._io.tell()
+
     
-    def offsets(self, n_int):
-        """ Pulls out the 16kbp linear indices for a given bin
-        
-        Args:
-            n_int (int): number of intervals listed in the BAI file
-            
-        Yields:
-            ioffset (int): the virtual offset of the first read's position within a given BGZF chunk separated by 16kbp intervals
-        """
+    def get_chunks(self, n_chunks):
+        chunks = []
+        for chunk in range(n_chunks):
+            chunks.append(Chunk(*struct.unpack('<2Q', self._io.read(struct.calcsize('<2Q')))))
+        return chunks
+    
+    def get_ints(self, n_int):
+        ints = []
         for i in range(n_int):
-            # each offset is a 'unit65_t' type object
-            yield struct.unpack("<Q", self.io.read(struct.calcsize("<Q")))[0]
-            
-    def chunks(self, n_chunks):
-        """ Generator that only pulls out the virtual offsets for the chunk start and stop for all chunks for a given bin
+            ints.append(struct.unpack('<Q', self._io.read(struct.calcsize('<Q')))[0])
+        return ints
+    
+    def get_bins(self, n_bins, ref_id=None, idx = False):
+        bins = None if idx else {}
         
-        Args:
-            n_chunks (int): number of chunks within that given bin
-        
-        Yields:
-            virtual_offsets (tuple): the beginning and end of the a given chunk in virtual offset form
-        """
-        for c in range(n_chunks):
-            chunk_beg, chunk_end = struct.unpack("<2Q", self.io.read(struct.calcsize("<2Q")))
-            yield (chunk_beg, chunk_end)   
-            
-    def bins(self, n_bins, skip = False):
-        """ Processes the bin structure of a BAI file
-        
-        If skip is invoked, then the chunk data is skipped after the number of chunks is determined. Else, the chunk
-        data is yielded from the chunks generator
-        
-        Args:
-            n_bins (int): number of bins within the given reference
-            skip (bool): whether or not to save the underlying data. This is used to first "index" the index file.
-        
-        Yields:
-            bin_data (dict): bin_id and chunk data key: value pair (if skip is False)
-            or
-            io.tell() (int): byte position after skipping the chunks (if skip is True)
-        """
         for b in range(n_bins):
-            bin_id, n_chunk = struct.unpack("<Ii", self.io.read(struct.calcsize("<Ii")))
+            bin_id, n_chunks = struct.unpack('<Ii', self._io.read(struct.calcsize('<Ii')))
             
-            if skip:
-                # skip the chunks data
-                self.io.seek(self.io.tell() + (n_chunk * struct.calcsize("<2Q"))) 
+            if idx:
+                if bin_id == self._UNMAP_BIN:
+                    assert n_chunks == 2
+                    unmapped = Unmapped(*struct.unpack('<4Q', self._io.read(struct.calcsize('<4Q'))))
+                    self.unmapped[ref_id] = unmapped
+                else:
+                    if not n_chunks == 0:
+                        self._io.seek(struct.calcsize('<2Q') * n_chunks, 1)
             else:
-                # delegate to chunks generator for chunk data
-                #chunks = yield from self.chunks(n_chunk)
-                yield {bin_id: [chunk for chunk in self.chunks(n_chunk)]}
-        if skip:
-            # send byte position within file after skipping chunks
-            yield self.io.tell()
+                chunks = self.get_chunks(n_chunks)
+                bins[bin_id] = chunks
+        else:
+            return bins
+    
+    @lru_cache(4)
+    def get_ref(self, ref_id=None, idx = False):
+        if ref_id is not None and not idx:
+            ref_start, _, _ = self.ref_indices[ref_id]
+            self._io.seek(ref_start)
+        ref_start = self._io.tell()
         
-    def lookup(self, ref, start, stop):
+        if not idx:
+            assert ref_start == self.ref_indices[ref_id].start_offset, 'ref not properly aligned'
+        
+        n_bins = struct.unpack('<l', self._io.read(struct.calcsize('<l')))[0]
+        bins = self.get_bins(n_bins, ref_id, idx)
+        
+        n_int = struct.unpack('<l', self._io.read(struct.calcsize('<l')))[0]
+        if idx:
+            self._io.seek(struct.calcsize('<Q') * n_int, 1)
+        
+        ints = None if idx else self.get_ints(n_int)
+        
+        self.last_pos = self._io.tell()
+        
+        if idx:
+            return RefIdx(ref_start, self.last_pos, n_bins)
+        else:
+            return Ref(bins, ints)
+    
+    
+    def query(self, ref_id, start, stop):
         """ Main query function for yielding AlignedRead objects from specified region
         
         Args:
-            ref (str): which reference/chromosome 
+            ref (int): which reference/chromosome TID
             start (int): left most bp position of region (zero-based)
             stop (int): right most bp position of region (zero-based)
         
-        Returns:
-            list: offsets of data blocks within BAM file that contain reads that are within specified region
-        """
-        pass
-    
-    def refs(self, skip = False, **kwargs):
-        """ Main driver function for processing the BAI file
-        
-        Pulls out the number of bins iteratively and pipelines the pertinent generators to skip or store the underlying data.
-        When the skip flag is set to True (default is False), an "index" of the index file is created.
-        
-        Args:
-            skip (bool): Flag for setting whether or not the data is stored
-        
         Yields:
-            dict: reference id with bin and linear index key: value pair (if skip is False) or (int, int, int) reference id and its byte position
-                  start & stop positions within the index (if skip is True)
+            (int): all Chunk objects within region of interest
         """
-        for r in range(self.n_refs):
-            # n_bin is and 'int32_t' type object 
-            n_bin = struct.unpack("<i", self.io.read(struct.calcsize("<i")))[0]
-            if skip:
-                # get current byte position within file - the n_bin data to capture start of reference block
-                ref_bin_start = self.io.tell() - struct.calcsize("<i")
-                
-                # process the bins while skipping chunks and linear indices
-                bins = next(self.bins(n_bin, skip = True))
-                n_int = struct.unpack("<i", self.io.read(struct.calcsize("<i")))[0]
-                
-                # capture the end of the reference block after skipping the linear indices
-                ref_bin_end = self.io.seek(self.io.tell() + n_int * struct.calcsize("<Q"))
-                yield (r, ref_bin_start, ref_bin_end)
+        self.current_ref = self.get_ref(ref_id)
+        
+        
+        start_offset = self.current_ref['intervals'][start // self.LINEAR_INDEX_WINDOW]
+        try:
+            end_offset = self.current_ref['intervals'][ceildiv(stop, self._LINEAR_INDEX_WINDOW)]
+        except IndexError:
+            ''' This is used in case the user wants all the offsets for an entire contig.
+            Takes into account the length of the contig (as per @SQ LN) and finds
+            the largest possible bin. Since coverage does not extend the full 
+            length of the chromosome, have to select the highest possible linear
+            index. Furthermore, to make it work with existing predicates, it needs
+            to be offset by 1.
+            '''
+            
+            end_offset = self.current_ref['intervals'][-1] + 1
+        
+        current_start = None
+        current_end = None
+        
+        for binID in reg2bins(start, stop):
+            try:
+                bin_chunks = self.current_ref['bins'][binID]
+            except KeyError:
+                continue
+            
+            for chunk in bin_chunks:
+                if (start_offset <= chunk.voffset_beg) and (chunk.voffset_end < end_offset):
+                    if not current_start:
+                        current_start = chunk.voffset_beg
+                        current_end = chunk.voffset_end
+                    elif chunk.voffset_beg == current_end:
+                        current_end = chunk.voffset_end
+                    else:
+                        yield (current_start, current_end)
+                        current_start = chunk.voffset_beg
+                        current_end = chunk.voffset_end
+        else:
+            yield (current_start, current_end)
+    
+    def seek(self, offset = None, whence = 0):
+        if isinstance(offset, (int, None)):
+            if offset is None:
+                raise ValueError('No offset provided')
             else:
-                # TODO: accept search parameter to isolate reference
-                bins = yield from self.bins(n_bin)
-                n_int = struct.unpack("<i", self.io.read(struct.calcsize("<i")))[0]
-                ioffset = [offset for offset in self.offsets(n_int)]
-                yield {r: (bins, ioffset)}
+                self._io.seek(offset, whence)
+        else:
+            raise ValueError('offset must be an integer or None')
+    
+    def read(self, size = -1):
+        if size == 0:
+            return b''
+        else:
+            return self._io.read(size)
+            
+    def tell(self):
+        return self._io.tell()
