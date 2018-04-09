@@ -8,7 +8,6 @@ from collections import namedtuple
 from functools import lru_cache
 
 from bamnostic.utils import *
-# from bamnostic.bgzf import make_virtual_offset
 
 
 def format_warnings(message, category, filename, lineno, file=None, line=None):
@@ -105,7 +104,7 @@ class Bai:
         self._LINEAR_INDEX_WINDOW = 16384
         self._UNMAP_BIN = 37450
         
-        self.magic, self.n_refs = struct.unpack("<4sl", self._io.read(struct.calcsize('<4sl')))
+        self.magic, self.n_refs = unpack("<4sl", serf._io)
         assert self.magic == b'BAI\x01', 'Wrong BAI magic header'
         
         
@@ -115,7 +114,7 @@ class Bai:
         
         # Get the n_no_coor if it is present
         nnc_dat = self._io.read(8)
-        self.n_no_coor = unpack('<Q', nnc_dat)[0] if nnc_dat else None
+        self.n_no_coor = unpack('<Q', nnc_dat) if nnc_dat else None
             
         self.last_pos = self._io.tell()
 
@@ -123,25 +122,25 @@ class Bai:
     def get_chunks(self, n_chunks):
         chunks = []
         for chunk in range(n_chunks):
-            chunks.append(Chunk(*struct.unpack('<2Q', self._io.read(struct.calcsize('<2Q')))))
+            chunks.append(Chunk(*unpack('<2Q', self._io)))
         return chunks
     
     def get_ints(self, n_int):
         ints = []
         for i in range(n_int):
-            ints.append(struct.unpack('<Q', self._io.read(struct.calcsize('<Q')))[0])
+            ints.append(unpack('<Q', self._io))
         return ints
     
     def get_bins(self, n_bins, ref_id=None, idx = False):
         bins = None if idx else {}
         
         for b in range(n_bins):
-            bin_id, n_chunks = struct.unpack('<Ii', self._io.read(struct.calcsize('<Ii')))
+            bin_id, n_chunks = unpack('<Ii', self._io)
             
             if idx:
                 if bin_id == self._UNMAP_BIN:
                     assert n_chunks == 2
-                    unmapped = Unmapped(*struct.unpack('<4Q', self._io.read(struct.calcsize('<4Q'))))
+                    unmapped = Unmapped(*unpack('<4Q', self._io))
                     self.unmapped[ref_id] = unmapped
                 else:
                     if not n_chunks == 0:
@@ -162,10 +161,10 @@ class Bai:
         if not idx:
             assert ref_start == self.ref_indices[ref_id].start_offset, 'ref not properly aligned'
         
-        n_bins = struct.unpack('<l', self._io.read(struct.calcsize('<l')))[0]
+        n_bins = unpack('<l', self._io)
         bins = self.get_bins(n_bins, ref_id, idx)
         
-        n_int = struct.unpack('<l', self._io.read(struct.calcsize('<l')))[0]
+        n_int = unpack('<l', self._io)
         if idx:
             self._io.seek(struct.calcsize('<Q') * n_int, 1)
         
