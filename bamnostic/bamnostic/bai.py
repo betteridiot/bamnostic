@@ -1,6 +1,28 @@
+#!/user/bin/env python
+# -*- coding: utf-8 -*-
+'''BAI file parser 
+
+The Binary Alignment Map (BAM) format (defined at https://samtools.github.io/hts-specs/SAMv1.pdf)
+allows for indexing. When the user invokes a tool to index a given BAM file, a BAM index (BAI)
+file is created. Generally speaking, a BAI contains the all the virtual offsets of clusters of
+reads that are associated with specific subsections of the BAM file. When the BAI is produced,
+random access to the BAM is available. 
+
+This script is for parsing the binary encoded BAI file, inherently making it human readable. 
+Furthermore, it allows subsections of the BAI to be loaded into memory, reducing the memory
+footprint and speeding up queries within a small number of references. Lastly, by parsing it
+as such, random access queries directly into the associated BAM file is available to other
+tools within bamnostic
+
+@author: "Marcus D. Sherman"
+@copyright: "Copyright 2018, University of Michigan, Mills Lab
+@email: "mdsherman<at>betteridiot<dot>tech"
+@version: "v0.5.0"
+'''
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
+
 import struct
 import os
 import warnings
