@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name='bamnostic',
     version='0.1',
-    description='Pure Python, OS-agnostic Binary Alignment Map (BAM) indexing and parsing tool',
+    description='Pure Python, OS-agnostic Binary Alignment Map (BAM) random access and parsing tool',
     url='https://github.com/betteridiot/bamnostic/',
     author='Marcus D. Sherman',
     author_email='mdsherm@umich.edu',
