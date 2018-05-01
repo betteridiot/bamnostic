@@ -3,15 +3,39 @@ from __future__ import absolute_import
 from __future__ import division
 import struct
 from collections import OrderedDict, namedtuple
-from collections import abc
+
+import sys
+_PY_VERSION = sys.version
+
+if _PY_VERSION.startswith('2'):
+    from collections import Sequence
+else:
+    from collections.abc import Sequence
+    
 import numbers
 import warnings
-import string
+import re
 
 def format_warnings(message, category, filename, lineno, file=None, line=None):
     return ' {}:{}: {}:{}'.format(filename, lineno, category.__name__, message)
 
 warnings.formatwarning = format_warnings
+
+unpack_int32 = struct.Struct('<i').unpack
+unpack_int32L = struct.Struct('<l').unpack
+
+
+# Helper class for perfomant named indexing of region of interests
+class Roi:
+    __slots__ = ['contig', 'start', 'stop']
+    
+    # def __new__(self, contig, start, stop):
+        # self.contig = None
+        # self.start = 1
+        # self.stop = None
+    
+    def __init__(self, contig, start, stop):
+        self.contig, self.start, self.stop = contig, start, stop
 
 
 def ceildiv(a, b):
@@ -24,7 +48,7 @@ def flag_decode(flag_code):
             0x4: 'read unmapped', 0x8: 'mate unmapped',
             0x10: 'read reverse strand', 0x20: 'mate reverse strand',
             0x40: 'first in pair', 0x80: 'second in pair',
-            0x100: 'not primary alignment', 0x200: 'QC fail',
+            0x100: 'secondary alignment', 0x200: 'QC fail',
             0x400: 'PCR or optical duplicate', 0x800: 'supplementary alignment'}
             
     if isinstance(flag_code, numbers.Integral):
@@ -49,15 +73,13 @@ def yes_no():
             print('Please answer "Yes" or "No"')
 
 
-def region_parser(ROI, *args):
-    Roi = namedtuple('Roi', ('contig', 'start', 'stop'))
-    Roi.__new__.__defaults__ = (None, 1, None)
-    
+def region_parser(ROI, *args, **kwargs):
     if len(args) > 0:
-        ROI = (ROI, *args)
+        ROI = (ROI, args[:])
     if isinstance(ROI, str):
         split_roi = ':'.join(ROI.split()).replace('-',':').split(':')
-    elif isinstance(ROI, abc.Sequence):
+        
+    elif isinstance(ROI, Sequence):
         split_roi = list(ROI)
     else:
         raise ValueError('Malformed region query')
@@ -72,17 +94,22 @@ def region_parser(ROI, *args):
     
     for i, arg in enumerate(split_roi[1:]):
         split_roi[i+1] = int(arg)
-
     
     if len(split_roi) <= 2:
-        warnings.warn('Fetching till end of contig. Potentially large region', SyntaxWarning)
-        if yes_no():
+        if not kwargs['until_eof']:
+            warnings.warn('Fetching till end of contig. Potentially large region', RuntimeWarning )
+            if yes_no():
+                if len(split_roi) == 2:
+                    return Roi(split_roi[0], int(split_roi[1]))
+                else:
+                    return Roi(split_roi[0])
+            else:
+                raise ValueError('User declined action')
+        else:
             if len(split_roi) == 2:
                 return Roi(split_roi[0], int(split_roi[1]))
             else:
                 return Roi(split_roi[0])
-        else:
-            raise ValueError('User declined action')
     elif len(split_roi) == 3:
         return Roi(split_roi[0], int(split_roi[1]), int(split_roi[2]))
     else:
@@ -98,13 +125,14 @@ def unpack(fmt, _io):
         _io: built-in binary format reader (default: io.BufferedRandom)
     """
     size = struct.calcsize(fmt)
-    if isinstance(_io, bytes):
-        try:
-            return struct.unpack(fmt, _io)
-        except Exception:
-            print(fmt, _io, len(_io), size)
+    try:
+        out = struct.unpack(fmt, _io)
+    except:
+        out = struct.unpack(fmt, _io.read(size))
+    if len(out) > 1:
+        return out
     else:
-        return struct.unpack(fmt, _io.read(size))
+        return out[0]
 
 
 def make_virtual_offset(block_start_offset, within_block_offset):
@@ -140,11 +168,25 @@ def make_virtual_offset(block_start_offset, within_block_offset):
     return (block_start_offset << 16) | within_block_offset
 
 
+def split_virtual_offset(virtual_offset):
+    """Divides a 64-bit BGZF virtual offset into block start & within block offsets.
+
+    >>> (100000, 0) == split_virtual_offset(6553600000)
+    True
+    >>> (100000, 10) == split_virtual_offset(6553600010)
+    True
+
+    """
+    coffset = virtual_offset >> 16
+    uoffset = virtual_offset ^ (coffset << 16)
+    return coffset, uoffset
+
+
 class LruDict(OrderedDict):
     """Simple least recently used (LRU) based dictionary that caches a given
     number of items.
     """
-    def __init__(self, *args, max_cache=128, **kwargs):
+    def __init__(self, *args, **kwargs):
         """ Initialize the dictionary based on collections.OrderedDict
         
         Args:
@@ -152,7 +194,11 @@ class LruDict(OrderedDict):
             max_cache (int): integer divisible by 2 to set max size of dictionary
             **kwargs: basic keyword arguments for dictionary creation
         """
-        super().__init__(*args, **kwargs)
+        try:
+            max_cache= kwargs.pop('max_cache', 128)
+        except AttributeError:
+            max_cache = 128
+        super(OrderedDict, self).__init__(*args, **kwargs)
         self.max_cache = max_cache
         self.cull()
     
@@ -193,6 +239,100 @@ class LruDict(OrderedDict):
             key (str): immutable dictionary key
             value (any): any dictionary value
         """
-        super().__setitem__(key, value)
+        super(OrderedDict, self).__setitem__(key, value)
         self.cull()
 
+
+_CIGAR_OPS = {'M': ('BAM_CMATCH', 0), 'I': ('BAM_CINS', 1), 'D': ('BAM_CDEL', 2),
+            'N': ('BAM_CREF_SKIP', 3), 'S': ('BAM_CSOFT_CLIP', 4),
+            'H': ('BAM_CHARD_CLIP', 5), 'P': ('BAM_CPAD', 6), '=': ('BAM_CEQUAL', 7),
+            'X': ('BAM_CDIFF', 8), 'B': ('BAM_CBACK', 9)}
+        
+
+def parse_cigar(cigar_str):
+    '''Parses a CIGAR string and turns it into a list of tuples
+    
+    Args:
+        cigar_str (str): the CIGAR string as shown in SAM entry
+    
+    Returns:
+        cigar_array (list): list of tuples of CIGAR operations (by id) and number of operations
+    '''
+    cigar_array = []
+    for cigar_op in re.finditer(r'(?P<n_op>\d+)(?P<op>\w)', cigar_str):
+        op_dict = cigar_op.groupdict()
+        n_ops = int(op_dict['n_op'])
+        op = _CIGAR_OPS[op_dict['op']]
+        cigar_array.append((op,n_ops))
+    return cigar_array
+
+
+def cigar_changes(seq, cigar):
+    '''Recreates the reference sequence to the extent that the CIGAR string can 
+        represent.
+    
+    Args:
+        seq (str): aligned segment sequence
+        cigar (list): list of tuples of cigar operations (by id) and number of operations
+    
+    Returns:
+        cigar_formatted_ref (str): a version of the aligned segment's reference
+                                   sequence given the changes reflected in the cigar string
+    
+    Raises:
+        ValueError: if CIGAR string is invalid
+    '''
+    if type(cigar) == str:
+        cigar = parse_cigar(cigar)
+    elif type(cigar) == list:
+        pass
+    else:
+        raise ValueError('CIGAR must be string or list of tuples of cigar operations (by ID) and number of operations')
+    cigar_formatted_ref = ''
+    last_cigar_pos = 0
+    for op, n_ops in cigar:
+        if op in {0, 7, 8}: # matches (uses both sequence match & mismatch)
+            cigar_formatted_ref += seq[last_cigar_pos:last_cigar_pos + n_ops]
+            last_cigar_pos += n_ops
+        elif op in {1, 4}: # insertion or clips
+            last_cigar_pos += n_ops
+        elif op == 3: # intron or large gaps
+            tmp_ref_seq += 'N' * n_ops
+        elif op == 5:
+            pass
+        else:
+            raise ValueError('Invalid CIGAR string')
+    return cigar_formatted_ref
+
+
+def md_changes(seq, md_tag):
+    '''Recreates the reference sequence of a given alignment to the extent that the 
+    MD tag can represent. Used in conjunction with `cigar_changes` to recreate the 
+    complete reference sequence
+    
+    Args:
+        seq (str): aligned segment sequence
+        md_tag (str): MD tag for associated sequence
+    
+    Returns:
+        ref_seq (str): a version of the aligned segment's reference sequence given
+                       the changes reflected in the MD tag
+    '''
+    ref_seq = ''
+    last_md_pos = 0
+    for mo in re.finditer(r'(?P<matches>\d+)|(?P<del>\^\w+?)|(?P<sub>\w)', md_tag):
+        mo_group_dict = mo.groupdict()
+        if mo_group_dict['matches'] is not None:
+            matches = int(mo_group_dict['matches'])
+            ref_seq += seq[last_md_pos:last_md_pos + matches]
+            last_md_pos += matches
+        elif mo_group_dict['del'] is not None:
+            deletion = mo_group_dict['del']
+            ref_seq += deletion[1:]
+        elif mo_group_dict['sub'] is not None:
+            substitution = mo_group_dict['sub']
+            ref_seq += substitution
+            last_md_pos += 1
+        else:
+            pass
+    return ref_seq
