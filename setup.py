@@ -9,4 +9,5 @@ setup(
     author_email='mdsherm@umich.edu',
     license='CC BY 4.0',
     packages=['bamnostic','tests'],
-zip_safe=False)
+    zip_safe=False
+)
