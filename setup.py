@@ -1,15 +1,15 @@
 from setuptools import setup
 
 def readme():
-    with open('./README.md') as readme:
-        return readme.read()
+    with open('./README.rst') as rst:
+        return rst.read()
+
 
 setup(
     name='bamnostic',
-    version='0.42b1',
+    version='0.4.2b7',
     description='Pure Python, OS-agnostic Binary Alignment Map (BAM) random access and parsing tool',
     long_description=readme(),
-    long_description_content_type='text/markdown',
     url='https://github.com/betteridiot/bamnostic/',
     author='Marcus D. Sherman',
     author_email='mdsherm@umich.edu',

@@ -1,3 +1,11 @@
 
 bamnostic/data/ex1.bam
 bamnostic/data/ex1.bam.bai
+README.rst
+bamnostic.egg-info/SOURCES.txt
+bamnostic.egg-info/PKG-INFO
+bamnostic.egg-info/PKG-INFO
+.ipynb_checkpoints/README-checkpoint.md
+*.whl
+*.whl
+bamnostic.egg-info/SOURCES.txt
