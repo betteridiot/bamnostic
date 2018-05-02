@@ -1,1 +1,1 @@
-
+from bamnostic.core import AlignmentFile, AlignedSegment

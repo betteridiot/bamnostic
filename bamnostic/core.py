@@ -53,10 +53,11 @@ class AlignedSegment(object):
             AlignedRead
         
         """
-        block_size = unpack_int32(_io.read(4))[0]
+        self._io = _io
+        block_size = unpack_int32(self._io.read(4))[0]
         
         # Pull in the whole read
-        self.byte_stream = bytearray(_io.read(block_size))
+        self.byte_stream = bytearray(self._io.read(block_size))
         
         
         # Preserve the raw data for writing purposes
@@ -97,7 +98,7 @@ class AlignedSegment(object):
         self.read_name = unpack('<{}s'.format(self.l_read_name), self._range_popper(self.l_read_name)).decode()[:-1]
         
         self.tid = self.reference_id = self.refID
-        self.reference_name, self.reference_length = _io._header.refs[self.refID]
+        self.reference_name, self.reference_length = self._io._header.refs[self.refID]
         
     def _cigar_builder(self):
         '''Uses unpacked values to properly process the CIGAR related data

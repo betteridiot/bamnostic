@@ -90,24 +90,28 @@ class BAMheader(object):
     def __init__(self, _io):
         self._magic, self._header_length = unpack('<4si', _io)
         
-        # If SAM header is present, it is in plain text. Process it and save it as rows
-        self._SAMheader_raw = unpack('<{}s'.format(self._header_length), _io)
-        self.SAMheader = {}
-        for row in self._SAMheader_raw.decode().split('\n'):
-            row = row.split('\t')
-            key, fields = row[0], row[1:]
-            if key.startswith('@'):
-                key = key[1:]
-                fields_dict = {}
-                for field in fields:
-                    tag, value = field.split(':')
-                    try:
-                        value = int(value)
-                    except ValueError:
-                        value = value
-                    fields_dict[tag] = value
-                self.SAMheader.setdefault(key, []).append(fields_dict)
-        
+        if self._header_length > 0:
+            # If SAM header is present, it is in plain text. Process it and save it as rows
+            self._SAMheader_raw = unpack('<{}s'.format(self._header_length), _io)
+            self.SAMheader = {}
+            for row in self._SAMheader_raw.decode().split('\n'):
+                row = row.split('\t')
+                key, fields = row[0], row[1:]
+                if key.startswith('@'):
+                    key = key[1:]
+                    fields_dict = {}
+                    for field in fields:
+                        tag, value = field.split(':')
+                        try:
+                            value = int(value)
+                        except ValueError:
+                            value = value
+                        fields_dict[tag] = value
+                    self.SAMheader.setdefault(key, []).append(fields_dict)
+        else:
+            self._SAMheader_raw = None
+            self.SAMheader = None
+            
         self._SAMheader_end = _io._handle.tell()
         
         # Each reference is listed with the @SQ tag. We need the number of refs to process the data
@@ -218,7 +222,10 @@ class BgzfReader(object):
         self.nreferences = self._header.n_refs
         
         if check_sq:
-            assert 'SQ' in self._header.SAMheader, 'No SQ entries in header'
+            if self._header._header_length == 0:
+                pass
+            else:
+                assert 'SQ' in self._header.SAMheader, 'No SQ entries in header'
         self.ref2tid = {v[0]: k for k,v in self._header.refs.items()}
     
     def check_truncation(self):
