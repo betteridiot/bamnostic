@@ -1,5 +1,6 @@
 MANIFEST.in
 README.md
+README.rst
 setup.py
 ./bamnostic/__init__.py
 ./bamnostic/bai.py
@@ -8,6 +9,7 @@ setup.py
 ./bamnostic/utils.py
 ./bamnostic/data/example.bam
 ./bamnostic/data/example.bam.bai
+./tests/__init__.py
 ./tests/test_placeholder.py
 bamnostic.egg-info/PKG-INFO
 bamnostic.egg-info/SOURCES.txt
