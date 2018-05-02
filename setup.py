@@ -1,17 +1,23 @@
 from setuptools import setup
 
+def readme():
+    with open('./README.md') as readme:
+        return readme.read()
+
 setup(
     name='bamnostic',
-    version='0.1',
+    version='0.42b1',
     description='Pure Python, OS-agnostic Binary Alignment Map (BAM) random access and parsing tool',
+    long_description=readme(),
+    long_description_content_type='text/markdown',
     url='https://github.com/betteridiot/bamnostic/',
     author='Marcus D. Sherman',
     author_email='mdsherm@umich.edu',
     license='BSD 3-Clause',
-    install_requires=[
-        'pytest'],
+    install_requires=['pytest', 'markdown'],
     packages=['bamnostic', 'tests'],
     package_dir={'bamnostic': './bamnostic', 'tests': './tests'},
+    package_data={'bamnostic': ['data/*']},
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
@@ -37,6 +43,8 @@ setup(
         'Programming Language :: Python :: Implementation :: PyPy',
         'Topic :: Scientific/Engineering',
         'Topic :: Scientific/Engineering :: Information Analysis'
-    ]
+    ],
+    keywords='BAM pysam genomics genetics struct',
+    include_package_data=True,
     zip_safe=False
 )
