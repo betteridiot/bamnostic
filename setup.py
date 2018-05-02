@@ -4,10 +4,9 @@ def readme():
     with open('./README.rst') as rst:
         return rst.read()
 
-
 setup(
     name='bamnostic',
-    version='0.4.2b7',
+    version='0.4.2b8',
     description='Pure Python, OS-agnostic Binary Alignment Map (BAM) random access and parsing tool',
     long_description=readme(),
     url='https://github.com/betteridiot/bamnostic/',
