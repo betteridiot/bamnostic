@@ -10,13 +10,14 @@ a *pure Python*, **OS-agnositic** Binary Alignment Map (BAM) file parser and ran
 ***
 ## Installation
 There are 4 methods of installation available (choose one):</br>
-</br>Through the `conda` package manager ([Anaconda Cloud](https://anaconda.org/conda-forge/bamnostic))
+</br>
+1. Through the `conda` package manager ([Anaconda Cloud](https://anaconda.org/conda-forge/bamnostic))
 
 ```bash
 conda install -c conda-forge bamnostic
 ```
 
-However, there are tons of helpful packages on `conda-forge`. It is suggested that you add the `conda-forge` channel to your conda build
+**However**, it is suggested that you add the `conda-forge` channel to your `conda` build
 
 ```bash
 conda config --add channels conda-forge
@@ -28,7 +29,8 @@ Now installing `bamnostic` is as simple as:
 conda install bamnostic
 ```
 
-</br>Through the Python Package Index ([PyPI](https://pypi.org/))
+</br>
+2. Through the Python Package Index ([PyPI](https://pypi.org/))
 
 ```bash
 pip install bamnostic
@@ -37,7 +39,8 @@ pip install bamnostic
 pip install --user bamnostic
 ``` 
 
-Through pip+Github
+</br>
+3. Through pip+Github
 
 ```bash
 # again, use --user if you don't have superuser access
@@ -47,7 +50,8 @@ pip install -e git+https://github.com/betteridiot/bamnostic.git
 pip install --user -e git+https://github.com/betteridiot/bamnostic.git
 ``` 
 
-Traditional GitHub clone 
+</br>
+4. Traditional GitHub clone 
 
 ```bash
 git clone https://github.com/betteridiot/bamnostic.git
