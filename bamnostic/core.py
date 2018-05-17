@@ -1,6 +1,16 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
+
+"""
+Copyright 2018 by Marcus D. Sherman
+All rights reserved.
+This code is part of the bamnostic distribution and governed by its
+license.  Please see the LICENSE file that should have been included
+as part of this package.
+"""
+
+
 import struct
 import sys
 from array import array
@@ -27,6 +37,13 @@ _CIGAR_OPS = {
 
 _CIGAR_KEY = "MIDNSHP=X"
 _SEQ_KEY = '=ACMGRSVTWYHKDBN'
+
+
+def offset_qual(qual_string):
+    try:
+        return chr(qual_string + 33)
+    except TypeError:
+        return chr(ord(qual_string) + 33)
 
 
 # compiled/performant struct objects
@@ -108,6 +125,7 @@ class AlignedSegment(object):
         self.flag = self.flag_nc >> 16
         self.n_cigar_op = self.flag_nc & 0xFFFF
         self.l_seq, self.next_refID, self.next_pos, self.tlen = unpack_lseq_nrid_npos_tlen(self._range_popper(16))
+        
         self.read_name = unpack('<{}s'.format(self.l_read_name), self._range_popper(self.l_read_name)).decode()[:-1]
         
         self.tid = self.reference_id = self.refID
@@ -118,13 +136,19 @@ class AlignedSegment(object):
         
         Requires determining string size and key mapping to _CIGAR_KEY
         '''
-        self.cigar = struct.unpack('<{}I'.format(self.n_cigar_op), self._range_popper(4 * self.n_cigar_op))
-        
-        # can't use bamnostic.utils.unpack because self.cigar needs to be tuples for decoding
-        decoded_cigar = [(cigar_op >> 4, _CIGAR_KEY[cigar_op & 0xF]) for cigar_op in self.cigar]
-        self.cigarstring = "".join(['{}{}'.format(c[0], c[1]) for c in decoded_cigar])
-        self._cigartuples = [Cigar(_CIGAR_OPS[op[1]][1], op[0], op[1], _CIGAR_OPS[op[1]][0]) for op in decoded_cigar]
-        self.cigartuples = [(op[0], op[1]) for op in self._cigartuples]
+        if self.n_cigar_op != 0:
+            self.cigar = struct.unpack('<{}I'.format(self.n_cigar_op), self._range_popper(4 * self.n_cigar_op))
+            
+            # can't use bamnostic.utils.unpack because self.cigar needs to be tuples for decoding
+            decoded_cigar = [(cigar_op >> 4, _CIGAR_KEY[cigar_op & 0xF]) for cigar_op in self.cigar]
+            self.cigarstring = "".join(['{}{}'.format(c[0], c[1]) for c in decoded_cigar])
+            self._cigartuples = [Cigar(_CIGAR_OPS[op[1]][1], op[0], op[1], _CIGAR_OPS[op[1]][0]) for op in decoded_cigar]
+            self.cigartuples = [(op[0], op[1]) for op in self._cigartuples]
+        else:
+            self.cigar = None
+            self.cigarstring = None
+            self._cigartuples =None
+            self.cigartuples = None
     
     def _seq_builder(self):
         '''Uses unpacked values to build segment sequence
@@ -141,12 +165,14 @@ class AlignedSegment(object):
     def _qual_builder(self):
         '''Pulls out the quality information for the given read'''
         self._raw_qual = unpack('<{}s'.format(self.l_seq), self._range_popper(self.l_seq))
-        self.qual = array('B')
+        
+        self.qual = ''.join(map(offset_qual, self._raw_qual))
+        # self.qual = array('b')
     
-        if _PY_VERSION.startswith('2'):
-            self.qual.fromstring(self._raw_qual)
-        else:
-            self.qual.frombytes(self._raw_qual)
+        # if _PY_VERSION.startswith('2'):
+            # self.qual.fromstring(self._raw_qual)
+        # else:
+            # self.qual.frombytes(self._raw_qual)
     
     def __hash_key(self):
         return (self.reference_name, self.pos, self.read_name)
@@ -169,17 +195,23 @@ class AlignedSegment(object):
             self.tags.update(self._tagger())
     
     def __repr__(self):
+        if self.next_refID == -1:
+            rnext = '*'
+        elif self.next_refID == self.refID:
+            rnext = '='
+        else:
+            rnext = self._io._header.refs[self.next_refID]
         SAM_repr = [self.read_name, 
                     '{}'.format(self.flag),
                     '{}'.format(self.reference_name, self.tid),
-                    '{}'.format(self.pos), 
+                    '{}'.format(self.pos + 1), 
                     '{}'.format(self.mapq), 
-                    self.cigarstring, 
-                    '{}'.format(self.next_refID),
-                    '{}'.format(self.next_pos), 
+                    self.cigarstring if self.cigarstring is not None else '*', 
+                    '{}'.format(rnext),
+                    '{}'.format(self.next_pos + 1), 
                     '{}'.format(self.tlen), 
                     '{}'.format(self.seq), 
-                    '{}'.format(self._raw_qual.decode())]
+                    '{}'.format(self.q)]
         tags = ['{}:{}:{}'.format(tag, value[0], value[1]) for tag, value in self.tags.items()]
         SAM_repr.extend(tags)
         return '\t'.join(SAM_repr)

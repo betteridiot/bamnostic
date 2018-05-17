@@ -6,17 +6,17 @@ def readme():
 
 setup(
     name='bamnostic',
-    version='0.4.2b9',
+    version='0.4.2b13',
     description='Pure Python, OS-agnostic Binary Alignment Map (BAM) random access and parsing tool',
     long_description=readme(),
     url='https://github.com/betteridiot/bamnostic/',
     author='Marcus D. Sherman',
     author_email='mdsherm@umich.edu',
     license='BSD 3-Clause',
-    install_requires=['pytest', 'markdown'],
+    install_requires=['pytest'],
     packages=['bamnostic', 'tests'],
     package_dir={'bamnostic': './bamnostic', 'tests': './tests'},
-    package_data={'bamnostic': ['data/*']},
+    package_data={'bamnostic': ['data/*', 'LICENSE']},
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
