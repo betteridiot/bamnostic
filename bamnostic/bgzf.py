@@ -1,6 +1,9 @@
 """Modified version of BioPython.bgzf module. Includes LRU buffered dictionary
 Copyright 2010-2015 by Peter Cock.
 All rights reserved.
+This code is part of the Biopython distribution and governed by its
+license.  Please see the LICENSE file that should have been included
+as part of this package.
 
 Description: Read and write BGZF compressed files (the GZIP variant used in BAM).
 """
