@@ -1,5 +1,9 @@
 [![PyPI version](https://badge.fury.io/py/bamnostic.svg)](https://badge.fury.io/py/bamnostic)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/version.svg)](https://anaconda.org/conda-forge/bamnostic)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+</br>
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/installer/conda.svg)](https://conda.anaconda.org/conda-forge)
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/downloads.svg)](https://anaconda.org/conda-forge/bamnostic)
 </br>
 
 # BAMnostic 
