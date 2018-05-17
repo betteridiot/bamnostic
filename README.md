@@ -14,18 +14,10 @@ There are 4 methods of installation available (choose one):</br>
 ### Through the `conda` package manager ([Anaconda Cloud](https://anaconda.org/conda-forge/bamnostic))
 
 ```bash
-conda install -c conda-forge bamnostic
-```
-
-**However**, it is suggested that you add the `conda-forge` channel to your `conda` build
-
-```bash
+# add the conda-forge channel to your conda build
 conda config --add channels conda-forge
-```
 
-Now installing `bamnostic` is as simple as:
-
-```bash
+# now install
 conda install bamnostic
 ```
 
