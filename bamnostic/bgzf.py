@@ -1,15 +1,38 @@
-"""Modified version of BioPython.bgzf module. Includes LRU buffered dictionary
-Copyright 2010-2015 by Peter Cock.
-All rights reserved.
-This code is part of the Biopython distribution and governed by its
-license.  Please see the LICENSE file that should have been included
-as part of this package.
-
-Description: Read and write BGZF compressed files (the GZIP variant used in BAM).
-"""
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
+
+"""Modified version of BioPython.bgzf module. Includes LRU buffer dictionary.
+Copyright (c) 2010-2015 by Peter Cock.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Description: Read and write BGZF compressed files (the GZIP variant used in BAM).
+Significant changes were made to the original BGZF module, produced by 
+Peter Cock. Aside from adding an LRU dictionary, the new BGZF module can read
+BAM files directly, decompressing and unpacking the byte-encoded data structure
+outlined in the BAM_ format. 
+
+.. _BAM: https://samtools.github.io/hts-specs/SAMv1.pdf
+
+"""
+
 import sys
 import zlib
 import struct
@@ -20,26 +43,55 @@ import warnings
 import bamnostic
 from bamnostic.utils import *
 
+_PY_VERSION = sys.version
 
-if sys.version.startswith('2'):
+if _PY_VERSION.startswith('2'):
     from io import open
 
 
 def format_warnings(message, category, filename, lineno, file=None, line=None):
+    """ Warning formatter
+    
+    Args:
+        message: warning message
+        category (str): level of warning
+        filename (str): path for warning output
+        lineno (int): Where the warning originates
+    
+    Returns:
+        Formatted warning for logging purposes
+    """
     return ' {}:{}: {}:{}'.format(filename, lineno, category.__name__, message)
 
 warnings.formatwarning = format_warnings
 
-_bgzf_magic = b"\x1f\x8b\x08\x04"
-_bgzf_header = b"\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00\x42\x43\x02\x00"
-_bgzf_eof = b"\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00BC\x02\x00\x1b\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00"
-_bytes_BC = b"BC"
+# Constants used in BGZF format
+_bgzf_magic = b"\x1f\x8b\x08\x04" # First 4 bytes of BAM file
+_bgzf_header = b"\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00\x42\x43\x02\x00" # Ideal GZIP header
+_bgzf_eof = b"\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00BC\x02\x00\x1b\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00" # 28 null byte signature at the end of a non-truncated BAM file
+_bytes_BC = b"BC" # "Payload" or Subfield Identifiers 1 & 2 of GZIP header
 
 
 def _as_bytes(s):
+    """ Used to ensure string is treated as bytes
+    
+    The output
+    
+    Args:
+        s (str): string to convert to bytes
+    
+    Returns:
+        byte-encoded string
+    
+    Example:
+        >>> str(_as_bytes('Hello, World').decode()) # Duck typing to check for byte-type object 
+        'Hello, World'
+    
+    """
     if isinstance(s, bytes):
         return s
     return bytes(s, encoding='latin_1')
+
 
 # Helper compiled structures
 unpack_gzip_header = struct.Struct('<4BI2BH').unpack
@@ -51,22 +103,145 @@ _subfield_size = struct.calcsize('<2s2H')
 unpack_gzip_integrity = struct.Struct('<2I').unpack
 _integrity_size = struct.calcsize('<2I')
 
+unpack_bgzf_metaheader = struct.Struct('<4BI2BH2BH').unpack
+_metaheader_size = struct.calcsize('<4BI2BH2BH')
+
+
+def _bgzf_metaheader(handle):
+    """ Pull out the metadata header for a BGZF block
+    
+    BAM files essentially concatenated GZIP blocks put together into a cohesive file
+    format. The caveat to this is that the GZIP blocks are specially formatted to contain
+    metadata that indicates them as being part of a larger BAM file. Due to these specifications, 
+    these blocks are identified as BGZF blocks. Listed below are those specifications. These
+    specifications can be found `here <https://samtools.github.io/hts-specs/SAMv1.pdf>`_.
+    
+    The following GZIP fields are to have these expected values:
+    
+    ==================== ===========  ===========
+    Field:               Label:       Exp.Value:
+    ==================== ===========  ===========
+    Identifier1          **ID1**      31
+    Identifier2          **ID2**      139
+    Compression Method   **CM**       8
+    Flags                **FLG**      4
+    Subfield Identifier1 **SI1**      66
+    Subfield Identifier2 **SI2**      67
+    Subfield Length      **SLEN**     2
+    ==================== ===========  ===========
+    
+    Args:
+        handle (:py:obj:`file`): Open BAM file object
+    
+    Returns:
+        :py:obj:`tuple` of (:py:obj:`tuple`, :py:obj:`bytes`): the unpacked metadata and its raw bytestring
+    
+    Raises:
+        ValueError: if the header does not match expected values
+    
+    .. _here: https://samtools.github.io/hts-specs/SAMv1.pdf
+    
+    """
+    meta_raw = handle.read(_metaheader_size)
+    meta = unpack_bgzf_metaheader(meta_raw)
+    ID1, ID2, CM, FLG, MTIME, XFL, OS, XLEN, SI1, SI2, SLEN = meta
+    
+    # check the header integrity
+    checks = [
+        ID1 == 31,
+        ID2 == 139,
+        CM == 8,
+        FLG == 4,
+        SI1 == 66,
+        SI2 == 67,
+        SLEN == 2]
+
+    if not all(checks):
+        raise ValueError('Malformed BGZF block')
+    
+    return meta, meta_raw
+
+
+def get_block(handle, offset = 0):
+    r""" Pulls out entire GZIP block
+    
+    Used primarily for copying the header block of a BAM file. However,
+    it can be used to copy any BGZF block within a BAM file that starts at
+    the given offset.
+    
+    Note:
+        Does not progress file cursor position.
+    
+    Args:
+        handle (:py:obj:`file`): open BAM file
+        offset (int): offset of BGZF block (default: 0)
+    
+    Returns:
+        Complete BGZF block
+    
+    Raises:
+        ValueError: if the BGZF block header is malformed
+        
+    Example:
+        >>> with open('./bamnostic/data/example.bam','rb') as bam:
+        ...     bam_header = get_block(bam)
+        ...     try:
+        ...         bam_header.startswith(b'\x1f\x8b\x08\x04')
+        ...     except SyntaxError:
+        ...         bam_header.startswith('\x1f\x8b\x08\x04')
+        True
+    
+    """
+    
+    if isinstance(handle, bamnostic.core.AlignmentFile):
+        handle = handle._handle
+    with open(handle.name, 'rb') as header_handle:
+        header_handle.seek(offset) # get to the start of the BGZF block
+        
+        # Capture raw bytes of metadata header
+        _, meta_raw = _bgzf_metaheader(header_handle)
+            
+        BSIZE_raw = header_handle.read(2)
+        BSIZE = struct.unpack('<H', BSIZE_raw)[0]
+        
+        # capture the CRC32 and ISIZE fields in addition to compressed data
+        # 6 = XLEN, 19 = spec offset, 8 = CRC32 & ISIZE -> -5
+        block_tail = header_handle.read(BSIZE - 5)
+        return meta_raw + BSIZE_raw + block_tail
+
 
 def _load_bgzf_block(handle):
-    """Load the next BGZF block of compressed data (PRIVATE)."""
+    r"""Load the next BGZF block of compressed data (PRIVATE).
+    
+    BAM files essentially concatenated GZIP blocks put together into a cohesive file
+    format. The caveat to this is that the GZIP blocks are specially formatted to contain
+    metadata that indicates them as being part of a larger BAM file. Due to these specifications, 
+    these blocks are identified as BGZF blocks.
+    
+    Args:
+        handle (:py:obj:`file`): open BAM file
+    
+    Returns:
+        deflated GZIP data
+    
+    Raises:
+        ValueError: if CRC32 or ISIZE do not match deflated data
+    
+    Example:
+        >>> with open('./bamnostic/data/example.bam','rb') as bam:
+        ...     block = _load_bgzf_block(bam)
+        ...     try:
+        ...         block[0] == 53 and block[1].startswith(b'BAM\x01')
+        ...     except TypeError:
+        ...         block[0] == 53 and block[1].startswith('BAM\x01')
+        True
+    
+    """
     
     # Pull in the BGZF block header information
-    ID1, ID2, CM, FLG, MTIME, XFL, OS, XLEN = unpack_gzip_header(handle.read(_gzip_header_size))
-    
-    # Check for proper header format. If it doesn't match, block offset is poorly aligned
-    if not ID1 == 31 and ID2 == 139 and CM == 8 and FLG == 4:
-        raise ValueError('Malformed bgzf block header')
-    subfields_string = '<2s2H'
-    subfields_size = struct.calcsize(subfields_string)
-    PAYLOAD, SLEN, BSIZE = unpack_subfields(handle.read(_subfield_size))
-    if not PAYLOAD == b'BC':
-        raise ValueError('Malformed Payload (BC)')
-    remainder = handle.read(SLEN - 2) # 2 := size of uint16_t
+    header, _ = _bgzf_metaheader(handle)
+    XLEN = header[-4]
+    BSIZE = struct.unpack('<H', handle.read(2))[0]
     
     # Expose the compressed data
     d_size = BSIZE - XLEN -19
@@ -78,17 +253,53 @@ def _load_bgzf_block(handle):
     deflated_crc = zlib.crc32(data)
     if deflated_crc < 0: 
         deflated_crc = deflated_crc % (1<<32)
-    assert CRC32 == deflated_crc, 'CRCs are not equal: is {}, not {}'.format(CRC32, deflated_crc)
-    assert ISIZE == len(data), 'unequal uncompressed data size'
+    if CRC32 != deflated_crc:
+        raise ValueError('CRCs are not equal: is {}, not {}'.format(CRC32, deflated_crc))
+    if ISIZE != len(data):
+        raise ValueError('unequal uncompressed data size')
     
     return BSIZE+1, data
 
 
 class BAMheader(object):
-    __slots__ = ['_magic', '_header_length', '_SAMheader_raw', '_SAMheader_end',
-                'SAMheader', 'n_refs', 'refs', '_BAMheader_end']
+    """ Parse and store the BAM file header
+    
+    The BAM header is the plain text and byte-encoded metadata of a given BAM file.
+    Information stored in the header are the number, length, and name of the reference
+    sequences that reads were aligned to; version of software used; read group identifiers; etc.
+    The BAM_ format also stipulates that the first block of any BAM file should be reserved
+    just for the BAM header block. 
+    
+    Attributes:
+        _header_block (:py:obj:`bytes`): raw byte stream of header block
+        _SAMheader_raw (:py:obj:`bytes`): the deflated plain text string (if present)
+        _SAMheader_end (int): byte offset of the end of SAM header
+        _BAMheader_end (int): byte offset of the end of the BAM header
+        SAMheader (:py:obj:`dict`): parsed dictionary of the SAM header
+        n_refs (int): number of references
+        refs (:py:obj:`dict`): reference names and lengths listed in the BAM header
+    
+    .. _BAM: https://samtools.github.io/hts-specs/SAMv1.pdf
+    
+    """
+    
+    __slots__ = ['_magic', '_header_length', '_header_block', '_SAMheader_raw',
+                 '_SAMheader_end', 'SAMheader', 'n_refs', 'refs', '_BAMheader_end']
+    
     def __init__(self, _io):
-        self._magic, self._header_length = unpack('<4si', _io)
+        """ Initialize the header
+        
+        Args:
+            _io (:py:obj:`file`): opened BAM file object
+        
+        Raises:
+            ValueError: if BAM magic line not found at the top of the file
+        
+        """
+        magic, self._header_length = unpack('<4si', _io)
+        
+        if magic != b'BAM\x01':
+            raise ValueError('Incorrect BAM magic line. File head may be unaligned or this is not a BAM file')
         
         if self._header_length > 0:
             # If SAM header is present, it is in plain text. Process it and save it as rows
@@ -126,40 +337,76 @@ class BAMheader(object):
             self.refs.update({r: (ref_name.decode(), ref_len)})
         self._BAMheader_end = _io._handle.tell()
         
+        self._header_block = get_block(_io)
+
+    def to_header(self):
+        """ Allows the user to directly copy the header of another BAM file
+        
+        Returns:
+            (bytesarray): packed byte code of entire header BGZF block 
+        """
+        
+        return self._header_block
+        
     def __call__(self):
+        """ Used as a synonym for printing by calling the object directly
+        
+        Note:
+            Preferentially prints out the SAM header (if present). Otherwise, it will print
+            the string representation of the BAM header dictionary
+        """
         return self._SAMheader_raw.decode().rstrip() if self._SAMheader_raw else self.refs
     
     def __repr__(self):
         return self._SAMheader_raw.decode().rstrip() if self._SAMheader_raw else str(self.refs)
     
     def __str__(self):
+        """ Used for printing the header
+        
+        Note:
+            Preferentially prints out the SAM header (if present). Otherwise, it will print
+            the string representation of the BAM header dictionary
+        """
+        
         return self._SAMheader_raw.decode().rstrip() if self._SAMheader_raw else str(self.refs)
     
-    def to_header(self):
-        """ Allows the user to directly copy the header of another BAM file
-        
-        Returns:
-            (bytesarray): packed byte code of magic, header length, SAM header, 
-        """
-        n_refs = struct.pack('<i', self.n_refs)
-        bam_header = bytearray()
-        bam_header.extend(struct.pack('<4si', self._magic, self._header_length) + self._SAMheader_raw + n_refs)
-        for ref, val in self.refs.items():
-            for item in val:
-                ref_name = val[0].encode() + b'\x00' 
-                bam_header.extend(struct.pack('<i', len(ref_name)) +ref_name + struct.pack('<i', val[1]))
-        return  bam_header
-
 
 class BgzfReader(object):
+    """ The BAM reader. Heavily modified from Peter Cock's BgzfReader.
+    
+    Note:
+        This implementation is likely to change. While the API was meant to 
+        mirror `pysam`, it makes sense to include the `pysam`-like API in an extension
+        that will wrap the core reader. This would be a major refactor, and therefore 
+        will not happen any time soon (30 May 2018).
+    """
+    
     def __init__(self, filepath_or_object, mode="rb", max_cache=128, index_filename = None,
                 filename = None, check_header = False, check_sq = True, reference_filename = None,
                 filepath_index = None, require_index = False, duplicate_filehandle = None,
                 ignore_truncation = False):
-        """Initialize the class."""
+        """Initialize the class.
+        
+        Args:
+            filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file
+            mode (str): Mode for reading. BAM files are binary by nature (default: 'rb').
+            max_cache (int): number of desired LRU cache size, preferably a multiple of 2 (default: 128).
+            index_filename (str): path to index file (BAI) if it is named differently than the BAM file (default: None).
+            filename (str | :py:obj:`file`): synonym for `filepath_or_object`
+            check_header (bool): Obsolete method maintained for backwards compatibility (default: False)
+            check_sq (bool): Inspect BAM file for `@SQ` entries within the header
+            reference_filename (str): Not implemented. Maintained for backwards compatibility
+            filepath_index (str): synonym for `index_filename`
+            require_index (bool): require the presence of an index file or raise (default: False)
+        
+        """
+        
+        # Set up the LRU buffer dictionary
         if max_cache < 1:
             raise ValueError("Use max_cache with a minimum of 1")
+        self._buffers = LruDict(max_cache=max_cache)
         
+        # handle contradictory arguments caused by synonyms
         if filepath_or_object and filename and filename != filepath_or_object:
             raise ValueError('filepath_or_object and filename parameters do not match. Try using only one')
         elif filepath_or_object:
@@ -169,6 +416,8 @@ class BgzfReader(object):
                 filepath_or_object = filename
             else:
                 raise ValueError('either filepath_or_object or filename must be set')
+        
+        # Check to see if file object or path was passed
         if isinstance(filepath_or_object, io.IOBase):
             handle = fileobj
         else:
@@ -176,107 +425,43 @@ class BgzfReader(object):
         
         self._text = "b" not in mode.lower()
         if 'b' not in mode.lower():
-            raise ValueError('BAM file requires binary mode ("rb")')
-        if self._text:
-            self._newline = "\n"
-        else:
-            self._newline = b"\n"
+            raise IOError('BAM file requires binary mode ("rb")')
         
-        self._req_idx = require_index
-        if (filepath_index and index_filename) and (index_filename != filepath_index):
-            raise ValueError('Use index_filename or filepath_or_object. Not both')
-        
-        self._index_filename = index_filename if index_filename else filepath_index
+        # Connect to the BAM file
         self._handle = handle
-        if not ignore_truncation:
-            assert self.check_truncation(), 'BAM file may be truncated. Turn off ignore_truncation if you wish to continue'
         
-        self._buffers = LruDict(max_cache=max_cache)
+        # Check BAM file integrity
+        if not ignore_truncation:
+            if self._check_truncation():
+                raise Exception('BAM file may be truncated. Turn off ignore_truncation if you wish to continue')
+        
+        # Connect and process the Index file (if present)
+        self._index = None
+        
+        if filepath_index and index_filename and index_filename != filepath_index:
+            raise IOError('Use index_filename or filepath_or_object. Not both')
+        
+        self._check_idx = self.check_index(index_filename if index_filename else filepath_index, require_index)
+        self._init_index()
+        
+        # Load the first block into the buffer and intialize cursor attributes
         self._block_start_offset = None
         self._block_raw_length = None
         self._load_block(handle.tell())
-        self._check_index = self.check_index()
-        self._index = self._load_index()
         
+        # Load in the BAM header as an instance attribute
+        self._load_header(check_sq)
+
+        # Helper dictionary for changing reference names to refID/TID
+        self.ref2tid = {v[0]: k for k,v in self._header.refs.items()}
+        
+        # Final exception handling
         if check_header:
             warnings.warn('Obsolete method', UserWarning)
         if duplicate_filehandle:
             warnings.warn('duplicate_filehandle not necessary as the C API for samtools is not used', UserWarning)
         if reference_filename:
             raise NotImplementedError('CRAM file support not yet implemented')
-        
-        self._header = BAMheader(self)
-        self.header = self._header.SAMheader if self._header.SAMheader else self._header
-        self.text = self._header._SAMheader_raw
-        
-        # make compatible with pysam attributes, even though the data exists elsewhere
-        self.references = []
-        self.lengths = []
-        for n in range(self._header.n_refs):
-            self.references.append(self._header.refs[n][0])
-            self.lengths.append(self._header.refs[n][1])
-        
-        if self._check_index:
-            self.nocoordinate = self._index.n_no_coor
-            self.unmapped = sum(self._index.unmapped[unmapped].n_unmapped for unmapped in self._index.unmapped) + self.nocoordinate
-        self.nreferences = self._header.n_refs
-        
-        if check_sq:
-            if self._header._header_length == 0:
-                pass
-            else:
-                assert 'SQ' in self._header.SAMheader, 'No SQ entries in header'
-        self.ref2tid = {v[0]: k for k,v in self._header.refs.items()}
-    
-    def check_truncation(self):
-        temp_pos = self._handle.tell()
-        self._handle.seek(-28, 2)
-        eof = self._handle.read()
-        self._handle.seek(temp_pos)
-        if eof == _bgzf_eof:
-            return True
-        else:
-            warnings.BytesWarning('No EOF character found. File may be truncated')
-            return False
-    
-    def check_index(self):
-        if self._index_filename is None:
-            if os.path.isfile('{}.bai'.format(self._handle.name)):
-                self._index_path = '{}.bai'.format(self._handle.name)
-                self._random_access = True
-                return True
-            else:
-                if self._req_idx:
-                    raise ValueError('htsfile is closed or index could not be opened')
-                warnings.warn('Supplied index file not found. Random access disabled', UserWarning)
-                self._random_access = False
-                return False
-        else:
-            if os.path.isfile(self._index_filename):
-                self._index_path = self._index
-                self._random_access = True
-                return True
-            else:
-                if self._req_idx:
-                    raise ValueError('htsfile is closed or index could not be opened')
-                warnings.warn('Supplied index file not found. Random access disabled', UserWarning)
-                self._random_access = False
-                return False
-    
-    def _load_index(self):
-        if self._check_index:
-            return bamnostic.bai.Bai(self._index_path)
-        else:
-            return None
-    
-    def has_index(self):
-        '''Checks if file has index and it is open
-        
-        Returns:
-            bool: True if present and opened, else False
-        '''
-        if self._check_index and self._index:
-            return self._check_index
     
     def _load_block(self, start_offset=None):
         if start_offset is None:
@@ -317,12 +502,137 @@ class BgzfReader(object):
         # Finally save the block in our cache,
         self._buffers[self._block_start_offset] = self._buffer, block_size
     
+    def check_index(self, index_filename = None, req_idx = False):
+        """
+        
+        Args:
+            index_filename (str): path to index file (BAI) if it does not fit naming convention (default: None).
+            req_idx (bool): Raise error if index file is not present (default: False).
+        
+        Returns:
+            (bool): True if index is present, else False
+        
+        Raises:
+            IOError: If the index file is closed or index could not be opened
+        
+        Warns:
+            UserWarning: If index could not be loaded. Random access is disabled.
+        """
+        if index_filename is None:
+            if os.path.isfile('{}.bai'.format(self._handle.name)):
+                self._index_path = '{}.bai'.format(self._handle.name)
+                self._random_access = True
+                return True
+            else:
+                if req_idx:
+                    raise IOError('htsfile is closed or index could not be opened')
+                warnings.warn('Supplied index file not found. Random access disabled', UserWarning)
+                self._random_access = False
+                return False
+        else:
+            if os.path.isfile(index_filename):
+                self._index_path = index_filename
+                self._random_access = True
+                return True
+            else:
+                if req_idx:
+                    raise IOError('htsfile is closed or index could not be opened')
+                warnings.warn('Supplied index file not found. Random access disabled', UserWarning)
+                self._random_access = False
+                return False
+    
+    def _init_index(self):
+        """Initialize the index file (BAI)"""
+        
+        if self._check_idx:
+            self._index = bamnostic.bai.Bai(self._index_path)
+            self.nocoordinate = self._index.n_no_coor
+            self.unmapped = sum(self._index.unmapped[unmapped].n_unmapped \
+                                for unmapped in self._index.unmapped) + self.nocoordinate
+            
+    def _check_sq(self):
+        """ Inspect BAM file for @SQ entries within the header
+        
+        Returns:
+            (bool): True if present, else false
+        
+        """
+        
+        if self._header._header_length == 0:
+            if not self._header.refs:
+                return False
+        else:
+            if 'SQ' not in self._header.SAMheader:
+                return False
+        return True
+            
+    def _load_header(self, check_sq = True):
+        """ Loads the header into the reader object
+        
+        Args:
+            check_sq (bool): whether to check for file header or not (default: True).
+        
+        Raises:
+            KeyError: If 'SQ' entry is not present in BAM header
+        """
+        
+        self._header = BAMheader(self)
+        self.header = self._header.SAMheader if self._header.SAMheader else self._header
+        self.text = self._header._SAMheader_raw
+        
+        # make compatible with pysam attributes, even though the data exists elsewhere
+        self.references = []
+        self.lengths = []
+        for n in range(self._header.n_refs):
+            self.references.append(self._header.refs[n][0])
+            self.lengths.append(self._header.refs[n][1])
+        self.nreferences = self._header.n_refs
+        
+        if check_sq:
+            if not self._check_sq():
+                raise KeyError('No SQ entries in header')
+    
+    def _check_truncation(self):
+        """ Confusing function to check for file truncation.
+        
+        Every BAM file should contain an EOF signature within the last
+        28 bytes of the file. This function checks for that signature.
+        
+        Returns:
+            (bool): True if truncated, else False
+        
+        Warns:
+            BytesWarning: if no EOF signature found.
+        """
+        
+        temp_pos = self._handle.tell()
+        self._handle.seek(-28, 2)
+        eof = self._handle.read()
+        self._handle.seek(temp_pos)
+        if eof == _bgzf_eof:
+            return False
+        else:
+            warnings.BytesWarning('No EOF character found. File may be truncated')
+            return True
+    
+    def has_index(self):
+        """Checks if file has index and it is open
+        
+        Returns:
+            bool: True if present and opened, else False
+        """
+        
+        if self._check_index and self._index:
+            return self._check_index
+    
     def tell(self):
         """Return a 64-bit unsigned BGZF virtual offset."""
+        
         return make_virtual_offset(self._block_start_offset, self._within_block_offset)
     
     def seek(self, virtual_offset):
         """Seek to a 64-bit unsigned BGZF virtual offset."""
+        
         # Do this inline to avoid a function call,
         # start_offset, within_block = split_virtual_offset(virtual_offset)
         start_offset = virtual_offset >> 16
@@ -341,6 +651,7 @@ class BgzfReader(object):
     
     def read(self, size=-1):
         """Read method for the BGZF module."""
+        
         if size < 0:
             raise NotImplementedError("Don't be greedy, that could be massive!")
         elif size == 0:
@@ -378,6 +689,7 @@ class BgzfReader(object):
     
     def readline(self):
         """Read a single line for the BGZF file."""
+        
         i = self._buffer.find(self._newline, self._within_block_offset)
         # Three cases to consider,
         if i == -1:
@@ -406,7 +718,7 @@ class BgzfReader(object):
     def fetch(self, contig = None, start = None, stop = None, region = None,
             tid = None, until_eof = False, multiple_iterators = False,
             reference = None, end = None):
-        """Creates a generator that returns all reads within the given region
+        r"""Creates a generator that returns all reads within the given region
         
         Args:
             contig (str): name of reference/contig
@@ -438,6 +750,7 @@ class BgzfReader(object):
                 AlignmentFile.fetch('chr1', 1)
                 AlignmentFile.fetch('chr1')
         """
+        
         if not self._random_access:
             raise ValueError('Random access not available due to lack of index file file')
         if multiple_iterators:
@@ -515,7 +828,7 @@ class BgzfReader(object):
     
     def count(self, contig=None, start=None, stop=None, region=None, 
             until_eof=False, read_callback='nofilter', reference=None, end=None):
-        """Count the number of reads in the given region
+        r"""Count the number of reads in the given region
         
         Note: this counts the number of reads that **overlap** the given region.
         
@@ -561,6 +874,7 @@ class BgzfReader(object):
                 AlignmentFile.fetch('chr1', 1)
                 AlignmentFile.fetch('chr1')
         """
+        
         if not self._random_access:
             raise ValueError('Random access not available due to lack of index file file')
         if multiple_iterators:
@@ -639,7 +953,7 @@ class BgzfReader(object):
     
     def head(self, n = 5, multiple_iterators = False):
         if multiple_iterators:
-            head_iter = bamnostic.AlignmentFile(self._handle.name, index_filename = self._index_filename)
+            head_iter = bamnostic.AlignmentFile(self._handle.name, index_filename = self._index_path)
         else:
             curr_pos = self.tell()
             # BAMheader uses byte specific positions (and not BGZF virtual offsets)
@@ -660,6 +974,7 @@ class BgzfReader(object):
     
     def __next__(self):
         """Return the next line."""
+        
         read = bamnostic.AlignedSegment(self)
         if not read:
             raise StopIteration
@@ -667,6 +982,7 @@ class BgzfReader(object):
 
     def next(self):
         """Return the next line."""
+        
         read = bamnostic.AlignedSegment(self)
         if not read:
             raise StopIteration
@@ -674,10 +990,12 @@ class BgzfReader(object):
 
     def __iter__(self):
         """Iterate over the lines in the BGZF file."""
+        
         return self
 
     def close(self):
         """Close BGZF file."""
+        
         self._handle.close()
         self._buffer = None
         self._block_start_offset = None
@@ -685,22 +1003,27 @@ class BgzfReader(object):
 
     def seekable(self):
         """Return True indicating the BGZF supports random access."""
+        
         return True
 
     def isatty(self):
         """Return True if connected to a TTY device."""
+        
         return False
 
     def fileno(self):
         """Return integer file descriptor."""
+        
         return self._handle.fileno()
 
     def __enter__(self):
         """Open a file operable with WITH statement."""
+        
         return self
 
     def __exit__(self, type, value, traceback):
         """Close a file with WITH statement."""
+        
         self.close()
 
 
@@ -766,6 +1089,7 @@ class BgzfWriter(object):
 
     def write(self, data):
         """Write method for the class."""
+        
         # TODO - Check bytes vs unicode
         data = _as_bytes(data)
         # block_size = 2**16 = 65536
@@ -798,6 +1122,7 @@ class BgzfWriter(object):
         addition to samtools writing this block, so too does bgzip - so this
         implementation does too.
         """
+        
         if self._buffer:
             self.flush()
         self._handle.write(_bgzf_eof)

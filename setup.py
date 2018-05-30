@@ -1,7 +1,8 @@
 from setuptools import setup
+import os
 
 def readme():
-    with open('./README.rst') as rst:
+    with open(os.path.dirname(__file__) + '/README.rst') as rst:
         return rst.read()
 
 setup(

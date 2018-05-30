@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 """
 `bamnostic` is an OS-agnostic, Pure Python `BAM`_
 file parser.
@@ -20,22 +21,27 @@ The three main classes of `bamnostic` are:
 
 Examples:
     .. highlight:: python
-        :linenothreshold: 5
+        :linenothreshold: 1
+    
+    .. code-block:: python
+        
         import bamnostic as bs
         
-hello
-
-
-Copyright 2018 by Marcus D. Sherman
-All rights reserved.
-This code is part of the bamnostic distribution and governed by its
-license.  Please see the LICENSE file that should have been included
-as part of this package.
+        print('Hello, Poopy Butt')
 
 .. _BAM:
     https://samtools.github.io/hts-specs/SAMv1.pdf
 .. _PyPy:
     https://pypy.org/
+
+@author: "Marcus D. Sherman"
+@copyright: "Copyright 2018, University of Michigan, Mills Lab
+@email: "mdsherman<at>betteridiot<dot>tech"
+@version: "v0.4.2b13"
+
+This code is part of the bamnostic distribution and governed by its
+license.  Please see the LICENSE file that should have been included
+as part of this package.
 """
 
 from bamnostic.core import AlignmentFile, AlignedSegment

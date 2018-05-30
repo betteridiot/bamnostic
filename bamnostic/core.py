@@ -77,7 +77,7 @@ class AlignedSegment(object):
         """Instantiating the read parser just needs access to the BGZF io.object
         
         Args:
-            io.(BgzfReader): parser for processing BGZF files
+            io (BgzfReader): parser for processing BGZF files
             
         Returns:
             AlignedRead
@@ -211,7 +211,7 @@ class AlignedSegment(object):
                     '{}'.format(self.next_pos + 1), 
                     '{}'.format(self.tlen), 
                     '{}'.format(self.seq), 
-                    '{}'.format(self.q)]
+                    '{}'.format(self.qual)]
         tags = ['{}:{}:{}'.format(tag, value[0], value[1]) for tag, value in self.tags.items()]
         SAM_repr.extend(tags)
         return '\t'.join(SAM_repr)

@@ -1,9 +1,13 @@
 from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
+
+"""Module utilities and constants used throughout bamnostic"""
+
 import struct
 from collections import OrderedDict, namedtuple
 
+# Python 2 doesn't put abstract base classes in the same spot as Python 3
 import sys
 _PY_VERSION = sys.version
 
@@ -18,33 +22,107 @@ import re
 
 
 def format_warnings(message, category, filename, lineno, file=None, line=None):
+    r"""Sets STDOUT warnings
+    
+    Args:
+        message: the unformatted warning message being reported
+        category (str): the level of warning (handled by `warnings` module)
+        filename (str): filename for logging purposes (defaults to STDOUT)
+        lineno (int): where the error occurred.
+    
+    Returns:
+        formatted warning string
+    """
     return ' {}:{}: {}:{}'.format(filename, lineno, category.__name__, message)
 
 warnings.formatwarning = format_warnings
 
+# pre-compiled structures to reduce iterative unpacking
 unpack_int32 = struct.Struct('<i').unpack
 unpack_int32L = struct.Struct('<l').unpack
 
 
-# Helper class for perfomant named indexing of region of interests
+# Helper class for performant named indexing of region of interests
 class Roi:
+    r"""Small __slots__ class for region of interest parsing"""
     __slots__ = ['contig', 'start', 'stop']
     
-    # def __new__(self, contig, start, stop):
-        # self.contig = None
-        # self.start = 1
-        # self.stop = None
-    
     def __init__(self, contig, start, stop):
+        r""" Initialize the class
+        
+        Args:
+            contig (str): string representation of chromosome/contig of interest
+            start (int): starting base position of region of interest
+            stop (int): ending base position of region of interest
+        """
         self.contig, self.start, self.stop = contig, start, stop
+    
+    def __repr__(self):
+        return 'Roi({}, {}, {})'.format(self.contig, self.start, self.stop)
+        
+    def __str__(self):
+        return 'Roi({}, {}, {})'.format(self.contig, self.start, self.stop)
 
 
 def ceildiv(a, b):
-    '''Simple ceiling division to prevent importing math module'''
+    r"""Simple ceiling division to prevent importing math module
+    
+    Args:
+        a (:obj:`numbers.Integral`): numerator
+        b (:obj:`numbers.Integral`): denominator
+    
+    Returns:
+        ceiling quotient of a and b
+    """
     return -(-a // b)
 
 
 def flag_decode(flag_code):
+    r"""Simple read alignment flag decoder
+    
+    Every read within a BAM file ought to have an associated flag code. Theses
+    flags are used for read filtering and QC. The flags are described below. 
+    Additionally, they can be found `here <https://samtools.github.io/hts-specs/SAMv1.pdf>`_
+    
+    Any given read's flag is determined by the *or* (`|`) operand of all appropriate bit flags.
+    
+    Args:
+        flag_code (int): either a standalone integer/bit flag or the read object itself
+    
+    Returns:
+        (:obj:`list` of :obj:`tuple`): list of flag and flag description tuples.
+    
+    Raises:
+        ValueError: if provided flag is not a valid entry
+    
+    Example:
+        If a flag is 516 it is comprised of flag 4 and flag 512
+        
+        >>> flag_decode(516)
+        [(4, 'read unmapped'), (512, 'QC fail')]
+    
+    Flags
+    =====
+    
+    ====  =====  ==================================================================
+    Int   Bit    Description
+    ====  =====  ==================================================================
+    
+    1     0x1    Template having multiple segments in sequencing
+    2     0x2    Each segment properly aligned according to the aligner
+    4     0x4    Segment unmapped
+    8     0x8    Next segment in the template unmapped
+    16    0x10   SEQ being reverse complemented
+    32    0x20   SEQ of the next segment in the template being reverse complemented
+    64    0x40   The first segment in the template
+    128   0x80   The last segment in the template
+    256   0x100  Secondary alignment
+    512   0x200  Not passing filters, such as platform/vendor quality controls
+    1024  0x400  PCR or optical duplicate
+    2048  0x800  Supplementary alignment
+    ====  =====  ==================================================================
+    
+    """
     flags = {0x1 : 'read paired', 0x2: 'read mapped in proper pair',
             0x4: 'read unmapped', 0x8: 'mate unmapped',
             0x10: 'read reverse strand', 0x20: 'mate reverse strand',
@@ -56,14 +134,15 @@ def flag_decode(flag_code):
         code = flag_code
     else:
         code = flag_code.flag
-    assert isinstance(code, numbers.Integral), 'provided flag is not a valid entry'
+    if not isinstance(code, numbers.Integral):
+        raise ValueError('Provided flag is not a valid entry')
     return [(key, flags[key]) for key in flags if key & code]
 
 
 def yes_no():
     """ Simple prompt parser"""
-    yes = {'yes','ye', 'y', ''}
-    no = {'no', 'n'}
+    yes = set('yes','ye', 'y', '')
+    no = set('no', 'n')
     while True:
         answer = input('Would you like to continue? [y/n] ').lower()
         if answer in yes:
@@ -75,15 +154,51 @@ def yes_no():
 
 
 def region_parser(ROI, *args, **kwargs):
-    if len(args) > 0:
-        ROI = (ROI, args[:])
-    if isinstance(ROI, str):
-        split_roi = ':'.join(ROI.split()).replace('-',':').split(':')
+    r"""Parses genomic regions provided by the user.
+    
+    This function accepts SAM formatted regions (e.g. `'chr1:1-100'`), tab-separated
+    region strings (e.g. `'chr1\t1\100'`), and positional arguments such that the 
+    first argument is the string of the desired chromosome/contig. Any following 
+    arguments must be integers. Lastly, if the user requires either the whole
+    chromosome/contig or everything after a start position, the user should invoke
+    `until_eof = True` beforehand.
+    
+    Args:
+        ROI: either a SAM formatted region, tab-delimited region string, or iterable sequence object
+        *args: variable length positional arguments containing integers for start and stop positions
+        **kwags: Only implemented `kwarg` is `until_eof`
+    
+    Returns:
+        :obj:`Roi` formatted object or None
+    
+    Raises:
+        ValueError if the region submission is malformed or invalid
+    
+    Examples:
+    
+        >>> region_parser(['chr1', 1, 100])
+        Roi(chr1, 1, 100)
         
+        >>> region_parser('chr1:1-100')
+        Roi(chr1, 1, 100)
+        
+    """
+    
+    # check to see if the user supplied positional arguments
+    if len(args) > 0:
+        ROI = [ROI] + list(args)
+    
+    # see if user supplied a SAM formatted region string
+    elif isinstance(ROI, str):
+        split_roi = ':'.join(ROI.split()).replace('-',':').split(':')
+    
+    # if the user supplied an :obj:`abc.Sequence` (tuple or list), convert it to a list
     elif isinstance(ROI, Sequence):
         split_roi = list(ROI)
     else:
         raise ValueError('Malformed region query')
+    
+    # if the user gives an integer description of chromosome, convert to string
     if type(split_roi[0]) is int:
         split_roi[0] = str(split_roi[0])
     elif isinstance(split_roi[0], str):
@@ -91,11 +206,15 @@ def region_parser(ROI, *args, **kwargs):
     else:
         raise ValueError('improper region format')
     
-    assert 1 <= len(split_roi) <= 3, 'improper region format'
+    # make sure the user didn't put multiple positional arguments
+    if not 1 <= len(split_roi) <= 3:
+        raise ValueError('Improper region format')
     
+    # convert start and stop to integers
     for i, arg in enumerate(split_roi[1:]):
         split_roi[i+1] = int(arg)
     
+    # make sure the user wants to continue if they have used an open-ended region
     if len(split_roi) <= 2:
         if not kwargs['until_eof']:
             warnings.warn('Fetching till end of contig. Potentially large region', RuntimeWarning )
@@ -124,11 +243,16 @@ def unpack(fmt, _io):
     Args:
         fmt (str): the string format of the binary data to be unpacked
         _io: built-in binary format reader (default: io.BufferedRandom)
+    
+    Returns:
+        unpacked contents from _io based on fmt string
     """
     size = struct.calcsize(fmt)
     try:
+        # if it is byte object
         out = struct.unpack(fmt, _io)
     except:
+        # if it is a file object
         out = struct.unpack(fmt, _io.read(size))
     if len(out) > 1:
         return out
@@ -187,11 +311,17 @@ class LruDict(OrderedDict):
     """Simple least recently used (LRU) based dictionary that caches a given
     number of items.
     """
+    
+    # Need to check for versioning to ensure move-to-end is available
+    import sys
+    _PY_VERSION = sys.version
+
+        
     def __init__(self, *args, **kwargs):
         """ Initialize the dictionary based on collections.OrderedDict
         
         Args:
-            *args : basic positional arguments for dictionary creationg
+            *args : basic positional arguments for dictionary creation
             max_cache (int): integer divisible by 2 to set max size of dictionary
             **kwargs: basic keyword arguments for dictionary creation
         """
@@ -199,7 +329,7 @@ class LruDict(OrderedDict):
             max_cache= kwargs.pop('max_cache', 128)
         except AttributeError:
             max_cache = 128
-        super(OrderedDict, self).__init__(*args, **kwargs)
+        OrderedDict.__init__(self, *args, **kwargs)
         self.max_cache = max_cache
         self.cull()
     
@@ -226,8 +356,14 @@ class LruDict(OrderedDict):
             key (str): immutable dictionary key
         """
         try:
-            value = super().__getitem__(key)
-            self.move_to_end(key)
+            value = OrderedDict.__getitem__(self, key)
+            
+            if float(_PY_VERSION[:3]) <= 3.2:
+                if not key == list(self.keys())[-1]:
+                    moving = self.pop(key)
+                    self[key] = moving
+            else:
+                self.move_to_end(key)
             return value
         except KeyError:
             pass
@@ -240,7 +376,7 @@ class LruDict(OrderedDict):
             key (str): immutable dictionary key
             value (any): any dictionary value
         """
-        super(OrderedDict, self).__setitem__(key, value)
+        OrderedDict.__setitem__(self, key, value)
         self.cull()
 
 
