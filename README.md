@@ -1,6 +1,6 @@
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/version.svg)](https://anaconda.org/conda-forge/bamnostic)
 [![PyPI version](https://badge.fury.io/py/bamnostic.svg)](https://badge.fury.io/py/bamnostic)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/betteridiot/bamnostic/blob/master/LICENSE)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/platforms.svg)](https://anaconda.org/conda-forge/bamnostic)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/downloads.svg)](https://anaconda.org/conda-forge/bamnostic)
 </br>
