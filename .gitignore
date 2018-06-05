@@ -1,0 +1,6 @@
+*.pyc
+dist/
+__pycache__/
+docs/
+dist/bamnostic-0.4.2b13.tar.gz
+bamnostic/.ipynb_checkpoints/
