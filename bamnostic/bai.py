@@ -351,8 +351,11 @@ class Bai(object):
                                         does not match indexed reference offset.
         '''
         if ref_id is not None and not idx:
-            ref_start, _, _ = self.ref_indices[ref_id]
-            self._io.seek(ref_start)
+            try:
+                ref_start, _, _ = self.ref_indices[ref_id]
+                self._io.seek(ref_start)
+            except KeyError:
+                raise KeyError('Reference is not found in header')
         ref_start = self._io.tell()
         
         if not idx:

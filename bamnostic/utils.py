@@ -2,7 +2,31 @@ from __future__ import print_function
 from __future__ import absolute_import
 from __future__ import division
 
-"""Module utilities and constants used throughout bamnostic"""
+"""Module utilities and constants used throughout bamnostic
+
+Some methods are modified versions of their conterparts
+within the BioPython.bgzf module.
+Copyright (c) 2010-2015 by Peter Cock.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+"""
 
 import struct
 from collections import OrderedDict, namedtuple
@@ -62,19 +86,6 @@ class Roi:
         
     def __str__(self):
         return 'Roi({}, {}, {})'.format(self.contig, self.start, self.stop)
-
-
-def ceildiv(a, b):
-    r"""Simple ceiling division to prevent importing math module
-    
-    Args:
-        a (:obj:`numbers.Integral`): numerator
-        b (:obj:`numbers.Integral`): denominator
-    
-    Returns:
-        ceiling quotient of a and b
-    """
-    return -(-a // b)
 
 
 def flag_decode(flag_code):
@@ -240,6 +251,11 @@ def unpack(fmt, _io):
     """Utility function for unpacking binary data from file object or byte
     stream.
     
+    The only difference between this method and `struct.unpack` is that
+    `unpack` dynamically determines the size needed to read in based on 
+    the format string. Additionally, it can process a file object or byte
+    stream and implement a read or slice (respectively).
+    
     Args:
         fmt (str): the string format of the binary data to be unpacked
         _io: built-in binary format reader (default: io.BufferedRandom)
@@ -275,14 +291,18 @@ def make_virtual_offset(block_start_offset, within_block_offset):
 
     >>> make_virtual_offset(0, 0)
     0
+    
     >>> make_virtual_offset(0, 1)
     1
+    
     >>> make_virtual_offset(0, 2**16 - 1)
     65535
+    
     >>> make_virtual_offset(0, 2**16)
     Traceback (most recent call last):
     ...
     ValueError: Require 0 <= within_block_offset < 2**16, got 65536
+    
     """
     if within_block_offset < 0 or within_block_offset >= 65536:
        raise ValueError("Require 0 <= within_block_offset < 2**16, got %i" %
@@ -298,6 +318,7 @@ def split_virtual_offset(virtual_offset):
 
     >>> (100000, 0) == split_virtual_offset(6553600000)
     True
+    
     >>> (100000, 10) == split_virtual_offset(6553600010)
     True
 
@@ -380,6 +401,10 @@ class LruDict(OrderedDict):
         self.cull()
 
 
+# The BAM format uses byte encoding to compress alignment data. One such
+# compression is how CIGAR operations are stored: they are stored and an
+# array of integers. These integers are mapped to their respective
+# operation identifier. Below is the mapping utility. 
 _CIGAR_OPS = {'M': ('BAM_CMATCH', 0), 'I': ('BAM_CINS', 1), 'D': ('BAM_CDEL', 2),
             'N': ('BAM_CREF_SKIP', 3), 'S': ('BAM_CSOFT_CLIP', 4),
             'H': ('BAM_CHARD_CLIP', 5), 'P': ('BAM_CPAD', 6), '=': ('BAM_CEQUAL', 7),
@@ -387,25 +412,30 @@ _CIGAR_OPS = {'M': ('BAM_CMATCH', 0), 'I': ('BAM_CINS', 1), 'D': ('BAM_CDEL', 2)
         
 
 def parse_cigar(cigar_str):
-    '''Parses a CIGAR string and turns it into a list of tuples
+    """Parses a CIGAR string and turns it into a list of tuples
     
     Args:
         cigar_str (str): the CIGAR string as shown in SAM entry
     
     Returns:
         cigar_array (list): list of tuples of CIGAR operations (by id) and number of operations
-    '''
+    
+    Raises:
+        ValueError: if CIGAR operation is invalid
+    """
     cigar_array = []
     for cigar_op in re.finditer(r'(?P<n_op>\d+)(?P<op>\w)', cigar_str):
         op_dict = cigar_op.groupdict()
         n_ops = int(op_dict['n_op'])
-        op = _CIGAR_OPS[op_dict['op']]
+        op = _CIGAR_OPS.get(op_dict['op'], -1)
+        if op == -1:
+            raise ValueError('CIGAR op ({}) is invalid.'.format(op_dict['op']))
         cigar_array.append((op,n_ops))
     return cigar_array
 
 
 def cigar_changes(seq, cigar):
-    '''Recreates the reference sequence to the extent that the CIGAR string can 
+    """Recreates the reference sequence to the extent that the CIGAR string can 
         represent.
     
     Args:
@@ -417,8 +447,19 @@ def cigar_changes(seq, cigar):
                                    sequence given the changes reflected in the cigar string
     
     Raises:
-        ValueError: if CIGAR string is invalid
-    '''
+        ValueError: if CIGAR operation is invalid
+    
+    Examples:
+        >>> cigar_changes('ACTAGAATGGCT', '3M1I3M1D5M')
+        'ACTGAATGGCT'
+        
+        >>> cigar_changes('ACTAGAATGGCT', '3V1I3M1D5M')
+        Traceback (most recent call last):
+            ...
+        ValueError: CIGAR op (V) is invalid.
+    
+    """
+    
     if type(cigar) == str:
         cigar = parse_cigar(cigar)
     elif type(cigar) == list:
@@ -428,22 +469,22 @@ def cigar_changes(seq, cigar):
     cigar_formatted_ref = ''
     last_cigar_pos = 0
     for op, n_ops in cigar:
-        if op in {0, 7, 8}: # matches (uses both sequence match & mismatch)
+        if op[1] in {0, 7, 8}: # matches (uses both sequence match & mismatch)
             cigar_formatted_ref += seq[last_cigar_pos:last_cigar_pos + n_ops]
             last_cigar_pos += n_ops
-        elif op in {1, 4}: # insertion or clips
+        elif op[1] in {1, 4}: # insertion or clips
             last_cigar_pos += n_ops
-        elif op == 3: # intron or large gaps
+        elif op[1] == 3: # intron or large gaps
             tmp_ref_seq += 'N' * n_ops
-        elif op == 5:
+        elif op[1] in {2, 5}:
             pass
         else:
-            raise ValueError('Invalid CIGAR string')
+            raise ValueError('Invalid CIGAR string: {}'.format(op))
     return cigar_formatted_ref
 
 
 def md_changes(seq, md_tag):
-    '''Recreates the reference sequence of a given alignment to the extent that the 
+    """Recreates the reference sequence of a given alignment to the extent that the 
     MD tag can represent. Used in conjunction with `cigar_changes` to recreate the 
     complete reference sequence
     
@@ -454,7 +495,9 @@ def md_changes(seq, md_tag):
     Returns:
         ref_seq (str): a version of the aligned segment's reference sequence given
                        the changes reflected in the MD tag
-    '''
+    
+    """
+    
     ref_seq = ''
     last_md_pos = 0
     for mo in re.finditer(r'(?P<matches>\d+)|(?P<del>\^\w+?)|(?P<sub>\w)', md_tag):

@@ -60,8 +60,9 @@ def format_warnings(message, category, filename, lineno, file=None, line=None):
     
     Returns:
         Formatted warning for logging purposes
+
     """
-    return ' {}:{}: {}:{}'.format(filename, lineno, category.__name__, message)
+    return ' {}:{}:{}: {}\n'.format(category.__name__, filename, lineno, message)
 
 warnings.formatwarning = format_warnings
 
@@ -344,6 +345,7 @@ class BAMheader(object):
         
         Returns:
             (bytesarray): packed byte code of entire header BGZF block 
+            
         """
         
         return self._header_block
@@ -354,6 +356,7 @@ class BAMheader(object):
         Note:
             Preferentially prints out the SAM header (if present). Otherwise, it will print
             the string representation of the BAM header dictionary
+            
         """
         return self._SAMheader_raw.decode().rstrip() if self._SAMheader_raw else self.refs
     
@@ -366,6 +369,7 @@ class BAMheader(object):
         Note:
             Preferentially prints out the SAM header (if present). Otherwise, it will print
             the string representation of the BAM header dictionary
+            
         """
         
         return self._SAMheader_raw.decode().rstrip() if self._SAMheader_raw else str(self.refs)
@@ -374,11 +378,22 @@ class BAMheader(object):
 class BgzfReader(object):
     """ The BAM reader. Heavily modified from Peter Cock's BgzfReader.
     
+    Attributes:
+        header: representation of header data (if present)
+        lengths (:py:obj:`list` of :py:obj:`int`): lengths of references listed in header
+        nocoordinate (int): number of reads that have no coordinates
+        nreferences (int): number of references in header
+        ref2tid (:py:obj:`dict` of :py:obj:`str`, :py:obj:`int`): refernce names and refID dictionary
+        references (:py:obj:`list` of :py:obj:`str`): names of references listed in header
+        text (str): SAM header (if present)
+        unmapped (int): number of unmapped reads
+            
     Note:
         This implementation is likely to change. While the API was meant to 
         mirror `pysam`, it makes sense to include the `pysam`-like API in an extension
         that will wrap the core reader. This would be a major refactor, and therefore 
         will not happen any time soon (30 May 2018).
+        
     """
     
     def __init__(self, filepath_or_object, mode="rb", max_cache=128, index_filename = None,
@@ -398,6 +413,8 @@ class BgzfReader(object):
             reference_filename (str): Not implemented. Maintained for backwards compatibility
             filepath_index (str): synonym for `index_filename`
             require_index (bool): require the presence of an index file or raise (default: False)
+            duplicate_filehandle (bool): Not implemented. Raises warning if True.
+            ignore_truncation (bool): Whether or not to allow trucated file processing (default: False).
         
         """
         
@@ -464,6 +481,13 @@ class BgzfReader(object):
             raise NotImplementedError('CRAM file support not yet implemented')
     
     def _load_block(self, start_offset=None):
+        """(PRIVATE) Used to load next BGZF block into the buffer, and orients the cursor position.
+        
+        Args:
+            start_offset (int): byte offset of BGZF block (default: None)
+        
+        """
+        
         if start_offset is None:
             # If the file is being read sequentially, then _handle.tell()
             # should be pointing at the start of the next block.
@@ -503,7 +527,7 @@ class BgzfReader(object):
         self._buffers[self._block_start_offset] = self._buffer, block_size
     
     def check_index(self, index_filename = None, req_idx = False):
-        """
+        """ Checks to make sure index file is available. If not, it disables random access.
         
         Args:
             index_filename (str): path to index file (BAI) if it does not fit naming convention (default: None).
@@ -517,16 +541,26 @@ class BgzfReader(object):
         
         Warns:
             UserWarning: If index could not be loaded. Random access is disabled.
+
+        Examples:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam)
+            >>> bam.check_index(bamnostic.example_bam + '.bai')
+            True
+            
+            >>> bam.check_index('not_a_file.bai')
+            False
+            
         """
         if index_filename is None:
-            if os.path.isfile('{}.bai'.format(self._handle.name)):
-                self._index_path = '{}.bai'.format(self._handle.name)
+            possible_index_path = r'./{}.bai'.format(os.path.relpath(self._handle.name))
+            if os.path.isfile(possible_index_path):
+                self._index_path = possible_index_path
                 self._random_access = True
                 return True
             else:
                 if req_idx:
                     raise IOError('htsfile is closed or index could not be opened')
-                warnings.warn('Supplied index file not found. Random access disabled', UserWarning)
+                warnings.warn("No supplied index file and '{}' was not found. Random access disabled".format(possible_index_path), UserWarning)
                 self._random_access = False
                 return False
         else:
@@ -537,7 +571,7 @@ class BgzfReader(object):
             else:
                 if req_idx:
                     raise IOError('htsfile is closed or index could not be opened')
-                warnings.warn('Supplied index file not found. Random access disabled', UserWarning)
+                warnings.warn("Index file '{}' was not found. Random access disabled".format(index_filename), UserWarning)
                 self._random_access = False
                 return False
     
@@ -553,9 +587,19 @@ class BgzfReader(object):
     def _check_sq(self):
         """ Inspect BAM file for @SQ entries within the header
         
+        The implementation of this check is for BAM files specifically. I inspects
+        the SAM header (if present) for the `@SQ` entires. However, if the SAM header
+        is not present, will inspect the BAM header for reference sequence entries. If this 
+        test ever returns `FALSE`, the BAM file is not operational.
+        
         Returns:
             (bool): True if present, else false
         
+        Example:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
+            >>> bam._check_sq()
+            True
+           
         """
         
         if self._header._header_length == 0:
@@ -622,8 +666,8 @@ class BgzfReader(object):
             bool: True if present and opened, else False
         """
         
-        if self._check_index and self._index:
-            return self._check_index
+        if self._check_idx and self._index:
+            return self._check_idx
     
     def tell(self):
         """Return a 64-bit unsigned BGZF virtual offset."""
@@ -631,7 +675,37 @@ class BgzfReader(object):
         return make_virtual_offset(self._block_start_offset, self._within_block_offset)
     
     def seek(self, virtual_offset):
-        """Seek to a 64-bit unsigned BGZF virtual offset."""
+        """Seek to a 64-bit unsigned BGZF virtual offset.
+        
+        A virtual offset is a composite number made up of the compressed
+        offset (`coffset`) position of the start position of the BGZF block that
+        the position originates within, and the uncompressed offset (`uoffset`) 
+        within the deflated BGZF block where the position starts. The virtual offset
+        is defined as
+        
+        `virtual_offset = coffset << 16 | uoffset`
+        
+        Args:
+            virtual_offset (int): 64-bit unsigned composite byte offset
+        
+        Returns:
+            virtual_offset (int): an echo of the new position
+        
+        Raises:
+            ValueError: if within block offset is more than block size
+            AssertionError: if the start position is not the block start position
+        
+        Example:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
+            >>> bam.seek(10)
+            10
+            
+            >>> bam.seek(bamnostic.utils.make_virtual_offset(0, 42))
+            Traceback (most recent call last):
+                ...
+            ValueError: Within offset 42 but block size only 38
+        
+        """
         
         # Do this inline to avoid a function call,
         # start_offset, within_block = split_virtual_offset(virtual_offset)
@@ -650,7 +724,19 @@ class BgzfReader(object):
         return virtual_offset
     
     def read(self, size=-1):
-        """Read method for the BGZF module."""
+        """Read method for the BGZF module.
+        
+        Args:
+            size (int): the number of bytes to read from file. Advances the cursor.
+            
+        Returns:
+            data (:py:obj:`bytes`): byte string of length `size`
+
+        Raises:
+            NotImplementedError: if the user tries to read the whole file
+            AssertionError: if read does not return any data
+        
+        """
         
         if size < 0:
             raise NotImplementedError("Don't be greedy, that could be massive!")
@@ -688,32 +774,38 @@ class BgzfReader(object):
                 return data
     
     def readline(self):
-        """Read a single line for the BGZF file."""
+        """Read a single line for the BGZF file.
         
-        i = self._buffer.find(self._newline, self._within_block_offset)
-        # Three cases to consider,
-        if i == -1:
-            # No newline, need to read in more data
-            data = self._buffer[self._within_block_offset:]
-            self._load_block()  # will reset offsets
-            if not self._buffer:
-                return data  # EOF
-            else:
-                # TODO - Avoid recursion
-                return data + self.readline()
-        elif i + 1 == len(self._buffer):
-            # Found new line, but right at end of block (SPECIAL)
-            data = self._buffer[self._within_block_offset:]
-            # Must now load the next block to ensure tell() works
-            self._load_block()  # will reset offsets
-            assert data
-            return data
-        else:
-            # Found new line, not at end of block (easy case, no IO)
-            data = self._buffer[self._within_block_offset:i + 1]
-            self._within_block_offset = i + 1
-            # assert data.endswith(self._newline)
-            return data
+        Binary operations do not support `readline()`. Code is commented
+        out for posterity sake
+        
+        """
+        raise NotImplementedError("Readline does not work on byte data")
+        
+        # i = self._buffer.find(self._newline, self._within_block_offset)
+        # # Three cases to consider,
+        # if i == -1:
+            # # No newline, need to read in more data
+            # data = self._buffer[self._within_block_offset:]
+            # self._load_block()  # will reset offsets
+            # if not self._buffer:
+                # return data  # EOF
+            # else:
+                # # TODO - Avoid recursion
+                # return data + self.readline()
+        # elif i + 1 == len(self._buffer):
+            # # Found new line, but right at end of block (SPECIAL)
+            # data = self._buffer[self._within_block_offset:]
+            # # Must now load the next block to ensure tell() works
+            # self._load_block()  # will reset offsets
+            # assert data
+            # return data
+        # else:
+            # # Found new line, not at end of block (easy case, no IO)
+            # data = self._buffer[self._within_block_offset:i + 1]
+            # self._within_block_offset = i + 1
+            # # assert data.endswith(self._newline)
+            # return data
     
     def fetch(self, contig = None, start = None, stop = None, region = None,
             tid = None, until_eof = False, multiple_iterators = False,
@@ -738,6 +830,7 @@ class BgzfReader(object):
         
         Raises:
             ValueError: if the genomic coordinates are out of range or invalid
+            KeyError: Reference is not found in header
         
         Notes:
             SAM region formatted strings take on the following form:
@@ -749,10 +842,30 @@ class BgzfReader(object):
                 AlignmentFile.fetch('chr1:1-1000')
                 AlignmentFile.fetch('chr1', 1)
                 AlignmentFile.fetch('chr1')
+        
+        Examples:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
+            >>> next(bam.fetch('chr1', 1, 10)) # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+            EAS56_57:6:190:289:82 ... MF:C:192
+            
+            >>> next(bam.fetch('chr10', 1, 10))
+            Traceback (most recent call last):
+                ...
+            KeyError: 'chr10 was not found in the file header'
+            
+            >>> next(bam.fetch('chr1', 1700, 1701))
+            Traceback (most recent call last):
+                ...
+            ValueError: Genomic region out of bounds.
+            
+            >>> next(bam.fetch('chr1', 100, 10))
+            Traceback (most recent call last):
+                ...
+            AssertionError: Malformed region: start should be <= stop, you entered 100, 10
         """
         
         if not self._random_access:
-            raise ValueError('Random access not available due to lack of index file file')
+            raise ValueError('Random access not available due to lack of index file')
         if multiple_iterators:
             raise NotImplementedError('multiple_iterators not yet implemented')
         
@@ -790,11 +903,17 @@ class BgzfReader(object):
             else:
                 query = region_parser((contig, start, stop))
         
-        if query.stop is None:
-            # set end to length of chromosome
-            stop = self._header.refs[tid][1]
-        else:
-            stop = query.stop
+        try:
+            if query.start > self._header.refs[tid][1]:
+                raise ValueError('Genomic region out of bounds.')
+            if query.stop is None:
+                # set end to length of chromosome
+                stop = self._header.refs[tid][1]
+            else:
+                stop = query.stop
+            assert query.start <= stop, 'Malformed region: start should be <= stop, you entered {}, {}'.format(query.start, stop)
+        except KeyError:
+            raise KeyError('{} was not found in the file header'.format(query.contig))
             
         # from the index, get the virtual offset of the chunk that
         # begins the overlapping region of interest
@@ -827,7 +946,8 @@ class BgzfReader(object):
             return 
     
     def count(self, contig=None, start=None, stop=None, region=None, 
-            until_eof=False, read_callback='nofilter', reference=None, end=None):
+              until_eof=False, tid = None, read_callback='nofilter',
+              reference=None, end=None):
         r"""Count the number of reads in the given region
         
         Note: this counts the number of reads that **overlap** the given region.
@@ -860,59 +980,55 @@ class BgzfReader(object):
             (int): count of reads in the given region that meet parameters
         
         Raises:
-            ValueError: if genomic coordinates are out of range or invalid
+            ValueError: if genomic coordinates are out of range or invalid or random access is disabled
             RuntimeError: if `read_callback` is not properly set
+            KeyError: Reference is not found in header
+            AssertionError: if genomic region is malformed
         
         Notes:
             SAM region formatted strings take on the following form:
             'chr1:100000-200000'
         
         Usage: 
-                AlignmentFile.fetch(contig='chr1', start=1, stop= 1000)
-                AlignmentFile.fetch('chr1', 1, 1000)
-                AlignmentFile.fetch('chr1:1-1000')
-                AlignmentFile.fetch('chr1', 1)
-                AlignmentFile.fetch('chr1')
+                AlignmentFile.count(contig='chr1', start=1, stop= 1000)
+                AlignmentFile.count('chr1', 1, 1000)
+                AlignmentFile.count('chr1:1-1000')
+                AlignmentFile.count('chr1', 1)
+                AlignmentFile.count('chr1')
+        
+        Example:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
+            >>> bam.count('chr1', 1, 100)
+            3
+            
+            >>> bam.count('chr1', 1, 100, read_callback='all')
+            2
+            
+            >>> bam.count('chr10', 1, 10)
+            Traceback (most recent call last):
+                ...
+            KeyError: 'chr10 was not found in the file header'
+            
+            >>> bam.count('chr1', 1700, 1701)
+            Traceback (most recent call last):
+                ...
+            ValueError: Genomic region out of bounds.
+            
+            >>> bam.count('chr1', 100, 10)
+            Traceback (most recent call last):
+                ...
+            AssertionError: Malformed region: start should be <= stop, you entered 100, 10
+            
         """
-        
-        if not self._random_access:
-            raise ValueError('Random access not available due to lack of index file file')
-        if multiple_iterators:
-            raise NotImplementedError('multiple_iterators not yet implemented')
-        
-        # Handle the region parsing
-        if region:
-            query = region_parser(region)
-        else:
-            if (contig and reference) and (contig != reference):
-                raise ValueError('either contig or reference must be set, not both')
-            
-            elif reference and not contig:
-                contig = reference
-                
-            elif tid is not None and not contig:
-                contig = self.get_reference_name(tid)
-            
-            if contig and tid is None:
-                tid = self.get_tid(contig)
-            else:
-                if self.ref2tid[contig] != tid:
-                    raise ValueError('tid and contig name do not match')
-            
-            if end and not stop:
-                stop = end
-            else:
-                if (stop and end) and (stop != end):
-                    raise ValueError('either stop or end must be set, not both')
-            
-            if contig and not start:
-                query = region_parser(contig, until_eof=until_eof)
-            elif contig and not stop:
-                query = region_parser((contig, start), until_eof=until_eof)
-            else:
-                query = region_parser((contig, start, stop))
-        
-        roi_reads = self.fetch(query)
+        # pass the signature to fetch
+        signature = locals()
+        signature.pop('read_callback')
+        signature.pop('self')
+        roi_reads = self.fetch(**signature)
+        # make `nofilter` the default filter unless told otherwise
+        #read_callback = kwargs.get('read_callback', 'nofilter')
+    
+        # go through all the reads over a given region and count them
         count = 0
         for read in roi_reads:
             if read_callback == 'nofilter':
@@ -920,7 +1036,7 @@ class BgzfReader(object):
                 
             # check the read flags against filter criteria
             elif read_callback == 'all':
-                if not read & 0x704: # hex for filter criteria flag bits
+                if not read.flag & 0x704: # hex for filter criteria flag bits
                     count += 1
             elif callable(read_callback):
                 if read_callback(read):
@@ -930,7 +1046,35 @@ class BgzfReader(object):
         return count
     
     def get_index_stats(self):
-        assert self._check_index, 'No index available'
+        """ Inspects the index file (BAI) for alignment statistics.
+        
+        Every BAM index file contains metrics regarding the alignment
+        process for the given BAM file. The stored data are the number
+        of mapped and unmapped reads for a given reference. Unmapped reads
+        are paired end reads where only one part is mapped. Additionally,
+        index files also contain the number of unplaced unmapped reads. This
+        is stored within the `nocoordinate` instance attribute (if present).
+        
+        Returns:
+            idx_stats (:py:obj:`list` of :py:obj:`tuple`): list of tuples for each reference in the order seen in the header. Each tuple contains the number of mapped reads, unmapped reads, and the sum of both.
+        
+        Raises:
+            AssertionError: if the index file is not available
+        
+        Example:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
+            >>> bam.get_index_stats()
+            [(1446, 18, 1464), (1789, 17, 1806)]
+            
+            >>> bam_no_bai = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb', index_filename='not_a_file.bai')
+            >>> bam_no_bai.get_index_stats()
+            Traceback (most recent call last):
+                ...
+            AssertionError: No index available
+            
+        """
+        
+        assert self._check_idx, 'No index available'
         idx_stats = []
         for ref in range(self._header.n_refs):
             try:
@@ -942,16 +1086,118 @@ class BgzfReader(object):
         return idx_stats
     
     def is_valid_tid(self, tid):
+        """ Return `True` if TID/RefID is valid.
+        
+        Returns:
+            `True` if TID/refID is valid, else `False`
+        
+        Example:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
+            >>> bam.is_valid_tid(0)
+            True
+            
+            >>> bam.is_valid_tid(10) # because there are only 2 in this file
+            False
+        """
         return tid in self._header.refs
     
     def get_reference_name(self, tid):
+        """ Convert TID/refID to reference name.
+        
+        The TID/refID is the position a reference sequence is seen
+        within the header file of the BAM file. The references are
+        sorted by ASCII order. Therefore, for a **Homo sapien** aligned
+        to GRCh38, 'chr10' comes before 'chr1' in the header. Therefore,
+        'chr10' would have the TID/refID of 0, not 'chr1'.
+        
+        Args:
+            tid (int): TID/refID of desired reference/contig
+        
+        Returns:
+            String representation of chromosome if valid, else None
+        
+        Raises:
+            KeyError: if TID/refID is not valid
+        
+        Examples:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
+            >>> bam.get_reference_name(0)
+            'chr1'
+            
+            >>> bam.get_reference_name(10)
+            Traceback (most recent call last):
+                ...
+            KeyError: '10 is not a valid TID/refID for this file.'
+        
+        """
         if self.is_valid_tid(tid):
             return self._header.refs[tid][0]
+        else:
+            raise KeyError('{} is not a valid TID/refID for this file.'.format(tid))
     
     def get_tid(self, reference):
-        return self.ref2tid.get(reference, -1)
+        """ Convert reference/contig name to refID/TID.
+        
+        The TID/refID is the position a reference sequence is seen
+        within the header file of the BAM file. The references are
+        sorted by ASCII order. Therefore, for a **Homo sapien** aligned
+        to GRCh38, 'chr10' comes before 'chr1' in the header. Therefore,
+        'chr10' would have the TID/refID of 0, not 'chr1'.
+        
+        Args:
+            reference (str): reference/contig name
+        
+        Returns:
+            (int): the TID/refID of desired reference/contig
+        
+        Raises:
+            KeyError: if reference name not found file header
+        
+        Example:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
+            >>> bam.get_tid('chr1')
+            0
+            
+            >>> bam.get_tid('chr10')
+            Traceback (most recent call last):
+                ...
+            KeyError: 'chr10 was not found in the file header'
+        
+        """
+        
+        tid = self.ref2tid.get(reference, -1)
+        if tid == -1:
+            raise KeyError('{} was not found in the file header'.format(reference))
+        return tid
     
     def head(self, n = 5, multiple_iterators = False):
+        """ List out the first **n** reads of the file.
+        
+        This method is primarily used when doing an initial exploration
+        of the data. Whether or not `multiple_iterators` is used, cursor
+        position within the file will not change.
+        
+        Note:
+            Using `multiple_interators` opens a new file object of the 
+            same file currently in use and, thus, impacts the memory
+            footprint of your analysis.
+        
+        Args:
+            n (int): number of aligned reads to print (default: 5)
+            mutliple_iterators (bool): Whether to use current file object or create a new one (default: False).
+        
+        Returns:
+            head_reads (:py:obj:`list` of :py:obj:`AlignedSegment`): list of **n** reads from the front of the BAM file
+        
+        Example:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
+            >>> bam.head(n=5)[0] # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+            EAS56_57:6:190:289:82	...	MF:C:192
+            
+            >>> bam.head(n = 5, multiple_iterators = True)[1] # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+            EAS56_57:6:190:289:82	...	H1:C:0
+        
+        """
         if multiple_iterators:
             head_iter = bamnostic.AlignmentFile(self._handle.name, index_filename = self._index_path)
         else:
@@ -960,20 +1206,20 @@ class BgzfReader(object):
             self._handle.seek(self._header._BAMheader_end)
             self._load_block(self._handle.tell())
             head_iter = self
-            for read in range(n):
-                read = next(head_iter)
-                print(read)
-            else:
-                if multiple_iterators:
-                    # close the independent file object
-                    head_iter.close()
-                else:
-                    # otherwise, just go back to old position
-                    self.seek(curr_pos)
-                    assert self.tell() == curr_pos
+        
+        head_reads = [next(head_iter) for read in range(n)]
+
+        if multiple_iterators:
+            # close the independent file object
+            head_iter.close()
+        else:
+            # otherwise, just go back to old position
+            self.seek(curr_pos)
+            assert self.tell() == curr_pos
+        return head_reads
     
     def __next__(self):
-        """Return the next line."""
+        """Return the next line (Py2 Compatibility)."""
         
         read = bamnostic.AlignedSegment(self)
         if not read:
@@ -1002,9 +1248,15 @@ class BgzfReader(object):
         self._buffers = None
 
     def seekable(self):
-        """Return True indicating the BGZF supports random access."""
+        """Return True indicating the BGZF supports random access.
         
-        return True
+        Note:
+            Modified from original Bio.BgzfReader: checks to see if BAM
+            file has associated index file (BAI)
+        
+        """
+        
+        return self._check_idx
 
     def isatty(self):
         """Return True if connected to a TTY device."""
