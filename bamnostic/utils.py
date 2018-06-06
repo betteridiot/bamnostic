@@ -3,9 +3,15 @@ from __future__ import absolute_import
 from __future__ import division
 
 """Module utilities and constants used throughout bamnostic
+Copyright (c) 2018, Marcus D. Sherman
+
+This code is part of the bamnostic distribution and governed by its
+license.  Please see the LICENSE file that should have been included
+as part of this package.
 
 Some methods are modified versions of their conterparts
-within the BioPython.bgzf module.
+within the BioPython.bgzf module. Below is the Copyright and licensing 
+for those parts.
 Copyright (c) 2010-2015 by Peter Cock.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,6 +31,10 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+@author: "Marcus D. Sherman"
+@copyright: "Copyright 2018, University of Michigan, Mills Lab
+@email: "mdsherman<at>betteridiot<dot>tech"
 
 """
 
@@ -254,7 +264,8 @@ def unpack(fmt, _io):
     The only difference between this method and `struct.unpack` is that
     `unpack` dynamically determines the size needed to read in based on 
     the format string. Additionally, it can process a file object or byte
-    stream and implement a read or slice (respectively).
+    stream and implement a read or slice (respectively). Mainly, this is a
+    quality of life function.
     
     Args:
         fmt (str): the string format of the binary data to be unpacked
@@ -305,10 +316,10 @@ def make_virtual_offset(block_start_offset, within_block_offset):
     
     """
     if within_block_offset < 0 or within_block_offset >= 65536:
-       raise ValueError("Require 0 <= within_block_offset < 2**16, got %i" %
+        raise ValueError("Require 0 <= within_block_offset < 2**16, got %i" %
                         within_block_offset)
     if block_start_offset < 0 or block_start_offset >= 281474976710656:
-       raise ValueError("Require 0 <= block_start_offset < 2**48, got %i" %
+        raise ValueError("Require 0 <= block_start_offset < 2**48, got %i" %
                         block_start_offset)
     return (block_start_offset << 16) | within_block_offset
 
@@ -405,10 +416,16 @@ class LruDict(OrderedDict):
 # compression is how CIGAR operations are stored: they are stored and an
 # array of integers. These integers are mapped to their respective
 # operation identifier. Below is the mapping utility. 
-_CIGAR_OPS = {'M': ('BAM_CMATCH', 0), 'I': ('BAM_CINS', 1), 'D': ('BAM_CDEL', 2),
-            'N': ('BAM_CREF_SKIP', 3), 'S': ('BAM_CSOFT_CLIP', 4),
-            'H': ('BAM_CHARD_CLIP', 5), 'P': ('BAM_CPAD', 6), '=': ('BAM_CEQUAL', 7),
-            'X': ('BAM_CDIFF', 8), 'B': ('BAM_CBACK', 9)}
+_CIGAR_OPS = {'M': ('BAM_CMATCH', 0), 
+              'I': ('BAM_CINS', 1), 
+              'D': ('BAM_CDEL', 2),
+              'N': ('BAM_CREF_SKIP', 3), 
+              'S': ('BAM_CSOFT_CLIP', 4),
+              'H': ('BAM_CHARD_CLIP', 5), 
+              'P': ('BAM_CPAD', 6), 
+              '=': ('BAM_CEQUAL', 7),
+              'X': ('BAM_CDIFF', 8), 
+              'B': ('BAM_CBACK', 9)}
         
 
 def parse_cigar(cigar_str):
@@ -422,6 +439,11 @@ def parse_cigar(cigar_str):
     
     Raises:
         ValueError: if CIGAR operation is invalid
+    
+    Examples:
+        >>> parse_cigar('3M1I3M1D5M') # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+        [(('BAM_CMATCH', 0), 3), ..., (('BAM_CMATCH', 0), 5)]
+        
     """
     cigar_array = []
     for cigar_op in re.finditer(r'(?P<n_op>\d+)(?P<op>\w)', cigar_str):
@@ -429,7 +451,7 @@ def parse_cigar(cigar_str):
         n_ops = int(op_dict['n_op'])
         op = _CIGAR_OPS.get(op_dict['op'], -1)
         if op == -1:
-            raise ValueError('CIGAR op ({}) is invalid.'.format(op_dict['op']))
+            raise ValueError('Invalid CIGAR operation ({}).'.format(op_dict['op']))
         cigar_array.append((op,n_ops))
     return cigar_array
 
@@ -456,7 +478,7 @@ def cigar_changes(seq, cigar):
         >>> cigar_changes('ACTAGAATGGCT', '3V1I3M1D5M')
         Traceback (most recent call last):
             ...
-        ValueError: CIGAR op (V) is invalid.
+        ValueError: Invalid CIGAR operation (V).
     
     """
     
@@ -485,8 +507,11 @@ def cigar_changes(seq, cigar):
 
 def md_changes(seq, md_tag):
     """Recreates the reference sequence of a given alignment to the extent that the 
-    MD tag can represent. Used in conjunction with `cigar_changes` to recreate the 
-    complete reference sequence
+    MD tag can represent. 
+    
+    Note:
+        Used in conjunction with `cigar_changes` to recreate the 
+        complete reference sequence
     
     Args:
         seq (str): aligned segment sequence
@@ -496,11 +521,15 @@ def md_changes(seq, md_tag):
         ref_seq (str): a version of the aligned segment's reference sequence given
                        the changes reflected in the MD tag
     
+    Example:
+        >>> md_changes('CTTATATTGGCCTT', '3C4AT4')
+        'CTTCTATTATCCTT'
+    
     """
     
     ref_seq = ''
     last_md_pos = 0
-    for mo in re.finditer(r'(?P<matches>\d+)|(?P<del>\^\w+?)|(?P<sub>\w)', md_tag):
+    for mo in re.finditer(r'(?P<matches>\d+)|(?P<del>\^\w+?(?=\d))|(?P<sub>\w)', md_tag):
         mo_group_dict = mo.groupdict()
         if mo_group_dict['matches'] is not None:
             matches = int(mo_group_dict['matches'])
@@ -516,3 +545,48 @@ def md_changes(seq, md_tag):
         else:
             pass
     return ref_seq
+
+def ref_gen(seq, cigar_string, md_tag):
+    """Recreates the reference sequence associated with the given segment.
+
+    Uses the CIGAR string and MD tag to recreate the reference sequence associated
+    with the aligned segment. This is done without the need for looking up 
+    the reference genome.
+
+    Returns:
+        (str): generated reference sequence
+
+    Raises:
+        KeyError: if read does not contain MD tag
+    
+    Examples:
+        # Only mismatches
+        >>> seq = 'CGATACGGGGACATCCGGCCTGCTCCTTCTCACATG'
+        >>> cigar = '36M'
+        >>> md = '1A0C0C0C1T0C0T27'
+        >>> ref_gen(seq, cigar, md)
+        'CACCCCTCTGACATCCGGCCTGCTCCTTCTCACATG'
+        
+        # Insertions and mismatches
+        >>> seq = 'GAGACGGGGTGACATCCGGCCTGCTCCTTCTCACAT'
+        >>> cigar = '6M1I29M'
+        >>> md = '0C1C0C1C0T0C27'
+        >>> ref_gen(seq, cigar, md)
+        'CACCCCTCTGACATCCGGCCTGCTCCTTCTCACAT'
+        
+        # Deletion and mismatches
+        >>> seq = 'AGTGATGGGGGGGTTCCAGGTGGAGACGAGGACTCC'
+        >>> cigar = '9M9D27M'
+        >>> md = '2G0A5^ATGATGTCA27'
+        >>> ref_gen(seq, cigar, md)
+        'AGGAATGGGATGATGTCAGGGGTTCCAGGTGGAGACGAGGACTCC'
+        
+        # Insertion, deletion, and mismatches
+        >>> seq = 'AGTGATGGGAGGATGTCTCGTCTGTGAGTTACAGCA'
+        >>> cigar = '2M1I7M6D26M'
+        >>> md = '3C3T1^GCTCAG26'
+        >>> ref_gen(seq, cigar, md)
+        'AGGCTGGTAGCTCAGGGATGTCTCGTCTGTGAGTTACAGCA'
+        
+    """
+    return md_changes(cigar_changes(seq, cigar_string, md_tag)

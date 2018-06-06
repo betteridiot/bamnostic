@@ -3,6 +3,15 @@ from __future__ import absolute_import
 from __future__ import division
 
 """Modified version of BioPython.bgzf module. Includes LRU buffer dictionary.
+Copyright (c) 2018, Marcus D. Sherman
+
+This code is part of the bamnostic distribution and governed by its
+license.  Please see the LICENSE file that should have been included
+as part of this package.
+
+Some methods are modified versions of their conterparts
+within the BioPython.bgzf module. Below is the Copyright and licensing 
+for those parts.
 Copyright (c) 2010-2015 by Peter Cock.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,6 +39,10 @@ BAM files directly, decompressing and unpacking the byte-encoded data structure
 outlined in the BAM_ format. 
 
 .. _BAM: https://samtools.github.io/hts-specs/SAMv1.pdf
+
+@author: "Marcus D. Sherman"
+@copyright: "Copyright 2018, University of Michigan, Mills Lab
+@email: "mdsherman<at>betteridiot<dot>tech"
 
 """
 
