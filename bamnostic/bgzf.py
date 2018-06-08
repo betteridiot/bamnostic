@@ -52,6 +52,7 @@ import struct
 import io
 import os
 import warnings
+import array
 
 import bamnostic
 from bamnostic.utils import *
@@ -882,55 +883,68 @@ class BgzfReader(object):
         if multiple_iterators:
             raise NotImplementedError('multiple_iterators not yet implemented')
         
-        # Handle the region parsing
-        if type(contig) is Roi:
-            query = contig
-        elif region:
-            query = region_parser(region)
-        else:
-            if (contig and reference) and (contig != reference):
-                raise ValueError('either contig or reference must be set, not both')
-            
-            elif reference and not contig:
-                contig = reference
-                
-            elif tid is not None and not contig:
-                contig = self.get_reference_name(tid)
-            
-            if contig and tid is None:
-                tid = self.get_tid(contig)
-            else:
-                if self.ref2tid[contig] != tid:
-                    raise ValueError('tid and contig name do not match')
-            
-            if end and not stop:
-                stop = end
-            else:
-                if (stop and end) and (stop != end):
-                    raise ValueError('either stop or end must be set, not both')
-            
-            if contig and not start:
-                query = region_parser(contig)
-            elif contig and not stop:
-                query = region_parser((contig, start))
-            else:
-                query = region_parser((contig, start, stop))
+        signature = locals()
+        for key in ['self', 'multiple_iterators']:
+            signature.pop(key)
         
+        query = parse_region(**signature)
+        
+        if query.tid is not None and query.contig is None:
+            query.contig = self.get_reference_name(tid)
+        elif query.tid is not None and query.contig is not None:
+            if self.ref2tid[query.contig] != tid:
+                raise ValueError('tid and contig name do not match')
+        elif query.contig is not None and query.tid is None:
+            query.tid = self.ref2tid[query.contig]
+        
+        # Handle the region parsing
+        # if type(contig) is Roi:
+            # query = contig
+        # elif region:
+            # query = region_parser(region)
+        # else:
+            # if (contig and reference) and (contig != reference):
+                # raise ValueError('either contig or reference must be set, not both')
+            
+            # elif reference and not contig:
+                # contig = reference
+                
+            # elif tid is not None and not contig:
+                # contig = self.get_reference_name(tid)
+            
+            # if contig and tid is None:
+                # tid = self.get_tid(contig)
+            # else:
+                # if self.ref2tid[contig] != tid:
+                    # raise ValueError('tid and contig name do not match')
+            
+            # if end and not stop:
+                # stop = end
+            # else:
+                # if (stop and end) and (stop != end):
+                    # raise ValueError('either stop or end must be set, not both')
+            
+            
+            
+            # if contig and not start:
+                # query = region_parser(contig)
+            # elif contig and not stop:
+                # query = region_parser((contig, start))
+            # else:
+                # query = region_parser((contig, start, stop))
         try:
-            if query.start > self._header.refs[tid][1]:
+            if query.start > self._header.refs[query.tid][1]:
                 raise ValueError('Genomic region out of bounds.')
             if query.stop is None:
                 # set end to length of chromosome
-                stop = self._header.refs[tid][1]
-            else:
-                stop = query.stop
-            assert query.start <= stop, 'Malformed region: start should be <= stop, you entered {}, {}'.format(query.start, stop)
+                query.stop = self._header.refs[query.tid][1]
+            assert query.start <= query.stop, 'Malformed region: start should be <= stop, you entered {}, {}'.format(query.start, query.stop)
         except KeyError:
             raise KeyError('{} was not found in the file header'.format(query.contig))
             
         # from the index, get the virtual offset of the chunk that
         # begins the overlapping region of interest
-        first_read_block = self._index.query(tid, start, stop)
+        first_read_block = self._index.query(query.tid, query.start, query.stop)
         if first_read_block is None:
             return
         # move to that virtual offset...should load the block into the cache
@@ -941,9 +955,9 @@ class BgzfReader(object):
             next_read = next(self)
             if not until_eof:
                 # check to see if the read is out of bounds of the region
-                if next_read.reference_name != contig:
+                if next_read.reference_name != query.contig:
                     boundary_check = False
-                if start < stop < next_read.pos:
+                if query.start < query.stop < next_read.pos:
                     boundary_check = False
                 # check for stop iteration
                 if next_read:
@@ -956,7 +970,7 @@ class BgzfReader(object):
                 except:
                     return
         else:
-            return 
+            return
     
     def count(self, contig=None, start=None, stop=None, region=None, 
               until_eof=False, tid = None, read_callback='nofilter',
@@ -1044,19 +1058,108 @@ class BgzfReader(object):
         # go through all the reads over a given region and count them
         count = 0
         for read in roi_reads:
-            if read_callback == 'nofilter':
+            if filter_read(read, read_callback):
                 count += 1
-                
-            # check the read flags against filter criteria
-            elif read_callback == 'all':
-                if not read.flag & 0x704: # hex for filter criteria flag bits
-                    count += 1
-            elif callable(read_callback):
-                if read_callback(read):
-                    count += 1
-            else:
-                raise RuntimeError('read_callback should be "all", "nofilter", or a custom function that returns a boolean')
         return count
+    
+    def count_coverage(self, contig = None, start= None, stop = None, region = None,
+                   quality_threshold = 15, read_callback = 'all', 
+                   reference = None, end = None, base_quality_threshold = 0):
+        """ Counts the coverage of each base supported by a read the given interval.
+        
+        Given an interval (inclusive, inclusive), this method pulls each read that overlaps
+        with the region. To ensure that the read truly overlaps with the region, the CIGAR string
+        is required. These reads can further be filtered out by their flags, MAPQ qualities, or 
+        custom filtering function. Using the CIGAR string, the aligned portion of the read 
+        is traversed and the presence of each nucleotide base is tallied into respective arrays. 
+        Additionally, the user can choose to filter the counted bases based on its base quality
+        score that is stored in the quality string.
+        
+        Args:
+            contig (str): the reference name (Default: None)
+            reference (str): synonym for `contig` (Default: None)
+            start (int): 0-based inclusive start position (Default: None)
+            stop (int): 0-based exclusive start position (Default: None)
+            end (int): Synonymn for `stop` (Default: None)
+            region (str): SAM-style region format. 
+                        Example: 'chr1:10000-50000' (Default: None)
+            quality_threshold (int): MAPQ quality threshold (Default: 15)
+            base_quality_threshold (int): base quality score threshold (Default: 0)
+            read_callback (str|function): select (or create) a filter of which
+                          reads to count. Built-in filters:
+                                `all`: skips reads that contain the following flags:
+                                    0x4 (4): read unmapped
+                                    0x100 (256): not primary alignment
+                                    0x200 (512): QC Fail
+                                    0x400 (1024): PCR or optical duplcate
+                                `nofilter`: uses all reads (Default)
+                            The user can also supply a custom function that
+                            returns boolean objects for each read
+        Returns:
+            (:py:obj:`array.array`): Four arrays in the order of **A**, **C**, **G**, **T**
+        
+        Raises:
+            ValueError: if genomic coordinates are out of range or invalid, random access is disabled, or nucleotide base is unrecognized
+            RuntimeError: if `read_callback` is not properly set
+            KeyError: Reference is not found in header
+            AssertionError: if genomic region is malformed
+        
+        Notes:
+            SAM region formatted strings take on the following form:
+            'chr1:100-200'
+        
+        Usage: 
+                AlignmentFile.count_coverage(contig='chr1', start=1, stop= 1000)
+                AlignmentFile.count_coverage('chr1', 1, 1000)
+                AlignmentFile.count_coverage('chr1:1-1000')
+                AlignmentFile.count_coverage('chr1', 1)
+                AlignmentFile.count_coverage('chr1')
+        
+        Examples:
+            >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
+            >>> bam.count_coverage('chr1', 100, 150) # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+            (array('L', [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),
+            array('L', [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),
+            array('L', [1, 1, 2, 2, ..., 0, 14, 0, 14, 14]),
+            array('L', [0, 0, 0, 0, ..., 15, 0, 14, 0, 0]))
+            
+            >>> bam.count_coverage('chr1', 100, 150, quality_threshold=20, base_quality_threshold=25) # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+            (array('L', [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),
+            array('L', [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),
+            array('L', [1, 1, 2, 2, ..., 0, 14, 0, 13, 11]),
+            array('L', [0, 0, 0, 0,..., 14, 0, 13, 0, 0]))
+        
+        """
+        
+        signature = locals()
+        for key in ['self', 'quality_threshold', 'read_callback', 'base_quality_threshold']:
+            signature.pop(key)
+
+        adenine = array.array('L', [0] * (stop - start + 1))
+        cytosine = adenine[:]
+        guanine = adenine[:]
+        thymine = adenine[:]
+
+        for read in self.fetch(**signature):
+            if read.cigarstring is not None and read.mapq >= quality_threshold:
+                if filter_read(read, read_callback):
+                    for base, index in cigar_alignment(seq = read.seq, cigar = read.cigarstring,
+                                                       start_pos = read.pos, qualities = read.query_qualities, 
+                                                       base_qual_thresh = base_quality_threshold):
+                        if start <= index <= stop:
+                            if base == 'A':
+                                adenine[index-start] += 1
+                            elif base == 'G':
+                                guanine[index-start] += 1
+                            elif base == 'C':
+                                guanine[index-start] += 1
+                            elif base == 'T':
+                                thymine[index-start] += 1
+                            else:
+                                raise ValueError('Read base was {}, not A, T, C, or G'.format(base))
+        
+        return adenine, cytosine, guanine, thymine
+    
     
     def get_index_stats(self):
         """ Inspects the index file (BAI) for alignment statistics.

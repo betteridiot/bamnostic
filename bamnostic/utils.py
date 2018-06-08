@@ -77,25 +77,47 @@ unpack_int32L = struct.Struct('<l').unpack
 
 
 # Helper class for performant named indexing of region of interests
-class Roi:
+class Roi(object):
     r"""Small __slots__ class for region of interest parsing"""
-    __slots__ = ['contig', 'start', 'stop']
+    __slots__ = ['__contig', 'start', 'stop', '__tid']
     
-    def __init__(self, contig, start, stop):
+    def __init__(self, contig = None, start = None, stop = None, tid = None):
         r""" Initialize the class
         
         Args:
             contig (str): string representation of chromosome/contig of interest
             start (int): starting base position of region of interest
             stop (int): ending base position of region of interest
+            tid (int): position of reference within the BAM header
         """
-        self.contig, self.start, self.stop = contig, start, stop
+        self.__contig, self.start, self.stop, self.__tid = contig, start, stop, tid
+    
+    @property
+    def contig(self):
+        return self.__contig
+    
+    @contig.setter
+    def contig(self, ref_name):
+        self.__contig = ref_name
+    
+    @property
+    def tid(self):
+        return self.__tid
+    
+    @tid.setter
+    def tid(self, value):
+        self.__tid = value
     
     def __repr__(self):
-        return 'Roi({}, {}, {})'.format(self.contig, self.start, self.stop)
+        if self.tid is not None and not self.contig:
+            return 'Roi(tid: {}, start: {}, stop: {})'.format(self.tid, self.start, self.stop)
+        elif self.contig and self.tid is None:
+            return 'Roi(contig: {}, start: {}, stop: {})'.format(self.contig, self.start, self.stop)
+        else:
+            return 'Roi(tid: {}, contig: {}, start: {}, stop: {})'.format(self.tid, self.contig, self.start, self.stop)
         
     def __str__(self):
-        return 'Roi({}, {}, {})'.format(self.contig, self.start, self.stop)
+        return self.__repr__()
 
 
 def flag_decode(flag_code):
@@ -174,87 +196,168 @@ def yes_no():
             print('Please answer "Yes" or "No"')
 
 
-def region_parser(ROI, *args, **kwargs):
-    r"""Parses genomic regions provided by the user.
+def filter_read(read, read_callback = 'all'):
     
-    This function accepts SAM formatted regions (e.g. `'chr1:1-100'`), tab-separated
-    region strings (e.g. `'chr1\t1\100'`), and positional arguments such that the 
-    first argument is the string of the desired chromosome/contig. Any following 
-    arguments must be integers. Lastly, if the user requires either the whole
-    chromosome/contig or everything after a start position, the user should invoke
-    `until_eof = True` beforehand.
+    # Accept all reads
+    if read_callback == 'nofilter': return True
+    
+    # check the read flags against filter criteria
+    elif read_callback == 'all':
+        return not read.flag & 0x704 # hex for filter criteria flag bits
+    
+    # custom filter
+    elif callable(read_callback):
+        return read_callback(read)
+    else:
+        raise RuntimeError('read_callback should be "all", "nofilter", or a custom function that returns a boolean')            
+            
+            
+def _parse_sam_region(region):
+    """ Splits and casts SAM-formatted regions"""
+    sam_region =  ':'.join(region.split()).replace('-',':').split(':')
+
+    # convert start and stop to integers
+    for i, arg in enumerate(sam_region[1:]):
+        sam_region[i+1] = int(arg)
+    return sam_region
+
+
+def _handle_split_region(split_roi, until_eof = False):
+    """ Checks format against `until_eof` and creates the Roi object
     
     Args:
-        ROI: either a SAM formatted region, tab-delimited region string, or iterable sequence object
-        *args: variable length positional arguments containing integers for start and stop positions
-        **kwags: Only implemented `kwarg` is `until_eof`
+        split_roi (:py:obj:`list` or :py::obj:`tuple`): the contig, start, and stop information.
+        until_eof (bool): whether or not to allow access to end of reference or file (whichever is first)
     
     Returns:
-        :obj:`Roi` formatted object or None
+        (:py:object:`bamnostic.utils.Roi`): region of interest formatted as an object with named attributes.
     
     Raises:
-        ValueError if the region submission is malformed or invalid
+        ValueError: if `until_eof` is not set and region is open-ended or improper region format.
     
-    Examples:
-    
-        >>> region_parser(['chr1', 1, 100])
-        Roi(chr1, 1, 100)
-        
-        >>> region_parser('chr1:1-100')
-        Roi(chr1, 1, 100)
-        
     """
-    
-    # check to see if the user supplied positional arguments
-    if len(args) > 0:
-        ROI = [ROI] + list(args)
-    
-    # see if user supplied a SAM formatted region string
-    elif isinstance(ROI, str):
-        split_roi = ':'.join(ROI.split()).replace('-',':').split(':')
-    
-    # if the user supplied an :obj:`abc.Sequence` (tuple or list), convert it to a list
-    elif isinstance(ROI, Sequence):
-        split_roi = list(ROI)
-    else:
-        raise ValueError('Malformed region query')
-    
-    # if the user gives an integer description of chromosome, convert to string
-    if type(split_roi[0]) is int:
-        split_roi[0] = str(split_roi[0])
-    elif isinstance(split_roi[0], str):
-        split_roi[0] = split_roi[0].lower()
+    split_roi = list(split_roi)
+    # make sure the user didn't put multiple positional arguments
+    if 1 <= len(split_roi) <= 3:
+
+        # if the user gives an integer description of chromosome, convert to string
+        if isinstance(split_roi[0], (str, int)):
+            split_roi[0] = str(split_roi[0]).lower()
+
+        if None in split_roi[1:]:
+            # make sure the user wants to continue if they have used an open-ended region
+            if not until_eof:
+                raise ValueError('Open-ended region while `until_eof` is set to False')
+        return Roi(*split_roi)
     else:
         raise ValueError('improper region format')
+            
+            
+def parse_region(contig = None, start = None, stop = None, region = None,
+            tid = None, reference = None, end = None, until_eof = False):
+    """ Parses region information from all user set parameters.
     
-    # make sure the user didn't put multiple positional arguments
-    if not 1 <= len(split_roi) <= 3:
-        raise ValueError('Improper region format')
+    The main goal of this function is to handle the many different ways a user
+    can put in genomic region data. One way is through keyword arguments. This
+    is the most straight forward. However, due to Pysam's API, there are multiple
+    synonyms for reference/contig or stop/end. Additionally, if the user knows
+    the refID/TID of the reference they are interested in, they can input that way
+    as well.
     
-    # convert start and stop to integers
-    for i, arg in enumerate(split_roi[1:]):
-        split_roi[i+1] = int(arg)
+    The second form a submission can take is through positional arguments. Just like
+    keyword, but ordered such that it makes up a genomic region of interest.
     
-    # make sure the user wants to continue if they have used an open-ended region
-    if len(split_roi) <= 2:
-        if not kwargs['until_eof']:
-            warnings.warn('Fetching till end of contig. Potentially large region', RuntimeWarning )
-            if yes_no():
-                if len(split_roi) == 2:
-                    return Roi(split_roi[0], int(split_roi[1]))
-                else:
-                    return Roi(split_roi[0])
-            else:
-                raise ValueError('User declined action')
+    Note:
+        Positional arguments make utilizing the `tid` parameter difficult since it is
+        the 5th argument of the function signature.
+        
+    The third form a submission can take is through using a SAM-formatted string. An
+    example SAM-formatted string looks like 'chr1:10-100'. As many users also copy &
+    paste directly from tab-delimited files, such as BED files, a SAM-formatted string
+    can take the form of 'chr1\t10\t100' where '\t' indicates a tab space.
+    
+    Lastly, the `until_eof` switch allows users to take all items from their desired
+    start position (be it the whole reference or a specific spot on the reference). Setting
+    this to `True` (default: `False`) will pull all reads to the end of the reference or file,
+    whichever is first.
+    
+    Args:
+        contig (str): name of reference/contig
+        start (int): start position of region of interest (0-based)
+        stop (int): stop position of region of interest (0-based)
+        region (str): SAM region formatted string. Accepts tab-delimited values as well
+        tid (int): the refID or target id of a reference/contig
+        until_eof (bool): iterate until end of file (default: False)
+    
+    Returns:
+        query (:py:object:`bamnostic.utils.Roi`): region of interest formatted as an object with named attributes.
+    
+    Raises:
+        ValueError if two synonym keywords are set, but contradict each other
+    
+    Examples:
+        # Keyword-based
+        >>> parse_region(contig = 'chr1', start = 10, stop = 100)
+        Roi(contig: chr1, start: 10, stop: 100)
+        
+        # Using `tid` instead of `contig`
+        >>> parse_region(tid = 0, start = 10, stop = 100)
+        Roi(tid: 0, start: 10, stop: 100)
+    
+        # Positional arguments
+        >>> parse_region('chr1', 10, 100)
+        Roi(contig: chr1, start: 10, stop: 100)
+        
+        # SAM-formatted string (keyword)
+        >>> parse_region(region = 'chr1:10-100')
+        Roi(contig: chr1, start: 10, stop: 100)
+        
+        # SAM-formatted string (positional)
+        >>> parse_region('chr1:10-100')
+        Roi(contig: chr1, start: 10, stop: 100)
+        
+        # Tab-delimited region string
+        >>> parse_region('chr1\t10\t100')
+        Roi(contig: chr1, start: 10, stop: 100)
+        
+        # Contradictory synonyms
+        >>> parse_region(reference='chr1', contig='chr10', start=10, stop = 100)
+        Traceback (most recent call last):
+            ...
+        ValueError: either contig or reference must be set, not both
+    """
+    
+    # Check synonyms for the reference sequence
+    if contig and reference:
+        if contig != reference:
+            raise ValueError('either contig or reference must be set, not both')
         else:
-            if len(split_roi) == 2:
-                return Roi(split_roi[0], int(split_roi[1]))
-            else:
-                return Roi(split_roi[0])
-    elif len(split_roi) == 3:
-        return Roi(split_roi[0], int(split_roi[1]), int(split_roi[2]))
+            contig = contig
+    elif contig or reference:
+        contig = contig if contig else reference
+    
+    # make sure the same thing isn't computed twice
+    if type(contig) is Roi: # class defined in bamnostic.utils
+        query = contig
+    
+    # check for SAM-formatted regions or bed file format
+    elif region or contig is not None and ':' in contig or '\t' in contig:
+        roi = region if region else contig
+        query = _handle_split_region(_parse_sam_region(roi), until_eof = until_eof)
     else:
-        return None
+        if tid and not contig:
+            contig = None
+            
+        if (stop and end) and (stop != end):
+            raise ValueError('either stop or end must be set, not both')
+        else:
+             stop = stop if stop else end
+                
+        query = _handle_split_region((contig, start, stop), until_eof = until_eof)
+    
+    query.tid = tid
+    
+    return query
 
 
 def unpack(fmt, _io):
@@ -454,7 +557,7 @@ def parse_cigar(cigar_str):
             raise ValueError('Invalid CIGAR operation ({}).'.format(op_dict['op']))
         cigar_array.append((op,n_ops))
     return cigar_array
-
+    
 
 def cigar_changes(seq, cigar):
     """Recreates the reference sequence to the extent that the CIGAR string can 
@@ -491,14 +594,15 @@ def cigar_changes(seq, cigar):
     cigar_formatted_ref = ''
     last_cigar_pos = 0
     for op, n_ops in cigar:
-        if op[1] in {0, 7, 8}: # matches (uses both sequence match & mismatch)
+        op_id = op[1]
+        if op_id in {0, 7, 8}: # matches (uses both sequence match & mismatch)
             cigar_formatted_ref += seq[last_cigar_pos:last_cigar_pos + n_ops]
             last_cigar_pos += n_ops
-        elif op[1] in {1, 4}: # insertion or clips
+        elif op_id in {1, 4}: # insertion or clips
             last_cigar_pos += n_ops
-        elif op[1] == 3: # intron or large gaps
-            tmp_ref_seq += 'N' * n_ops
-        elif op[1] in {2, 5}:
+        elif op_id == 3: # intron or large gaps
+            cigar_formatted_ref += 'N' * n_ops
+        elif op_id in {2, 5}:
             pass
         else:
             raise ValueError('Invalid CIGAR string: {}'.format(op))
@@ -551,7 +655,10 @@ def ref_gen(seq, cigar_string, md_tag):
 
     Uses the CIGAR string and MD tag to recreate the reference sequence associated
     with the aligned segment. This is done without the need for looking up 
-    the reference genome.
+    the reference genome. Example reads, MD tags, and CIGAR strings taken from 
+    `David Tang's Blog`_.
+    
+    .. _David Tang's Blog: https://davetang.org/muse/2011/01/28/perl-and-sam/
 
     Returns:
         (str): generated reference sequence
@@ -589,4 +696,59 @@ def ref_gen(seq, cigar_string, md_tag):
         'AGGCTGGTAGCTCAGGGATGTCTCGTCTGTGAGTTACAGCA'
         
     """
-    return md_changes(cigar_changes(seq, cigar_string, md_tag)
+    return md_changes(cigar_changes(seq, cigar_string, md_tag))
+
+
+def cigar_alignment(seq = None, cigar = None, start_pos = None, qualities = None, base_qual_thresh = 0):
+    """Use the CIGAR to filter out all unaligned data bases
+    
+    Any clipping results in the removal of those bases. If an insertion is seen in
+    the CIGAR, those bases are removed from the sequence. If a deletion is seen in
+    the CIGAR, those bases are padded with a period ('.') symbol.
+    
+    Args:
+        seq (str): string sequence of the aligned segment.
+        cigar (str): the cigar string or `cigartuple` of the aligned segment.
+        start_pos (int): the first aligned position of the read
+        qualities (:py:obj:`array.array`): base quality array from read
+    
+    Yields:
+        (:py:obj:`tuple` of :py:obj:`str` and :py:obj:`int`): nucleotide base and index position of that base relative to reference
+    
+    Example:
+        >>> seq = 'AGTGATGGGAGGATGTCTCGTCTGTGAGTTACAGCA'
+        >>> cigar = '2M1I7M6D26M'
+        >>> start_position = 95
+        >>> c_a = cigar_alignment(seq, cigar, start_position)
+        >>> next(c_a)
+        ('A', 95)
+        
+    """
+    
+    if type(cigar) == str:
+        cigar = parse_cigar(cigar)
+    elif type(cigar) == list:
+        pass
+    else:
+        raise ValueError('CIGAR must be string or list of tuples of cigar operations (by ID) and number of operations')
+    cigar_aligned = ''
+    algn_seg = {}
+    last_cigar_pos = 0
+    for op, n_ops in cigar:
+        op_id = op[1]
+        if op_id == 5: # BAM_CHARD_CLIP: skip hard clip CIGAR ops
+            pass
+        elif op_id in {1,4}: # BAM_CINS or BAM_CSOFT_CLIP: remove from sequence
+            last_cigar_pos += n_ops
+        elif op_id == 3: # BAM_CREF_SKIP: intron or large gaps
+            start_pos += n_ops
+        elif op_id == 2: # BAM_CDEL: pad for deletions
+            start_pos += n_ops
+        elif op_id in {0, 7, 8}: # matches (uses both sequence match & mismatch)
+            for base in range(len(seq[last_cigar_pos:last_cigar_pos + n_ops])):
+                if qualities[base] >= base_qual_thresh:
+                    yield seq[base], start_pos
+                start_pos += 1
+            last_cigar_pos += n_ops
+        else:
+            raise ValueError('Invalid CIGAR string: {}'.format(op))

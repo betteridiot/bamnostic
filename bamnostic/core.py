@@ -102,7 +102,31 @@ unpack_array = struct.Struct('<si').unpack
 
 class AlignmentFile(bgzf.BgzfReader, bgzf.BgzfWriter):
     """API wrapper to allow drop in replacement for BAM functionality in pysam"""
-    def __init__(self, filepath_or_object, mode = 'rb', **kwargs):
+
+    def __init__(self, filepath_or_object, mode="rb", max_cache=128, index_filename = None,
+                filename = None, check_header = False, check_sq = True, reference_filename = None,
+                filepath_index = None, require_index = False, duplicate_filehandle = None,
+                ignore_truncation = False):
+        """Initialize the class.
+        
+        Args:
+            filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file
+            mode (str): Mode for reading. BAM files are binary by nature (default: 'rb').
+            max_cache (int): number of desired LRU cache size, preferably a multiple of 2 (default: 128).
+            index_filename (str): path to index file (BAI) if it is named differently than the BAM file (default: None).
+            filename (str | :py:obj:`file`): synonym for `filepath_or_object`
+            check_header (bool): Obsolete method maintained for backwards compatibility (default: False)
+            check_sq (bool): Inspect BAM file for `@SQ` entries within the header
+            reference_filename (str): Not implemented. Maintained for backwards compatibility
+            filepath_index (str): synonym for `index_filename`
+            require_index (bool): require the presence of an index file or raise (default: False)
+            duplicate_filehandle (bool): Not implemented. Raises warning if True.
+            ignore_truncation (bool): Whether or not to allow trucated file processing (default: False).
+        """
+        
+        kwargs = locals()
+        kwargs.pop('self')
+        
         assert 'b' in mode.lower()
         if 'w' in mode.lower() or 'a' in mode.lower():
             if 'w' in mode.lower():
@@ -111,9 +135,9 @@ class AlignmentFile(bgzf.BgzfReader, bgzf.BgzfWriter):
                     print('Continuing will delete existing data')
                     if not yes_no():
                         raise FileExistsError('User declined overwrite')
-            bgzf.BgzfWriter.__init__(self, filepath_or_object, mode, **kwargs)
+            bgzf.BgzfWriter.__init__(self, **kwargs)
         else:
-            bgzf.BgzfReader.__init__(self, filepath_or_object, mode, **kwargs)
+            bgzf.BgzfReader.__init__(self, **kwargs)
 
 
 class AlignedSegment(object):
@@ -217,6 +241,7 @@ class AlignedSegment(object):
             self.cigarstring = "".join(['{}{}'.format(c[0], c[1]) for c in decoded_cigar])
             self._cigartuples = [Cigar(bamnostic.utils._CIGAR_OPS[op[1]][1], op[0], op[1], bamnostic.utils._CIGAR_OPS[op[1]][0]) for op in decoded_cigar]
             self.cigartuples = [(op[0], op[1]) for op in self._cigartuples]
+            self.cigar = self.cigartuples[:]
         else:
             self.cigar = None
             self.cigarstring = None
