@@ -594,10 +594,38 @@ class BgzfReader(object):
         
         if self._check_idx:
             self._index = bamnostic.bai.Bai(self._index_path)
-            self.nocoordinate = self._index.n_no_coor
-            self.unmapped = sum(self._index.unmapped[unmapped].n_unmapped \
-                                for unmapped in self._index.unmapped) + self.nocoordinate
-            
+            self.__nocoordinate = self._index.n_no_coor
+            self.__mapped = sum(self._index.unmapped[mapped].n_mapped for mapped in self._index.unmapped) + self.nocoordinate
+            self.__unmapped = sum(self._index.unmapped[unmapped].n_unmapped for unmapped in self._index.unmapped) + self.nocoordinate
+    
+    @property
+    def nocoordinate(self):
+        """Get the number of reads without coordiantes according to the statistics recorded in the index.
+        
+        Returns:
+            (int): sum of reads without coordinates
+        """
+        return self.__nocoordinate
+    
+    @property
+    def mapped(self):
+        """Get the number of mapped reads according  to the statistics recorded in the index.
+        
+        Returns:
+            (int): sum of mapped reads
+        """
+        return self.__mapped
+    
+    @property
+    def unmapped(self):
+        """Get the number of unmapped reads without coordiantes **and** 
+        without coordinate. 
+        
+        Returns:
+            (int): sum of unmapped reads and reads without coordinates
+        """
+        return self.__unmapped + self.nocoordinate
+    
     def _check_sq(self):
         """ Inspect BAM file for @SQ entries within the header
         
@@ -639,16 +667,46 @@ class BgzfReader(object):
         self.text = self._header._SAMheader_raw
         
         # make compatible with pysam attributes, even though the data exists elsewhere
-        self.references = []
-        self.lengths = []
+        self.__references = []
+        self.__lengths = []
         for n in range(self._header.n_refs):
-            self.references.append(self._header.refs[n][0])
-            self.lengths.append(self._header.refs[n][1])
-        self.nreferences = self._header.n_refs
+            self.__references.append(self._header.refs[n][0])
+            self.__lengths.append(self._header.refs[n][1])
+        self.__nreferences = self._header.n_refs
         
         if check_sq:
             if not self._check_sq():
                 raise KeyError('No SQ entries in header')
+    
+    @property
+    def references(self):
+        """ Get all references used in alignment.
+        
+        Returns:
+            (:py:obj:`tuple` of :py:obj:`str`): reference names
+            
+        """
+        return tuple(self.__references)
+    
+    @property
+    def nreferences(self):
+        """ Get the number of references listed in alignment
+        
+        Returns:
+            (int): count of references
+        
+        """
+        return self.__nreferences
+    
+    @property
+    def lengths(self):
+        """ Get all reference lengths used in alignment.
+        
+        Returns:
+            (:py:obj:`tuple` of :py:obj:`int`): reference lengths
+            
+        """
+        return tuple(self.__lengths)
     
     def _check_truncation(self):
         """ Confusing function to check for file truncation.
@@ -672,6 +730,10 @@ class BgzfReader(object):
         else:
             warnings.BytesWarning('No EOF character found. File may be truncated')
             return True
+    
+    def pileup(self):
+        raise NotImplementedError('Pileup is not implemented. Consider using `fetch` instead')
+    
     
     def has_index(self):
         """Checks if file has index and it is open
@@ -897,41 +959,6 @@ class BgzfReader(object):
         elif query.contig is not None and query.tid is None:
             query.tid = self.ref2tid[query.contig]
         
-        # Handle the region parsing
-        # if type(contig) is Roi:
-            # query = contig
-        # elif region:
-            # query = region_parser(region)
-        # else:
-            # if (contig and reference) and (contig != reference):
-                # raise ValueError('either contig or reference must be set, not both')
-            
-            # elif reference and not contig:
-                # contig = reference
-                
-            # elif tid is not None and not contig:
-                # contig = self.get_reference_name(tid)
-            
-            # if contig and tid is None:
-                # tid = self.get_tid(contig)
-            # else:
-                # if self.ref2tid[contig] != tid:
-                    # raise ValueError('tid and contig name do not match')
-            
-            # if end and not stop:
-                # stop = end
-            # else:
-                # if (stop and end) and (stop != end):
-                    # raise ValueError('either stop or end must be set, not both')
-            
-            
-            
-            # if contig and not start:
-                # query = region_parser(contig)
-            # elif contig and not stop:
-                # query = region_parser((contig, start))
-            # else:
-                # query = region_parser((contig, start, stop))
         try:
             if query.start > self._header.refs[query.tid][1]:
                 raise ValueError('Genomic region out of bounds.')
@@ -1201,6 +1228,7 @@ class BgzfReader(object):
                 idx_stats.append((0, 0, 0))
         return idx_stats
     
+    
     def is_valid_tid(self, tid):
         """ Return `True` if TID/RefID is valid.
         
@@ -1215,7 +1243,7 @@ class BgzfReader(object):
             >>> bam.is_valid_tid(10) # because there are only 2 in this file
             False
         """
-        return tid in self._header.refs
+        return True if tid in self._header.refs else False
     
     def get_reference_name(self, tid):
         """ Convert TID/refID to reference name.

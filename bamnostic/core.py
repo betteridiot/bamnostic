@@ -421,6 +421,115 @@ class AlignedSegment(object):
                 val = val.decode(encoding='latin_1')
             return {tag: (val_type, val)}
     
+    @property
+    def next_reference_id(self):
+        """Return the reference id of mate read"""
+        if self.next_refID < 0:
+            raise ValueError('No data available for mate or mate does not exist')
+        else:
+            return self.next_refID
+        
+    @property
+    def next_reference_name(self):
+        """Return the reference name of mate read"""
+        if self.next_refID < 0:
+            raise ValueError('No data available for mate or mate does not exist')
+        else:
+            return self._io.get_reference_name(self.next_refID)
+        
+    @property
+    def next_reference_start(self):
+        """Return the reference name of mate read"""
+        if self.next_refID < 0:
+            raise ValueError('No data available for mate or mate does not exist')
+        else:
+            return self.next_pos
+    
+    @property
+    def is_duplicate(self):
+        """If the read is set as PCR or optical duplicate according to read flag"""
+        return True if self.flag & 0x400 else False
+    
+    @property
+    def is_paired(self):
+        """If the read is set as paired according to read flag"""
+        return True if self.flag & 0x1 else False
+    
+    @property
+    def is_proper_pair(self):
+        """If each segment properly aligned according to the aligner"""
+        if self.flag & 0x2:
+            assert self.flag & 0x1, 'If 0x2 is set, then read must also have 0x1 set'
+            return True
+        else:
+            return False
+    
+    @property
+    def is_qcfail(self):
+        """If the read is set as QC fail according to read flag"""
+        return True if self.flag & 0x200 else False
+    
+    @property
+    def is_read1(self):
+        """If the read is set as the first read of mate pair according to read flag (implies the read is mated)"""
+        if self.flag & 0x40:
+            assert self.flag & 0x1, 'If 0x40 is set, then read must also have 0x1 set'
+            return True
+        else:
+            return False
+    
+    @property
+    def is_read2(self):
+        """If the read is set as the second read of mate pair according to read flag (implies the read is mated)"""
+        if self.flag & 0x80:
+            assert self.flag & 0x1, 'If 0x40 is set, then read must also have 0x1 set'
+            return True
+        else:
+            return False
+    
+    @property
+    def is_reverse(self):
+        """If the read is set as reversed according to read flag"""
+        return True if self.flag & 0x10 else False
+    
+    @property
+    def is_secondary(self):
+        """If the read is set as secondary alignment according to read flag"""
+        return True if self.flag & 0x100 else False
+    
+    @property
+    def is_supplementary(self):
+        """If the read is set as a supplementary alignment according to read flag"""
+        return True if self.flag & 0x800 else False
+    
+    @property
+    def is_unmapped(self):
+        """If the read is set as unmapped according to read flag"""
+        return True if self.flag & 0x4 else False
+
+    @property
+    def mate_is_reverse(self):
+        """Check the read flag to see if the mat is reverse strand (implies the read is mated)"""
+        if self.flag & 0x20:
+            assert self.flag & 0x1, 'If 0x20 is set, then read must also have 0x1 set'
+            return True
+        else:
+            return False
+    
+    @property
+    def mate_is_unmapped(self):
+        """Check the read flag to see if mate is unmapped (implies the read is mated)"""
+        if self.flag & 0x8:
+            assert self.flag & 0x1, 'If 0x8 is set, then read must also have 0x1 set'
+            return True
+        else:
+            return False
+    
+    @property
+    def mapping_quality(self):
+        """The mapping quality (MAPQ) of the read"""
+        return self.mapq
+        
     def get_tag(self, tag, with_value_type=False):
         """Gets the value associated with a given tag key.
         
