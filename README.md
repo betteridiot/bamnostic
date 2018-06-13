@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/betteridiot/bamnostic/blob/master/LICENSE)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/platforms.svg)](https://anaconda.org/conda-forge/bamnostic)
 [![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/downloads.svg)](https://anaconda.org/conda-forge/bamnostic)
+[![Documentation Status](https://readthedocs.org/projects/bamnostic/badge/?version=latest)](https://bamnostic.readthedocs.io/en/latest/?badge=latest)
 </br>
 
 # BAMnostic 
