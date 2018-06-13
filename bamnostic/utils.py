@@ -341,7 +341,7 @@ def parse_region(contig = None, start = None, stop = None, region = None,
         query = contig
     
     # check for SAM-formatted regions or bed file format
-    elif region or contig is not None and ':' in contig or '\t' in contig:
+    elif region or (contig is not None and (':' in contig or '\t' in contig)):
         roi = region if region else contig
         query = _handle_split_region(_parse_sam_region(roi), until_eof = until_eof)
     else:
@@ -699,7 +699,7 @@ def ref_gen(seq, cigar_string, md_tag):
     return md_changes(cigar_changes(seq, cigar_string, md_tag))
 
 
-def cigar_alignment(seq = None, cigar = None, start_pos = None, qualities = None, base_qual_thresh = 0):
+def cigar_alignment(seq = None, cigar = None, start_pos = None, qualities = None, base_qual_thresh = 0, query=False):
     """Use the CIGAR to filter out all unaligned data bases
     
     Any clipping results in the removal of those bases. If an insertion is seen in
@@ -724,7 +724,6 @@ def cigar_alignment(seq = None, cigar = None, start_pos = None, qualities = None
         ('A', 95)
         
     """
-    
     if type(cigar) == str:
         cigar = parse_cigar(cigar)
     elif type(cigar) == list:
@@ -735,10 +734,17 @@ def cigar_alignment(seq = None, cigar = None, start_pos = None, qualities = None
     algn_seg = {}
     last_cigar_pos = 0
     for op, n_ops in cigar:
-        op_id = op[1]
+        op_id = op if type(op) is int else op[1]
         if op_id == 5: # BAM_CHARD_CLIP: skip hard clip CIGAR ops
             pass
         elif op_id in {1,4}: # BAM_CINS or BAM_CSOFT_CLIP: remove from sequence
+            if query and op_id == 1:
+                 for base in range(len(seq[last_cigar_pos:last_cigar_pos + n_ops])):
+                    if qualities is not None:
+                        if qualities[base] >= base_qual_thresh:
+                            yield seq[base], start_pos
+                    else:
+                        yield seq[base], start_pos
             last_cigar_pos += n_ops
         elif op_id == 3: # BAM_CREF_SKIP: intron or large gaps
             start_pos += n_ops
@@ -746,7 +752,10 @@ def cigar_alignment(seq = None, cigar = None, start_pos = None, qualities = None
             start_pos += n_ops
         elif op_id in {0, 7, 8}: # matches (uses both sequence match & mismatch)
             for base in range(len(seq[last_cigar_pos:last_cigar_pos + n_ops])):
-                if qualities[base] >= base_qual_thresh:
+                if qualities is not None:
+                    if qualities[base] >= base_qual_thresh:
+                        yield seq[base], start_pos
+                else:
                     yield seq[base], start_pos
                 start_pos += 1
             last_cigar_pos += n_ops

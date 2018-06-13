@@ -180,6 +180,16 @@ class AlignedSegment(object):
         # Iteratively pull out the tags for the given aligned segment
         self._tag_builder()
         
+        # Compute the data regarding the sequence that aligns to reference 
+        # This excludes insertions and clipping
+        self._reference_attrs()
+        
+        # Compute the data regarding the sequence that aligns
+        # This excludes clipping, but includes insertions
+        self._query_alignment_attrs()
+        
+
+        
     def _unpack_data(self):
         """ Unpack the data for the associated read from the BAM file
         
@@ -218,7 +228,9 @@ class AlignedSegment(object):
         self.read_name = unpack('<{}s'.format(self._l_read_name), self._range_popper(self._l_read_name)).decode()[:-1]
         
         self.tid = self.reference_id = self.refID
-        self.reference_name, self.reference_length = self._io._header.refs[self.refID]
+        self.reference_name = self._io._header.refs[self.refID][0]
+    
+   
         
     def _cigar_builder(self):
         """Uses unpacked values to properly process the CIGAR related data
@@ -421,6 +433,132 @@ class AlignedSegment(object):
                 val = val.decode(encoding='latin_1')
             return {tag: (val_type, val)}
     
+    def _reference_attrs(self):
+        """Sets and computes the attributes regarding reference alignment
+        
+        Reference alignment here means the alignment of the read according to
+        the reference, and therefore excludes insertions and clipping.
+        """
+        count = 0
+        if self.cigarstring is not None:
+            cigar_align = cigar_alignment(self.seq, self.cigar, self.pos, self.query_qualities)
+            first_ref = next(cigar_align)
+            for base, index in cigar_align:
+                count +=1
+            self.__reference_start = self.pos
+            self.__reference_end = index + 1
+            self.__reference_length = self.__reference_end - self.__reference_start
+        else:
+            self.__reference_start = self.pos
+            self.__reference_end = None
+            self.__reference_length = None
+    
+    def _query_alignment_attrs(self):
+        """Sets and computes the attributes regarding query alignment
+        
+        Query alignment here means the alignable portion of the read,
+        and therefore excludes clipping, but includes insertions
+        """
+        count = 0
+        if self.cigarstring is not None:
+            cigar_align = cigar_alignment(self.seq, self.cigar, self.pos, self.query_qualities, query=True)
+            self.__qa_seq = ""
+            first_ref = next(cigar_align)
+            self.__qa_seq += first_ref[0]
+            for base, index in cigar_align:
+                self.__qa_seq += base
+                count +=1
+            self.__qa_end = index + 1
+            self.__qa_start = first_ref[1]
+        else:
+            self.__qa_seq = None
+            self.__qa_end = None
+            self.__qa_start = self.pos
+    
+    @property
+    def query_alignment_end(self):
+        """One past the final index position of the aligned portion of the read
+        
+        `query_alignment_*` all refer to the portion of the read that was aligned,
+        and therefore exclude clipping, but include insertions.
+        """
+        return self.self.__qa_end
+    
+    @property
+    def query_alignment_start(self):
+        """The starting index of the aligned portion of the read
+        
+        `query_alignment_*` all refer to the portion of the read that was aligned,
+        and therefore exclude clipping, but include insertions.
+        """
+        return self.__qa_start
+    
+    @property
+    def query_alignment_sequence(self):
+        """The sequence of the aligned portion of the read
+        
+        `query_alignment_*` all refer to the portion of the read that was aligned,
+        and therefore exclude clipping, but include insertions.
+        """
+        return self.__qa_seq
+    
+    @property
+    def query_alignment_length(self):
+        """The length of the aligned portion of the read
+        
+        `query_alignment_*` all refer to the portion of the read that was aligned,
+        and therefore exclude clipping, but include insertions.
+        """
+        return len(self.query_alignment_sequence) if self.cigar is not None else None
+    
+    @property
+    def reference_start(self):
+        """The starting index of the aligned portion of the read
+        
+        `reference_` here means the portion of the read that was aligned
+        according to the reference. Therefore, does not include insertions
+        and clipping
+        """
+        return self.__reference_start
+    
+    @property
+    def reference_end(self):
+        """One past the final index position of the aligned portion of the read
+        
+        `reference_` here means the portion of the read that was aligned
+        according to the reference. Therefore, does not include insertions
+        and clipping
+        """
+        return self.__reference_end
+    
+    @property
+    def reference_length(self):
+        """The length of the aligned portion of the read
+        
+        `reference_` here means the portion of the read that was aligned
+        according to the reference. Therefore, does not include insertions
+        and clipping
+        """
+        return self.__reference_length
+    
+    @property
+    def query_sequence(self):
+        """The sequence of the read
+        
+        `query_` here means the query as seen in the BAM file, and therefore
+        includes clipping
+        """
+        return self.seq
+    
+    @property
+    def query_length(self):
+        """The length of sequence of the read
+        
+        `query_` here means the query as seen in the BAM file, and therefore
+        includes clipping
+        """
+        return len(self.seq)
+        
     @property
     def next_reference_id(self):
         """Return the reference id of mate read"""

@@ -53,6 +53,7 @@ import io
 import os
 import warnings
 import array
+import re
 
 import bamnostic
 from bamnostic.utils import *
@@ -62,6 +63,7 @@ _PY_VERSION = sys.version
 if _PY_VERSION.startswith('2'):
     from io import open
 
+read_name_pat = re.compile(r'(?P<read_name>.*)([\\#]\d)?')
 
 def format_warnings(message, category, filename, lineno, file=None, line=None):
     """ Warning formatter
@@ -1266,7 +1268,7 @@ class BgzfReader(object):
         Examples:
             >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
             >>> bam.get_reference_name(0)
-            'chr1'
+            \'chr1'
             
             >>> bam.get_reference_name(10)
             Traceback (most recent call last):
@@ -1313,6 +1315,47 @@ class BgzfReader(object):
         if tid == -1:
             raise KeyError('{} was not found in the file header'.format(reference))
         return tid
+    
+    def mate(self, AlignedSegment):
+        """ Gets the mate to a given AlignedSegment.
+        
+        Note:
+            Slow, when compared to the C-API. Not meant for high-throughput analysis.
+        
+        Does not advance current iterator position.
+        
+        Args:
+            AlignedSegment (:py:class:`bamnostic.AlignedSegment`): a bamnostic AlignedSegment read with a mate
+        
+        Returns:
+            (:py:class:`bamnostic.AlignedSegment`): if read has a valid mate, else None
+        
+        Raises:
+            ValueError: if AlignedSegment is unpaired
+        
+        """
+        with bamnostic.AlignmentFile(self._handle.name, index_filename = self._index_path) as mate_head:
+            
+            # Don't look if there isn't a pair
+            if not AlignedSegment.is_paired:
+                raise ValueError('Read is unpaired')
+                
+            # Based on standard convention
+            read_name_base = read_name_pat.search(AlignedSegment.read_name).groupdict()['read_name']
+            rnext = AlignedSegment.next_reference_id
+            
+            # Look for available mate information
+            if rnext < 0:
+                return None # Information is unavailable
+            pnext = AlignedSegment.next_reference_start
+            if pnext < 0 :
+                return None # no information available on read
+            
+            mate_gen = mate_head.fetch(tid=rnext, start=pnext, stop=pnext + 1)
+            for read in mate_gen:
+                if read_name_pat.search(read.read_name).groupdict()['read_name'] == read_name_base:
+                    if AlignedSegment.is_read1 is not read.is_read1:
+                        return read
     
     def head(self, n = 5, multiple_iterators = False):
         """ List out the first **n** reads of the file.
