@@ -2,5 +2,6 @@
 dist/
 __pycache__/
 docs/
-dist/bamnostic-0.4.2b13.tar.gz
+dist/
 bamnostic/.ipynb_checkpoints/
+bamnostic.egg-info/
