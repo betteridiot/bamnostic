@@ -59,7 +59,7 @@ def offset_qual(qual_string):
     for readability and storage.
     
     Args:
-        qual_string (:py:obj:`str` or :py:obj:`bytes): Phred quality scores without offset
+        qual_string (:py:obj:`str` or :py:obj:`bytes`): Phred quality scores without offset
     
     Returns:
         (str): ASCII-encoded Phred scores offest by adding 33 to base score.

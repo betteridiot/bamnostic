@@ -2,13 +2,12 @@ from setuptools import setup
 import os
 
 def readme():
-    # print(os.path.dirname(__file__) + '/README.rst')
     with open(os.path.dirname(__file__) + '/README.rst') as rst:
         return rst.read()
 
 setup(
     name='bamnostic',
-    version='0.8.4',
+    version='0.8.4b5',
     description='Pure Python, OS-agnostic Binary Alignment Map (BAM) random access and parsing tool',
     long_description=readme(),
     url='https://github.com/betteridiot/bamnostic/',

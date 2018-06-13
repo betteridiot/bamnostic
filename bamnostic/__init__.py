@@ -16,8 +16,8 @@ Note:
 The three main classes of `bamnostic` are:
 1. `bamnostic.AlignmentFile`: the BAM file handler
 2. `bamnostic.AlignedSegment`: an aligned read object interface
-3. `bamnostic.bai.Bai`: if the BAM file has an associated index file (preferred),
-                        this is the file handler for it.
+3. `bamnostic.bai.Bai`: if the BAM file has an associated index file (preferred), \
+    this is the file handler for it.
 
 Examples:
     .. highlight:: python
@@ -42,6 +42,7 @@ Examples:
 This code is part of the bamnostic distribution and governed by its
 license.  Please see the LICENSE file that should have been included
 as part of this package.
+
 """
 
 from bamnostic.core import AlignmentFile, AlignedSegment

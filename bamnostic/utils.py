@@ -144,8 +144,6 @@ def flag_decode(flag_code):
         >>> flag_decode(516)
         [(4, 'read unmapped'), (512, 'QC fail')]
     
-    Flags
-    =====
     
     ====  =====  ==================================================================
     Int   Bit    Description
@@ -230,7 +228,7 @@ def _handle_split_region(split_roi, until_eof = False):
         until_eof (bool): whether or not to allow access to end of reference or file (whichever is first)
     
     Returns:
-        (:py:object:`bamnostic.utils.Roi`): region of interest formatted as an object with named attributes.
+        (:py:obj:`bamnostic.utils.Roi`): region of interest formatted as an object with named attributes.
     
     Raises:
         ValueError: if `until_eof` is not set and region is open-ended or improper region format.
@@ -270,11 +268,11 @@ def parse_region(contig = None, start = None, stop = None, region = None,
     Note:
         Positional arguments make utilizing the `tid` parameter difficult since it is
         the 5th argument of the function signature.
-        
+    
     The third form a submission can take is through using a SAM-formatted string. An
     example SAM-formatted string looks like 'chr1:10-100'. As many users also copy &
     paste directly from tab-delimited files, such as BED files, a SAM-formatted string
-    can take the form of 'chr1\t10\t100' where '\t' indicates a tab space.
+    can take the form of 'chr1\\t10\\t100' where '\\t' indicates a tab space.
     
     Lastly, the `until_eof` switch allows users to take all items from their desired
     start position (be it the whole reference or a specific spot on the reference). Setting
@@ -290,10 +288,10 @@ def parse_region(contig = None, start = None, stop = None, region = None,
         until_eof (bool): iterate until end of file (default: False)
     
     Returns:
-        query (:py:object:`bamnostic.utils.Roi`): region of interest formatted as an object with named attributes.
+        query (:py:class:`bamnostic.utils.Roi`): region of interest formatted as an object with named attributes.
     
     Raises:
-        ValueError if two synonym keywords are set, but contradict each other
+        ValueError: if two synonym keywords are set, but contradict each other
     
     Examples:
         # Keyword-based
@@ -303,7 +301,7 @@ def parse_region(contig = None, start = None, stop = None, region = None,
         # Using `tid` instead of `contig`
         >>> parse_region(tid = 0, start = 10, stop = 100)
         Roi(tid: 0, start: 10, stop: 100)
-    
+        
         # Positional arguments
         >>> parse_region('chr1', 10, 100)
         Roi(contig: chr1, start: 10, stop: 100)
@@ -317,14 +315,15 @@ def parse_region(contig = None, start = None, stop = None, region = None,
         Roi(contig: chr1, start: 10, stop: 100)
         
         # Tab-delimited region string
-        >>> parse_region('chr1\t10\t100')
+        >>> parse_region('chr1\\t10\\t100')
         Roi(contig: chr1, start: 10, stop: 100)
-        
+       
         # Contradictory synonyms
         >>> parse_region(reference='chr1', contig='chr10', start=10, stop = 100)
         Traceback (most recent call last):
-            ...
+        ...
         ValueError: either contig or reference must be set, not both
+        
     """
     
     # Check synonyms for the reference sequence
@@ -568,8 +567,8 @@ def cigar_changes(seq, cigar):
         cigar (list): list of tuples of cigar operations (by id) and number of operations
     
     Returns:
-        cigar_formatted_ref (str): a version of the aligned segment's reference
-                                   sequence given the changes reflected in the cigar string
+        cigar_formatted_ref (str): a version of the aligned segment's reference \
+            sequence given the changes reflected in the cigar string
     
     Raises:
         ValueError: if CIGAR operation is invalid
@@ -622,8 +621,8 @@ def md_changes(seq, md_tag):
         md_tag (str): MD tag for associated sequence
     
     Returns:
-        ref_seq (str): a version of the aligned segment's reference sequence given
-                       the changes reflected in the MD tag
+        ref_seq (str): a version of the aligned segment's reference sequence given \
+            the changes reflected in the MD tag
     
     Example:
         >>> md_changes('CTTATATTGGCCTT', '3C4AT4')
@@ -696,7 +695,7 @@ def ref_gen(seq, cigar_string, md_tag):
         'AGGCTGGTAGCTCAGGGATGTCTCGTCTGTGAGTTACAGCA'
         
     """
-    return md_changes(cigar_changes(seq, cigar_string, md_tag))
+    return md_changes(cigar_changes(seq, cigar_string), md_tag)
 
 
 def cigar_alignment(seq = None, cigar = None, start_pos = None, qualities = None, base_qual_thresh = 0, query=False):

@@ -897,9 +897,8 @@ class BgzfReader(object):
             region (str): SAM region formatted string. Accepts tab-delimited values as well
             tid (int): the refID or target id of a reference/contig
             until_eof (bool): iterate until end of file
-            mutiple_iterators (bool): allow multiple iterators over region. Not Implemented.
-                            Notice: each iterator will open up a new view into
-                                    the BAM file, so overhead will apply.
+            mutiple_iterators (bool): allow multiple iterators over region. Not Implemented. \
+                 Notice: each iterator will open up a new view into the BAM file, so overhead will apply.
             reference (str): synonym for `contig`
             end (str): synonym for `stop`
         
@@ -940,6 +939,7 @@ class BgzfReader(object):
             Traceback (most recent call last):
                 ...
             AssertionError: Malformed region: start should be <= stop, you entered 100, 10
+            
         """
         
         if not self._random_access:
@@ -1016,22 +1016,24 @@ class BgzfReader(object):
             reference (str): synonym for `contig` (Default: None)
             start (int): 0-based inclusive start position (Default: None)
             stop (int): 0-based exclusive start position (Default: None)
-            end (int): Synonymn for `stop` (Default: None)
-            region (str): SAM-style region format. 
-                        Example: 'chr1:10000-50000' (Default: None)
-            until_eof (bool): count number of reads from start to end of file
-                            Note, this can potentially be an expensive operation.
-                            (Default: False)
-            read_callback (str|function): select (or create) a filter of which
-                          reads to count. Built-in filters:
-                                `all`: skips reads that contain the following flags:
-                                    0x4 (4): read unmapped
-                                    0x100 (256): not primary alignment
-                                    0x200 (512): QC Fail
-                                    0x400 (1024): PCR or optical duplcate
-                                `nofilter`: uses all reads (Default)
-                            The user can also supply a custom function that
-                            returns boolean objects for each read
+            end (int): Synonym for `stop` (Default: None)
+            region (str): SAM-style region format. \
+                Example: 'chr1:10000-50000' (Default: None)
+            until_eof (bool): count number of reads from start to end of file \
+                Note, this can potentially be an expensive operation. \
+                (Default: False)
+            read_callback (str|function): select (or create) a filter of which \
+                reads to count. Built-in filters:
+                
+                * `all`: skips reads that contain the following flags:
+                
+                    * 0x4 (4): read unmapped
+                    * 0x100 (256): not primary alignment
+                    * 0x200 (512): QC Fail
+                    * 0x400 (1024): PCR or optical duplicate
+                * `nofilter`: uses all reads (Default)
+                * The user can also supply a custom function that \
+                    returns boolean objects for each read
         Returns:
             (int): count of reads in the given region that meet parameters
         
@@ -1076,6 +1078,7 @@ class BgzfReader(object):
             AssertionError: Malformed region: start should be <= stop, you entered 100, 10
             
         """
+        
         # pass the signature to fetch
         signature = locals()
         signature.pop('read_callback')
@@ -1109,21 +1112,23 @@ class BgzfReader(object):
             reference (str): synonym for `contig` (Default: None)
             start (int): 0-based inclusive start position (Default: None)
             stop (int): 0-based exclusive start position (Default: None)
-            end (int): Synonymn for `stop` (Default: None)
-            region (str): SAM-style region format. 
-                        Example: 'chr1:10000-50000' (Default: None)
+            end (int): Synonym for `stop` (Default: None)
+            region (str): SAM-style region format. \
+                Example: 'chr1:10000-50000' (Default: None)
             quality_threshold (int): MAPQ quality threshold (Default: 15)
             base_quality_threshold (int): base quality score threshold (Default: 0)
-            read_callback (str|function): select (or create) a filter of which
-                          reads to count. Built-in filters:
-                                `all`: skips reads that contain the following flags:
-                                    0x4 (4): read unmapped
-                                    0x100 (256): not primary alignment
-                                    0x200 (512): QC Fail
-                                    0x400 (1024): PCR or optical duplcate
-                                `nofilter`: uses all reads (Default)
-                            The user can also supply a custom function that
-                            returns boolean objects for each read
+            read_callback (str|function): select (or create) a filter of which \
+                reads to count. Built-in filters:
+                
+                * `all`: skips reads that contain the following flags:
+                    * 0x4 (4): read unmapped
+                    * 0x100 (256): not primary alignment
+                    * 0x200 (512): QC Fail
+                    * 0x400 (1024): PCR or optical duplicate
+                    
+                * `nofilter`: uses all reads (Default)
+                * The user can also supply a custom function that \
+                    returns boolean objects for each read
         Returns:
             (:py:obj:`array.array`): Four arrays in the order of **A**, **C**, **G**, **T**
         

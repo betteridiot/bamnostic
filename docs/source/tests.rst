@@ -1,0 +1,20 @@
+tests package
+=============
+
+.. automodule:: tests
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+Submodules
+----------
+
+tests.test\_placeholder module
+------------------------------
+
+.. automodule:: tests.test_placeholder
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
