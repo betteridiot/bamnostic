@@ -1,8 +1,8 @@
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/version.svg)](https://anaconda.org/conda-forge/bamnostic)
-[![PyPI version](https://badge.fury.io/py/bamnostic.svg)](https://badge.fury.io/py/bamnostic)
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/betteridiot/bamnostic/blob/master/LICENSE)
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/platforms.svg)](https://anaconda.org/conda-forge/bamnostic)
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/downloads.svg)](https://anaconda.org/conda-forge/bamnostic)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
+[![PyPI version](https://badge.fury.io/py/bamnostic.svg)](https://badge.fury.io/py/bamnostic) 
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/betteridiot/bamnostic/blob/master/LICENSE) 
+[![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/platforms.svg)](https://anaconda.org/conda-forge/bamnostic) 
+[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
 [![Documentation Status](https://readthedocs.org/projects/bamnostic/badge/?version=latest)](https://bamnostic.readthedocs.io/en/latest/?badge=latest)
 </br>
 
