@@ -10,7 +10,7 @@
 a *pure Python*, **OS-agnositic** Binary Alignment Map (BAM) file parser and random access tool.
 
 ### Note:
-Documentation can be found at [here](http://bamnostic.readthedocs.io/en/latest/) or by going to this address: http://bamnostic.readthedocs.io and made available through [Read the Docs](https://readthedocs.org/).
+Documentation can be found at [here](http://bamnostic.readthedocs.io/en/latest/) or by going to this address: http://bamnostic.readthedocs.io. Documentation was made available through [Read the Docs](https://readthedocs.org/).
 
 ***
 ## Installation
