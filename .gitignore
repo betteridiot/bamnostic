@@ -1,6 +1,5 @@
 *.pyc
 dist/
 __pycache__/
-dist/
 bamnostic/.ipynb_checkpoints/
 bamnostic.egg-info/
