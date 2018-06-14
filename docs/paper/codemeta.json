@@ -1,0 +1,51 @@
+{
+  "@context": ["http://schema.org", {"author": {"@id": "schema:author", "@container": "@list"} } ] ,
+  "@type": "Code",
+  "title": "bamnostic",
+  "name": "BAMnostic: a Pure Python OS, version, and runtime agnostic BAM file parser",
+  "author": [
+    {
+      "@id": "https://orcid.org/0000-0002-0243-4609",
+      "@type": "Person",
+      "email": "mdsherm@umich.edu",
+      "name": "Marcus D Sherman",
+      "affiliation": "Department of Computational Medicine and Bioinformatics, University of Michigan"
+    },
+    {
+      "@id": "https://orcid.org/0000-0003-3425-6998",
+      "@type": "Person",
+      "email": "remills@med.umich.edu",
+      "name": "Ryan E Mills",
+      "affiliation": [
+      "Department of Computational Medicine and Bioinformatics, University of Michigan",
+      "Department of Human Genetics, University of Michigan"
+      ]
+    }
+  ],
+  "copyrightHolder": {
+        "@type": "Organization",
+        "email": "copyright@umich.edu",
+        "name": "University of Michigan"
+  },
+  "copyrightYear": 2018,
+  "creator": {
+      "@id": "https://orcid.org/0000-0002-0243-4609"
+  },
+  "maintainer": "https://orcid.org/0000-0002-0243-4609",
+  "codeRepository": "https://github.com/betteridiot/bamnostic",
+  "dateModified": "2018-06-13",
+  "description": "BAMnostic is a Pure Python OS, version, and runtime agnostic BAM file parser",
+  "keywords": "BAM, pysam, genomics, genetics, htslib, samtools",
+  "license": "https://github.com/betteridiot/bamnostic/blob/master/LICENSE",
+  "softwareVersion": "v0.8.2",
+  "version": "v0.8.2",
+  "readme": "https://github.com/betteridiot/bamnostic/blob/master/README.md",
+  "buildInstructions": "https://github.com/betteridiot/bamnostic/blob/master/README.md",
+  "issueTracker": "https://github.com/betteridiot/bamnostic/issues",
+  "funder": "National Institutes of Health [R01HG007068]",
+  "programmingLanguage": {
+        "name": "Python",
+        "URL": "https://www.python.org/"
+  },
+  "downloadUrl": ["https://github.com/codemeta/codemetar/releases/", "https://pypi.org/project/bamnostic/", "https://anaconda.org/conda-forge/bamnostic"]
+}
