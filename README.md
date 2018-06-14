@@ -81,10 +81,9 @@ bam.header
 ### Data validation through `head()`
 
 ```python
-bam.head(n=2)
-
->>>EAS56_57:6:190:289:82	69	chr1	99	0		0	99	0	CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA    MF:C:192
-EAS56_57:6:190:289:82	137	chr1	99	73	35M	0	99	0	AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC	
+>>>bam.head(n=2)
+[EAS56_57:6:190:289:82	69	chr1	100	0	*	=	100	0	CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA	<<<7<<<;<<<<<<<<8;;<7;4<;<;;;;;94<;	MF:C:192,
+ EAS56_57:6:190:289:82	137	chr1	100	73	35M	=	100	0	AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAGCAC	<<<<<<;<<<<<<<<<<;<<;<<<<;8<6;9;;2;	MF:C:64	Aq:C:0	NM:C:0	UQ:C:0	H0:C:1	H1:C:0]
 ``` 
 
 ### Getting the first read
@@ -92,7 +91,6 @@ EAS56_57:6:190:289:82	137	chr1	99	73	35M	0	99	0	AGGGGTGCAGAGCCGAGTCACGGGGTTGCCAG
 ```python
 first_read = next(bam)
 print(first_read)
-
 >>> EAS56_57:6:190:289:82	69	chr1	99	0		0	99	0	CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA	    MF:C:192
 ``` 
 
@@ -123,15 +121,14 @@ bs.utils.flag_decode(first_read.flag)
 ### Random Access
 
 ```python
-for i, read in enumerate(bam.fetch('chr2', 1, 100)):
-    if i >= 3:
-        break
-    print(read)
+>>> for i, read in enumerate(bam.fetch('chr2', 1, 100)):
+...    if i >= 3:
+...        break
+...    print(read)
 
->>> B7_591:8:4:841:340	73	chr2	0	99	36M	-1	-1	0	TTCAAATGAACTTCTGTAATTGAAAAATTCATTTAA	MF:C:18	Aq:C:77	NM:C:0	UQ:C:0	H0:C:1	H1:C:0
-EAS54_67:4:142:943:582	73	chr2	0	99	35M	-1	-1	0	TTCAAATGAACTTCTGTAATTGAAAAATTCATTTA	MF:C:18	Aq:C:41	NM:C:0	UQ:C:0	H0:C:1	H1:C:0
-EAS54_67:6:43:859:229	153	chr2	0	66	35M	-1	-1	0	TTCAAATGAACTTCTGTAATTGAAAAATTCATTTA	MF:C:32	Aq:C:0	NM:C:0	UQ:C:0	H0:C:1	H1:C:0
-
+B7_591:8:4:841:340	73	chr2	1	99	36M	*	0	0	TTCAAATGAACTTCTGTAATTGAAAAATTCATTTAA	<<<<<<<<;<<<<<<<<;<<<<<;<;:<<<<<<<;;	MF:C:18	Aq:C:77	NM:C:0	UQ:C:0	H0:C:1	H1:C:0
+EAS54_67:4:142:943:582	73	chr2	1	99	35M	*	0	0	TTCAAATGAACTTCTGTAATTGAAAAATTCATTTA	<<<<<<;<<<<<<:<<;<<<<;<<<;<<<:;<<<5	MF:C:18	Aq:C:41	NM:C:0	UQ:C:0	H0:C:1	H1:C:0
+EAS54_67:6:43:859:229	153	chr2	1	66	35M	*	0	0	TTCAAATGAACTTCTGTAATTGAAAAATTCATTTA	+37<=<.;<<7.;77<5<<0<<<;<<<27<<<<<<	MF:C:32	Aq:C:0	NM:C:0	UQ:C:0	H0:C:1	H1:C:0
 ``` 
 
 ***
