@@ -742,28 +742,30 @@ def cigar_alignment(seq = None, cigar = None, start_pos = None, qualities = None
             pass
         elif op_id in {1,4}: # BAM_CINS or BAM_CSOFT_CLIP: remove from sequence
             if query and op_id == 1:
-                 for base in range(len(seq[last_cigar_pos:last_cigar_pos + n_ops])):
-                    seg_seq = seq[last_cigar_pos:last_cigar_pos + n_ops]
+                seg_seq = seq[last_cigar_pos:last_cigar_pos + n_ops]
+                if qualities is not None:
+                    seg_qual = qualities[last_cigar_pos:last_cigar_pos + n_ops]
+                for index, base in enumerate(seg_seq):
                     if qualities is not None:
-                        seg_qual = qualities[last_cigar_pos:last_cigar_pos + n_ops]
-                        if seg_qual[base] >= base_qual_thresh:
-                            yield seg_seq[base], start_pos
+                        if seg_qual[index] >= base_qual_thresh:
+                            yield base, start_pos
                     else:
-                        yield seg_seq[base], start_pos
+                        yield base, start_pos
             last_cigar_pos += n_ops
         elif op_id == 3: # BAM_CREF_SKIP: intron or large gaps
             start_pos += n_ops
         elif op_id == 2: # BAM_CDEL: pad for deletions
             start_pos += n_ops
         elif op_id in {0, 7, 8}: # matches (uses both sequence match & mismatch)
-            for base in range(len(seq[last_cigar_pos:last_cigar_pos + n_ops])):
-                seg_seq = seq[last_cigar_pos:last_cigar_pos + n_ops]
+            seg_seq = seq[last_cigar_pos:last_cigar_pos + n_ops]
+            if qualities is not None:
+                seg_qual = qualities[last_cigar_pos:last_cigar_pos + n_ops]
+            for index, base in enumerate(seg_seq):
                 if qualities is not None:
-                    seg_qual = qualities[last_cigar_pos:last_cigar_pos + n_ops]
-                    if seg_qual[base] >= base_qual_thresh:
-                        yield seg_seq[base], start_pos
+                    if seg_qual[index] >= base_qual_thresh:
+                        yield base, start_pos
                 else:
-                    yield seg_seq[base], start_pos
+                    yield base, start_pos
                 start_pos += 1
             last_cigar_pos += n_ops
         else:
