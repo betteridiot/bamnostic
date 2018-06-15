@@ -89,18 +89,35 @@ Read Name
 0-based Start Position (raw, aligned, reference)
 ::::::::::::::::::::::::::::::::::::::::::::::::
 
+If you look at the next code example, you will see that the start position is listed
+as 270, while when we printed out the read earlier, it showed as 271. This is because
+special care was taken to ensure all printed versions of the read followed traditional
+SAM format, which is 1-based. This means that the ``print()`` output of a read is always
+*guaranteed* to be a valid SAM entry.
+
+However, all direct access attributes will be treated as 0-based, so as to fit in line
+with common Python conventions.
+
 .. code:: python
 
     >>> print(complex_read.pos, complex_read.query_alignment_start, complex_read.reference_start)
     270 270 270
 
-CIGAR string
-::::::::::::
+CIGAR & QUAL Strings
+::::::::::::::::::::
 
 .. code:: python
 
     >>> print(complex_read.cigarstring)
     18M5I12M
+
+    # ASCII-encoded and offset quality scores
+    >>> print(complex_read.qual)
+    <<<<<<<<<<<<<:<<<<<<<<<<<<<<<<<<<<<
+
+    # Decoded and raw
+    >>> print(complex_read.query_qualities)
+    array('B', [27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 25, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27])
 
 Sequence Length (raw, aligned, reference)
 :::::::::::::::::::::::::::::::::::::::::

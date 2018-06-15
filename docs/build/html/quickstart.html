@@ -95,7 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#exploring-a-read">Exploring a read</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#read-name">Read Name</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#based-start-position-raw-aligned-reference">0-based Start Position (raw, aligned, reference)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#cigar-string">CIGAR string</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cigar-qual-strings">CIGAR &amp; QUAL Strings</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#sequence-length-raw-aligned-reference">Sequence Length (raw, aligned, reference)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#nucleotide-sequence">Nucleotide Sequence</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#read-flag-and-decoded-flag">Read Flag and Decoded Flag</a></li>
@@ -249,15 +249,30 @@ length tuple values.</p>
 </div>
 <div class="section" id="based-start-position-raw-aligned-reference">
 <h3>0-based Start Position (raw, aligned, reference)<a class="headerlink" href="#based-start-position-raw-aligned-reference" title="Permalink to this headline">¶</a></h3>
+<p>If you look at the next code example, you will see that the start position is listed
+as 270, while when we printed out the read earlier, it showed as 271. This is because
+special care was taken to ensure all printed versions of the read followed traditional
+SAM format, which is 1-based. This means that the <code class="docutils literal notranslate"><span class="pre">print()</span></code> output of a read is always
+<em>guaranteed</em> to be a valid SAM entry.</p>
+<p>However, all direct access attributes will be treated as 0-based, so as to fit in line
+with common Python conventions.</p>
 <div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">complex_read</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">complex_read</span><span class="o">.</span><span class="n">query_alignment_start</span><span class="p">,</span> <span class="n">complex_read</span><span class="o">.</span><span class="n">reference_start</span><span class="p">)</span>
 <span class="go">270 270 270</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="cigar-string">
-<h3>CIGAR string<a class="headerlink" href="#cigar-string" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="cigar-qual-strings">
+<h3>CIGAR &amp; QUAL Strings<a class="headerlink" href="#cigar-qual-strings" title="Permalink to this headline">¶</a></h3>
 <div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">complex_read</span><span class="o">.</span><span class="n">cigarstring</span><span class="p">)</span>
 <span class="go">18M5I12M</span>
+
+<span class="go"># ASCII-encoded and offset quality scores</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">complex_read</span><span class="o">.</span><span class="n">qual</span><span class="p">)</span>
+<span class="go">&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;:&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;</span>
+
+<span class="go"># Decoded and raw</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">complex_read</span><span class="o">.</span><span class="n">query_qualities</span><span class="p">)</span>
+<span class="go">array(&#39;B&#39;, [27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 25, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27, 27])</span>
 </pre></div>
 </div>
 </div>
@@ -274,7 +289,7 @@ length should be 5 bases shorter than the query.</p>
 <h3>Nucleotide Sequence<a class="headerlink" href="#nucleotide-sequence" title="Permalink to this headline">¶</a></h3>
 <div class="code python highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># nucleotide sequence (raw)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">complex_read</span><span class="o">.</span><span class="n">query_sequence</span><span class="p">)</span>
-<span class="n">CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA</span>
+<span class="n">GTTTAGTGCCTTTGTTCACATAGACCCCCTTGCAA</span>
 
 <span class="c1"># nucleotide sequence (aligned)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="nb">print</span><span class="p">(</span><span class="n">first_read</span><span class="o">.</span><span class="n">query_alignment_sequence</span><span class="p">)</span>
