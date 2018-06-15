@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="bamnostic package" href="bamnostic.html" /> 
+    <link rel="next" title="Installation" href="install.html" /> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -57,6 +57,10 @@
           
             
             
+              <div class="version">
+                0.8.4
+              </div>
+            
           
 
           
@@ -80,7 +84,9 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="bamnostic.html">bamnostic package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bamnostic.html">Module documentation</a></li>
 </ul>
 
             
@@ -153,8 +159,33 @@ detailed “Getting Started” should be available soon.</p>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="bamnostic.html">bamnostic package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bamnostic.html#submodules">Submodules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#through-the-conda-package-manager-anaconda-cloud">Through the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager (Anaconda Cloud)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#through-the-python-package-index-pypi">Through the Python Package Index (PyPI)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#through-pip-github">Through pip+Github</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#traditional-github-clone">Traditional GitHub clone</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#importing-bamnostic">Importing <code class="docutils literal notranslate"><span class="pre">bamnostic</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#loading-your-bam-file">Loading your BAM file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#get-the-header">Get the header</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#data-validation-through-head">Data validation through <code class="docutils literal notranslate"><span class="pre">head()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#getting-the-next-read">Getting the next read</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#exploring-a-read">Exploring a read</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#read-name">Read Name</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#based-start-position-raw-aligned-reference">0-based Start Position (raw, aligned, reference)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#cigar-string">CIGAR string</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#sequence-length-raw-aligned-reference">Sequence Length (raw, aligned, reference)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#nucleotide-sequence">Nucleotide Sequence</a></li>
+<li class="toctree-l3"><a class="reference internal" href="quickstart.html#read-flag-and-decoded-flag">Read Flag and Decoded Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#serial-access">Serial Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#random-access">Random Access</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bamnostic.html">Module documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="bamnostic.html#module-bamnostic.core">Core Module (<code class="docutils literal notranslate"><span class="pre">bamnostic.core</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bamnostic.html#module-bamnostic.bgzf">Binary Alignment Map (BAM) file handlers (<code class="docutils literal notranslate"><span class="pre">bamnostic.bgzf</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bamnostic.html#module-bamnostic.bai">BAM Index (BAI) file handler (<code class="docutils literal notranslate"><span class="pre">bamnostic.bai</span></code>)</a></li>
@@ -181,7 +212,7 @@ detailed “Getting Started” should be available soon.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="bamnostic.html" class="btn btn-neutral float-right" title="bamnostic package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="install.html" class="btn btn-neutral float-right" title="Installation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
     </div>
@@ -214,7 +245,7 @@ detailed “Getting Started” should be available soon.</p>
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
             VERSION:'0.8.4b5',
-            LANGUAGE:'None',
+            LANGUAGE:'en',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

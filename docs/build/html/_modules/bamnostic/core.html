@@ -56,6 +56,10 @@
           
             
             
+              <div class="version">
+                0.8.4
+              </div>
+            
           
 
           
@@ -79,7 +83,9 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../bamnostic.html">bamnostic package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bamnostic.html">Module documentation</a></li>
 </ul>
 
             
@@ -172,6 +178,14 @@
 <span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span>
 
 <span class="n">Cigar</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;Cigar&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;op_code&#39;</span><span class="p">,</span> <span class="s1">&#39;n_op&#39;</span><span class="p">,</span> <span class="s1">&#39;op_id&#39;</span><span class="p">,</span> <span class="s1">&#39;op_name&#39;</span><span class="p">))</span>
+<span class="sd">&quot;&quot;&quot;``namedtuple`` for handling CIGAR data</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        op_code (int): CIGAR operation index</span>
+<span class="sd">        n_op (int): number of operations for a given op_code</span>
+<span class="sd">        op_id (str): the string representation of the CIGAR representation (&#39;MIDNSHP=XB&#39;)</span>
+<span class="sd">        op_name (str): Longer string name for operation</span>
+<span class="sd">&quot;&quot;&quot;</span>
 
 <span class="c1"># The BAM format uses byte encoding to compress alignment data. One such</span>
 <span class="c1"># compression is how CIGAR operations are stored: they are stored and an</span>
@@ -237,36 +251,40 @@
     <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">qual_string</span><span class="p">)</span></div>
 
 <span class="c1"># compiled/performant struct objects</span>
-<span class="n">unpack_refId_pos</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;2i&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
-<span class="n">unpack_bmq_flag</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;2I&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
-<span class="n">unpack_lseq_nrid_npos_tlen</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;4i&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
-<span class="n">unpack_tag_val</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;2ss&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
-<span class="n">unpack_string</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
-<span class="n">unpack_array</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;si&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
+<span class="n">_unpack_refId_pos</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;2i&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
+<span class="n">_unpack_bmq_flag</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;2I&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
+<span class="n">_unpack_lseq_nrid_npos_tlen</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;4i&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
+<span class="n">_unpack_tag_val</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;2ss&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
+<span class="n">_unpack_string</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;s&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
+<span class="n">_unpack_array</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;si&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
 
 
 <div class="viewcode-block" id="AlignmentFile"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignmentFile">[docs]</a><span class="k">class</span> <span class="nc">AlignmentFile</span><span class="p">(</span><span class="n">bgzf</span><span class="o">.</span><span class="n">BgzfReader</span><span class="p">,</span> <span class="n">bgzf</span><span class="o">.</span><span class="n">BgzfWriter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;API wrapper to allow drop in replacement for BAM functionality in pysam&quot;&quot;&quot;</span>
-
+    <span class="sd">&quot;&quot;&quot;Wrapper to allow drop in replacement for BAM functionality in a ``pysam``-like API.</span>
+<span class="sd">    </span>
+<span class="sd">    Args:</span>
+<span class="sd">        filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file</span>
+<span class="sd">        mode (str): Mode for reading. BAM files are binary by nature (default: &#39;rb&#39;).</span>
+<span class="sd">        max_cache (int): number of desired LRU cache size, preferably a multiple of 2 (default: 128).</span>
+<span class="sd">        index_filename (str): path to index file (BAI) if it is named differently than the BAM file (default: None).</span>
+<span class="sd">        filename (str | :py:obj:`file`): synonym for `filepath_or_object`</span>
+<span class="sd">        check_header (bool): Obsolete method maintained for backwards compatibility (default: False)</span>
+<span class="sd">        check_sq (bool): Inspect BAM file for `@SQ` entries within the header</span>
+<span class="sd">        reference_filename (str): Not implemented. Maintained for backwards compatibility</span>
+<span class="sd">        filepath_index (str): synonym for `index_filename`</span>
+<span class="sd">        require_index (bool): require the presence of an index file or raise (default: False)</span>
+<span class="sd">        duplicate_filehandle (bool): Not implemented. Raises warning if True.</span>
+<span class="sd">        ignore_truncation (bool): Whether or not to allow trucated file processing (default: False).</span>
+<span class="sd">    </span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">,</span> <span class="n">max_cache</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">index_filename</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="n">filename</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">check_header</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">check_sq</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">reference_filename</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="n">filepath_index</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">require_index</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">duplicate_filehandle</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
                 <span class="n">ignore_truncation</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the class.</span>
 <span class="sd">        </span>
-<span class="sd">        Args:</span>
-<span class="sd">            filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file</span>
-<span class="sd">            mode (str): Mode for reading. BAM files are binary by nature (default: &#39;rb&#39;).</span>
-<span class="sd">            max_cache (int): number of desired LRU cache size, preferably a multiple of 2 (default: 128).</span>
-<span class="sd">            index_filename (str): path to index file (BAI) if it is named differently than the BAM file (default: None).</span>
-<span class="sd">            filename (str | :py:obj:`file`): synonym for `filepath_or_object`</span>
-<span class="sd">            check_header (bool): Obsolete method maintained for backwards compatibility (default: False)</span>
-<span class="sd">            check_sq (bool): Inspect BAM file for `@SQ` entries within the header</span>
-<span class="sd">            reference_filename (str): Not implemented. Maintained for backwards compatibility</span>
-<span class="sd">            filepath_index (str): synonym for `index_filename`</span>
-<span class="sd">            require_index (bool): require the presence of an index file or raise (default: False)</span>
-<span class="sd">            duplicate_filehandle (bool): Not implemented. Raises warning if True.</span>
-<span class="sd">            ignore_truncation (bool): Whether or not to allow trucated file processing (default: False).</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         
         <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
@@ -354,10 +372,10 @@
 <span class="sd">            reference_name (str): name of associated reference</span>
 <span class="sd">            reference_length (int): length of associated reference sequence</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">unpack_refId_pos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">refID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">_unpack_refId_pos</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
         
         <span class="c1"># get refID chromosome names</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_bin_mq_nl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_nc</span> <span class="o">=</span> <span class="n">unpack_bmq_flag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_bin_mq_nl</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_nc</span> <span class="o">=</span> <span class="n">_unpack_bmq_flag</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bin_mq_nl</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">mapq</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_bin_mq_nl</span> <span class="o">&amp;</span> <span class="mh">0xFF00</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_l_read_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_bin_mq_nl</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
@@ -368,7 +386,7 @@
         
         <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_nc</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_nc</span> <span class="o">&amp;</span> <span class="mh">0xFFFF</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlen</span> <span class="o">=</span> <span class="n">unpack_lseq_nrid_npos_tlen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlen</span> <span class="o">=</span> <span class="n">_unpack_lseq_nrid_npos_tlen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
         
         <span class="bp">self</span><span class="o">.</span><span class="n">read_name</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l_read_name</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l_read_name</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
         
@@ -545,26 +563,26 @@
         <span class="n">types</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;c&#39;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;l&#39;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;f&#39;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;s&#39;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;s&#39;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;b&#39;</span><span class="p">,</span>
                 <span class="s2">&quot;C&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;B&#39;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;h&#39;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;i&#39;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">:</span><span class="s1">&#39;&lt;I&#39;</span><span class="p">}</span>
         
-        <span class="n">tag</span><span class="p">,</span> <span class="n">val_type</span> <span class="o">=</span> <span class="n">unpack_tag_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+        <span class="n">tag</span><span class="p">,</span> <span class="n">val_type</span> <span class="o">=</span> <span class="n">_unpack_tag_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
         <span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
         <span class="n">val_type</span> <span class="o">=</span> <span class="n">val_type</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
         
         <span class="c1"># Capture byte array of a given size</span>
         <span class="k">if</span> <span class="n">val_type</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
-            <span class="n">arr_type</span><span class="p">,</span> <span class="n">arr_size</span> <span class="o">=</span> <span class="n">unpack_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+            <span class="n">arr_type</span><span class="p">,</span> <span class="n">arr_size</span> <span class="o">=</span> <span class="n">_unpack_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
             <span class="n">arr</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arr_size</span><span class="p">,</span> <span class="n">types</span><span class="p">[</span><span class="n">arr_type</span><span class="o">.</span><span class="n">decode</span><span class="p">()]),</span> 
                   <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="n">arr_size</span> <span class="o">*</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="n">types</span><span class="p">[</span><span class="n">arr_type</span><span class="o">.</span><span class="n">decode</span><span class="p">()])))</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">tag</span><span class="p">:</span> <span class="p">(</span><span class="n">val_type</span><span class="p">,</span> <span class="n">arr</span><span class="p">)}</span>
         
         <span class="c1"># Capture given length string or hex array</span>
         <span class="k">elif</span> <span class="n">val_type</span> <span class="o">==</span> <span class="s2">&quot;Z&quot;</span> <span class="ow">or</span> <span class="n">val_type</span> <span class="o">==</span> <span class="s2">&quot;H&quot;</span><span class="p">:</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="n">unpack_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">_unpack_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">_PY_VERSION</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">):</span>
                 <span class="k">while</span> <span class="n">val</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">:</span>
-                    <span class="n">val</span> <span class="o">+=</span> <span class="n">unpack_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">val</span> <span class="o">+=</span> <span class="n">_unpack_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">while</span> <span class="nb">chr</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">:</span>
-                    <span class="n">val</span> <span class="o">+=</span> <span class="n">unpack_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">val</span> <span class="o">+=</span> <span class="n">_unpack_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">val_type</span> <span class="o">==</span> <span class="s2">&quot;Z&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">{</span><span class="n">tag</span><span class="p">:</span> <span class="p">(</span><span class="n">val_type</span><span class="p">,</span> <span class="n">val</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;latin_1&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])}</span>
             <span class="k">else</span><span class="p">:</span>
@@ -637,6 +655,11 @@
 <span class="sd">        and therefore exclude clipping, but include insertions.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__qa_start</span>
+    
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">query_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Alias for the read name&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_name</span>
     
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">query_alignment_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -928,7 +951,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
             VERSION:'0.8.4b5',
-            LANGUAGE:'None',
+            LANGUAGE:'en',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -624,12 +624,16 @@ def md_changes(seq, md_tag):
         ref_seq (str): a version of the aligned segment's reference sequence given \
             the changes reflected in the MD tag
     
+    Raises:
+        ValueError: if MD tag is None
+    
     Example:
         >>> md_changes('CTTATATTGGCCTT', '3C4AT4')
         'CTTCTATTATCCTT'
     
     """
-    
+    if md_tag is None:
+        raise ValueError('No MD tag found or given for sequence')
     ref_seq = ''
     last_md_pos = 0
     for mo in re.finditer(r'(?P<matches>\d+)|(?P<del>\^\w+?(?=\d))|(?P<sub>\w)', md_tag):
@@ -739,11 +743,13 @@ def cigar_alignment(seq = None, cigar = None, start_pos = None, qualities = None
         elif op_id in {1,4}: # BAM_CINS or BAM_CSOFT_CLIP: remove from sequence
             if query and op_id == 1:
                  for base in range(len(seq[last_cigar_pos:last_cigar_pos + n_ops])):
+                    seg_seq = seq[last_cigar_pos:last_cigar_pos + n_ops]
                     if qualities is not None:
-                        if qualities[base] >= base_qual_thresh:
-                            yield seq[base], start_pos
+                        seg_qual = qualities[last_cigar_pos:last_cigar_pos + n_ops]
+                        if seg_qual[base] >= base_qual_thresh:
+                            yield seg_seq[base], start_pos
                     else:
-                        yield seq[base], start_pos
+                        yield seg_seq[base], start_pos
             last_cigar_pos += n_ops
         elif op_id == 3: # BAM_CREF_SKIP: intron or large gaps
             start_pos += n_ops
@@ -751,11 +757,13 @@ def cigar_alignment(seq = None, cigar = None, start_pos = None, qualities = None
             start_pos += n_ops
         elif op_id in {0, 7, 8}: # matches (uses both sequence match & mismatch)
             for base in range(len(seq[last_cigar_pos:last_cigar_pos + n_ops])):
+                seg_seq = seq[last_cigar_pos:last_cigar_pos + n_ops]
                 if qualities is not None:
-                    if qualities[base] >= base_qual_thresh:
-                        yield seq[base], start_pos
+                    seg_qual = qualities[last_cigar_pos:last_cigar_pos + n_ops]
+                    if seg_qual[base] >= base_qual_thresh:
+                        yield seg_seq[base], start_pos
                 else:
-                    yield seq[base], start_pos
+                    yield seg_seq[base], start_pos
                 start_pos += 1
             last_cigar_pos += n_ops
         else:

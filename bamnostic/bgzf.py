@@ -63,9 +63,7 @@ _PY_VERSION = sys.version
 if _PY_VERSION.startswith('2'):
     from io import open
 
-read_name_pat = re.compile(r'(?P<read_name>.*)([\\#]\d)?')
-
-def format_warnings(message, category, filename, lineno, file=None, line=None):
+def _format_warnings(message, category, filename, lineno, file=None, line=None):
     """ Warning formatter
     
     Args:
@@ -80,7 +78,7 @@ def format_warnings(message, category, filename, lineno, file=None, line=None):
     """
     return ' {}:{}:{}: {}\n'.format(category.__name__, filename, lineno, message)
 
-warnings.formatwarning = format_warnings
+warnings.formatwarning = _format_warnings
 
 # Constants used in BGZF format
 _bgzf_magic = b"\x1f\x8b\x08\x04" # First 4 bytes of BAM file
@@ -288,10 +286,7 @@ class BAMheader(object):
     just for the BAM header block. 
     
     Attributes:
-        _header_block (:py:obj:`bytes`): raw byte stream of header block
-        _SAMheader_raw (:py:obj:`bytes`): the deflated plain text string (if present)
-        _SAMheader_end (int): byte offset of the end of SAM header
-        _BAMheader_end (int): byte offset of the end of the BAM header
+        _io (:py:obj:`file`): opened BAM file object
         SAMheader (:py:obj:`dict`): parsed dictionary of the SAM header
         n_refs (int): number of references
         refs (:py:obj:`dict`): reference names and lengths listed in the BAM header
@@ -913,12 +908,12 @@ class BgzfReader(object):
             SAM region formatted strings take on the following form:
             'chr1:100000-200000'
         
-        Usage: 
-                AlignmentFile.fetch(contig='chr1', start=1, stop= 1000)
-                AlignmentFile.fetch('chr1', 1, 1000)
-                AlignmentFile.fetch('chr1:1-1000')
-                AlignmentFile.fetch('chr1', 1)
-                AlignmentFile.fetch('chr1')
+        Usage:
+            AlignmentFile.fetch(contig='chr1', start=1, stop= 1000)
+            AlignmentFile.fetch('chr1', 1, 1000)
+            AlignmentFile.fetch('chr1:1-1000')
+            AlignmentFile.fetch('chr1', 1)
+            AlignmentFile.fetch('chr1')
         
         Examples:
             >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
@@ -1358,7 +1353,7 @@ class BgzfReader(object):
             
             mate_gen = mate_head.fetch(tid=rnext, start=pnext, stop=pnext + 1)
             for read in mate_gen:
-                if read_name_pat.search(read.read_name).groupdict()['read_name'] == read_name_base:
+                if read.read_name.split('/')[0].split('#')[0] == read_name_base:
                     if AlignedSegment.is_read1 is not read.is_read1:
                         return read
     

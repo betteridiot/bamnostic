@@ -11,10 +11,12 @@ reStructuredText skills. All of the module documentation is here, but a more
 detailed "Getting Started" should be available soon.
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
    
-   bamnostic
+   Installation <install>
+   Getting Started <quickstart>
+   Module documentation <bamnostic>
 
 Indices and tables
 ==================

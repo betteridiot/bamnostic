@@ -5,5 +5,3 @@ bamnostic
    :maxdepth: 4
 
    bamnostic
-   setup
-   tests

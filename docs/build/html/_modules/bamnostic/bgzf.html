@@ -56,6 +56,10 @@
           
             
             
+              <div class="version">
+                0.8.4
+              </div>
+            
           
 
           
@@ -79,7 +83,9 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../bamnostic.html">bamnostic package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bamnostic.html">Module documentation</a></li>
 </ul>
 
             
@@ -208,9 +214,7 @@
 <span class="k">if</span> <span class="n">_PY_VERSION</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">):</span>
     <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="nb">open</span>
 
-<span class="n">read_name_pat</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?P&lt;read_name&gt;.*)([</span><span class="se">\\</span><span class="s1">#]\d)?&#39;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="format_warnings"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.format_warnings">[docs]</a><span class="k">def</span> <span class="nf">format_warnings</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_format_warnings</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Warning formatter</span>
 <span class="sd">    </span>
 <span class="sd">    Args:</span>
@@ -223,9 +227,9 @@
 <span class="sd">        Formatted warning for logging purposes</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 
-<span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span> <span class="o">=</span> <span class="n">format_warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span> <span class="o">=</span> <span class="n">_format_warnings</span>
 
 <span class="c1"># Constants used in BGZF format</span>
 <span class="n">_bgzf_magic</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x1f\x8b\x08\x04</span><span class="s2">&quot;</span> <span class="c1"># First 4 bytes of BAM file</span>
@@ -433,10 +437,7 @@
 <span class="sd">    just for the BAM header block. </span>
 <span class="sd">    </span>
 <span class="sd">    Attributes:</span>
-<span class="sd">        _header_block (:py:obj:`bytes`): raw byte stream of header block</span>
-<span class="sd">        _SAMheader_raw (:py:obj:`bytes`): the deflated plain text string (if present)</span>
-<span class="sd">        _SAMheader_end (int): byte offset of the end of SAM header</span>
-<span class="sd">        _BAMheader_end (int): byte offset of the end of the BAM header</span>
+<span class="sd">        _io (:py:obj:`file`): opened BAM file object</span>
 <span class="sd">        SAMheader (:py:obj:`dict`): parsed dictionary of the SAM header</span>
 <span class="sd">        n_refs (int): number of references</span>
 <span class="sd">        refs (:py:obj:`dict`): reference names and lengths listed in the BAM header</span>
@@ -878,8 +879,8 @@
             <span class="n">warnings</span><span class="o">.</span><span class="n">BytesWarning</span><span class="p">(</span><span class="s1">&#39;No EOF character found. File may be truncated&#39;</span><span class="p">)</span>
             <span class="k">return</span> <span class="kc">True</span>
     
-<div class="viewcode-block" id="BgzfReader.pileup"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.pileup">[docs]</a>    <span class="k">def</span> <span class="nf">pileup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Pileup is not implemented. Consider using `fetch` instead&#39;</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="nf">pileup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Pileup is not implemented. Consider using `fetch` instead&#39;</span><span class="p">)</span>
     
     
 <div class="viewcode-block" id="BgzfReader.has_index"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.has_index">[docs]</a>    <span class="k">def</span> <span class="nf">has_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -1058,12 +1059,12 @@
 <span class="sd">            SAM region formatted strings take on the following form:</span>
 <span class="sd">            &#39;chr1:100000-200000&#39;</span>
 <span class="sd">        </span>
-<span class="sd">        Usage: </span>
-<span class="sd">                AlignmentFile.fetch(contig=&#39;chr1&#39;, start=1, stop= 1000)</span>
-<span class="sd">                AlignmentFile.fetch(&#39;chr1&#39;, 1, 1000)</span>
-<span class="sd">                AlignmentFile.fetch(&#39;chr1:1-1000&#39;)</span>
-<span class="sd">                AlignmentFile.fetch(&#39;chr1&#39;, 1)</span>
-<span class="sd">                AlignmentFile.fetch(&#39;chr1&#39;)</span>
+<span class="sd">        Usage:</span>
+<span class="sd">            AlignmentFile.fetch(contig=&#39;chr1&#39;, start=1, stop= 1000)</span>
+<span class="sd">            AlignmentFile.fetch(&#39;chr1&#39;, 1, 1000)</span>
+<span class="sd">            AlignmentFile.fetch(&#39;chr1:1-1000&#39;)</span>
+<span class="sd">            AlignmentFile.fetch(&#39;chr1&#39;, 1)</span>
+<span class="sd">            AlignmentFile.fetch(&#39;chr1&#39;)</span>
 <span class="sd">        </span>
 <span class="sd">        Examples:</span>
 <span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
@@ -1503,7 +1504,7 @@
             
             <span class="n">mate_gen</span> <span class="o">=</span> <span class="n">mate_head</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">tid</span><span class="o">=</span><span class="n">rnext</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">pnext</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">pnext</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">read</span> <span class="ow">in</span> <span class="n">mate_gen</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">read_name_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">read</span><span class="o">.</span><span class="n">read_name</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()[</span><span class="s1">&#39;read_name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">read_name_base</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">read</span><span class="o">.</span><span class="n">read_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">read_name_base</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">AlignedSegment</span><span class="o">.</span><span class="n">is_read1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">read</span><span class="o">.</span><span class="n">is_read1</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">read</span></div>
     
@@ -1777,7 +1778,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
             VERSION:'0.8.4b5',
-            LANGUAGE:'None',
+            LANGUAGE:'en',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

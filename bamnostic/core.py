@@ -27,6 +27,14 @@ from bamnostic.utils import *
 _PY_VERSION = sys.version
 
 Cigar = namedtuple('Cigar', ('op_code', 'n_op', 'op_id', 'op_name'))
+"""``namedtuple`` for handling CIGAR data
+    
+    Args:
+        op_code (int): CIGAR operation index
+        n_op (int): number of operations for a given op_code
+        op_id (str): the string representation of the CIGAR representation ('MIDNSHP=XB')
+        op_name (str): Longer string name for operation
+"""
 
 # The BAM format uses byte encoding to compress alignment data. One such
 # compression is how CIGAR operations are stored: they are stored and an
@@ -92,36 +100,40 @@ def offset_qual(qual_string):
     return map(offset, qual_string)
 
 # compiled/performant struct objects
-unpack_refId_pos = struct.Struct('<2i').unpack
-unpack_bmq_flag = struct.Struct('<2I').unpack
-unpack_lseq_nrid_npos_tlen = struct.Struct('<4i').unpack
-unpack_tag_val = struct.Struct('<2ss').unpack
-unpack_string = struct.Struct('<s').unpack
-unpack_array = struct.Struct('<si').unpack
+_unpack_refId_pos = struct.Struct('<2i').unpack
+_unpack_bmq_flag = struct.Struct('<2I').unpack
+_unpack_lseq_nrid_npos_tlen = struct.Struct('<4i').unpack
+_unpack_tag_val = struct.Struct('<2ss').unpack
+_unpack_string = struct.Struct('<s').unpack
+_unpack_array = struct.Struct('<si').unpack
 
 
 class AlignmentFile(bgzf.BgzfReader, bgzf.BgzfWriter):
-    """API wrapper to allow drop in replacement for BAM functionality in pysam"""
-
+    """Wrapper to allow drop in replacement for BAM functionality in a ``pysam``-like API.
+    
+    Args:
+        filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file
+        mode (str): Mode for reading. BAM files are binary by nature (default: 'rb').
+        max_cache (int): number of desired LRU cache size, preferably a multiple of 2 (default: 128).
+        index_filename (str): path to index file (BAI) if it is named differently than the BAM file (default: None).
+        filename (str | :py:obj:`file`): synonym for `filepath_or_object`
+        check_header (bool): Obsolete method maintained for backwards compatibility (default: False)
+        check_sq (bool): Inspect BAM file for `@SQ` entries within the header
+        reference_filename (str): Not implemented. Maintained for backwards compatibility
+        filepath_index (str): synonym for `index_filename`
+        require_index (bool): require the presence of an index file or raise (default: False)
+        duplicate_filehandle (bool): Not implemented. Raises warning if True.
+        ignore_truncation (bool): Whether or not to allow trucated file processing (default: False).
+    
+    """
+    
     def __init__(self, filepath_or_object, mode="rb", max_cache=128, index_filename = None,
                 filename = None, check_header = False, check_sq = True, reference_filename = None,
                 filepath_index = None, require_index = False, duplicate_filehandle = None,
                 ignore_truncation = False):
         """Initialize the class.
         
-        Args:
-            filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file
-            mode (str): Mode for reading. BAM files are binary by nature (default: 'rb').
-            max_cache (int): number of desired LRU cache size, preferably a multiple of 2 (default: 128).
-            index_filename (str): path to index file (BAI) if it is named differently than the BAM file (default: None).
-            filename (str | :py:obj:`file`): synonym for `filepath_or_object`
-            check_header (bool): Obsolete method maintained for backwards compatibility (default: False)
-            check_sq (bool): Inspect BAM file for `@SQ` entries within the header
-            reference_filename (str): Not implemented. Maintained for backwards compatibility
-            filepath_index (str): synonym for `index_filename`
-            require_index (bool): require the presence of an index file or raise (default: False)
-            duplicate_filehandle (bool): Not implemented. Raises warning if True.
-            ignore_truncation (bool): Whether or not to allow trucated file processing (default: False).
+
         """
         
         kwargs = locals()
@@ -209,10 +221,10 @@ class AlignedSegment(object):
             reference_name (str): name of associated reference
             reference_length (int): length of associated reference sequence
         """
-        self.refID, self.pos = unpack_refId_pos(self._range_popper(8))
+        self.refID, self.pos = _unpack_refId_pos(self._range_popper(8))
         
         # get refID chromosome names
-        self._bin_mq_nl, self._flag_nc = unpack_bmq_flag(self._range_popper(8))
+        self._bin_mq_nl, self._flag_nc = _unpack_bmq_flag(self._range_popper(8))
         self.bin = self._bin_mq_nl >> 16
         self.mapq = (self._bin_mq_nl & 0xFF00) >> 8
         self._l_read_name = self._bin_mq_nl & 0xFF
@@ -223,7 +235,7 @@ class AlignedSegment(object):
         
         self.flag = self._flag_nc >> 16
         self._n_cigar_op = self._flag_nc & 0xFFFF
-        self.l_seq, self.next_refID, self.next_pos, self.tlen = unpack_lseq_nrid_npos_tlen(self._range_popper(16))
+        self.l_seq, self.next_refID, self.next_pos, self.tlen = _unpack_lseq_nrid_npos_tlen(self._range_popper(16))
         
         self.read_name = unpack('<{}s'.format(self._l_read_name), self._range_popper(self._l_read_name)).decode()[:-1]
         
@@ -400,26 +412,26 @@ class AlignedSegment(object):
         types = {"A":'<c', "i":'<l', "f":'<f', "Z":'<s', "H":'<s', "c":'<b',
                 "C":'<B', "s":'<h', "S":'<H', "i":'<i', "I":'<I'}
         
-        tag, val_type = unpack_tag_val(self._range_popper(3))
+        tag, val_type = _unpack_tag_val(self._range_popper(3))
         tag = tag.decode()
         val_type = val_type.decode()
         
         # Capture byte array of a given size
         if val_type == "B":
-            arr_type, arr_size = unpack_array(self._range_popper(5))
+            arr_type, arr_size = _unpack_array(self._range_popper(5))
             arr = unpack('<{}{}'.format(arr_size, types[arr_type.decode()]), 
                   self._range_popper(arr_size * struct.calcsize(types[arr_type.decode()])))
             return {tag: (val_type, arr)}
         
         # Capture given length string or hex array
         elif val_type == "Z" or val_type == "H":
-            val = unpack_string(self._range_popper(1))[0]
+            val = _unpack_string(self._range_popper(1))[0]
             if _PY_VERSION.startswith('2'):
                 while val[-1] != '\x00':
-                    val += unpack_string(self._range_popper(1))[0]
+                    val += _unpack_string(self._range_popper(1))[0]
             else:
                 while chr(val[-1]) != '\x00':
-                    val += unpack_string(self._range_popper(1))[0]
+                    val += _unpack_string(self._range_popper(1))[0]
             if val_type == "Z":
                 return {tag: (val_type, val.decode(encoding="latin_1")[:-1])}
             else:
@@ -492,6 +504,11 @@ class AlignedSegment(object):
         and therefore exclude clipping, but include insertions.
         """
         return self.__qa_start
+    
+    @property
+    def query_name(self):
+        """Alias for the read name"""
+        return self.read_name
     
     @property
     def query_alignment_sequence(self):

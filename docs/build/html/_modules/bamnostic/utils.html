@@ -56,6 +56,10 @@
           
             
             
+              <div class="version">
+                0.8.4
+              </div>
+            
           
 
           
@@ -79,7 +83,9 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../bamnostic.html">bamnostic package</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bamnostic.html">Module documentation</a></li>
 </ul>
 
             
@@ -339,7 +345,7 @@
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please answer &quot;Yes&quot; or &quot;No&quot;&#39;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="filter_read"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.filter_read">[docs]</a><span class="k">def</span> <span class="nf">filter_read</span><span class="p">(</span><span class="n">read</span><span class="p">,</span> <span class="n">read_callback</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">filter_read</span><span class="p">(</span><span class="n">read</span><span class="p">,</span> <span class="n">read_callback</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">):</span>
     
     <span class="c1"># Accept all reads</span>
     <span class="k">if</span> <span class="n">read_callback</span> <span class="o">==</span> <span class="s1">&#39;nofilter&#39;</span><span class="p">:</span> <span class="k">return</span> <span class="kc">True</span>
@@ -352,7 +358,7 @@
     <span class="k">elif</span> <span class="n">callable</span><span class="p">(</span><span class="n">read_callback</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">read_callback</span><span class="p">(</span><span class="n">read</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;read_callback should be &quot;all&quot;, &quot;nofilter&quot;, or a custom function that returns a boolean&#39;</span><span class="p">)</span>            </div>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;read_callback should be &quot;all&quot;, &quot;nofilter&quot;, or a custom function that returns a boolean&#39;</span><span class="p">)</span>            
             
             
 <span class="k">def</span> <span class="nf">_parse_sam_region</span><span class="p">(</span><span class="n">region</span><span class="p">):</span>
@@ -769,12 +775,16 @@
 <span class="sd">        ref_seq (str): a version of the aligned segment&#39;s reference sequence given \</span>
 <span class="sd">            the changes reflected in the MD tag</span>
 <span class="sd">    </span>
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if MD tag is None</span>
+<span class="sd">    </span>
 <span class="sd">    Example:</span>
 <span class="sd">        &gt;&gt;&gt; md_changes(&#39;CTTATATTGGCCTT&#39;, &#39;3C4AT4&#39;)</span>
 <span class="sd">        &#39;CTTCTATTATCCTT&#39;</span>
 <span class="sd">    </span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+    <span class="k">if</span> <span class="n">md_tag</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No MD tag found or given for sequence&#39;</span><span class="p">)</span>
     <span class="n">ref_seq</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
     <span class="n">last_md_pos</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">mo</span> <span class="ow">in</span> <span class="n">re</span><span class="o">.</span><span class="n">finditer</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;(?P&lt;matches&gt;\d+)|(?P&lt;del&gt;\^\w+?(?=\d))|(?P&lt;sub&gt;\w)&#39;</span><span class="p">,</span> <span class="n">md_tag</span><span class="p">):</span>
@@ -884,11 +894,13 @@
         <span class="k">elif</span> <span class="n">op_id</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">}:</span> <span class="c1"># BAM_CINS or BAM_CSOFT_CLIP: remove from sequence</span>
             <span class="k">if</span> <span class="n">query</span> <span class="ow">and</span> <span class="n">op_id</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                  <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">last_cigar_pos</span><span class="p">:</span><span class="n">last_cigar_pos</span> <span class="o">+</span> <span class="n">n_ops</span><span class="p">])):</span>
+                    <span class="n">seg_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="n">last_cigar_pos</span><span class="p">:</span><span class="n">last_cigar_pos</span> <span class="o">+</span> <span class="n">n_ops</span><span class="p">]</span>
                     <span class="k">if</span> <span class="n">qualities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">qualities</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">base_qual_thresh</span><span class="p">:</span>
-                            <span class="k">yield</span> <span class="n">seq</span><span class="p">[</span><span class="n">base</span><span class="p">],</span> <span class="n">start_pos</span>
+                        <span class="n">seg_qual</span> <span class="o">=</span> <span class="n">qualities</span><span class="p">[</span><span class="n">last_cigar_pos</span><span class="p">:</span><span class="n">last_cigar_pos</span> <span class="o">+</span> <span class="n">n_ops</span><span class="p">]</span>
+                        <span class="k">if</span> <span class="n">seg_qual</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">base_qual_thresh</span><span class="p">:</span>
+                            <span class="k">yield</span> <span class="n">seg_seq</span><span class="p">[</span><span class="n">base</span><span class="p">],</span> <span class="n">start_pos</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">yield</span> <span class="n">seq</span><span class="p">[</span><span class="n">base</span><span class="p">],</span> <span class="n">start_pos</span>
+                        <span class="k">yield</span> <span class="n">seg_seq</span><span class="p">[</span><span class="n">base</span><span class="p">],</span> <span class="n">start_pos</span>
             <span class="n">last_cigar_pos</span> <span class="o">+=</span> <span class="n">n_ops</span>
         <span class="k">elif</span> <span class="n">op_id</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span> <span class="c1"># BAM_CREF_SKIP: intron or large gaps</span>
             <span class="n">start_pos</span> <span class="o">+=</span> <span class="n">n_ops</span>
@@ -896,11 +908,13 @@
             <span class="n">start_pos</span> <span class="o">+=</span> <span class="n">n_ops</span>
         <span class="k">elif</span> <span class="n">op_id</span> <span class="ow">in</span> <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">}:</span> <span class="c1"># matches (uses both sequence match &amp; mismatch)</span>
             <span class="k">for</span> <span class="n">base</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">seq</span><span class="p">[</span><span class="n">last_cigar_pos</span><span class="p">:</span><span class="n">last_cigar_pos</span> <span class="o">+</span> <span class="n">n_ops</span><span class="p">])):</span>
+                <span class="n">seg_seq</span> <span class="o">=</span> <span class="n">seq</span><span class="p">[</span><span class="n">last_cigar_pos</span><span class="p">:</span><span class="n">last_cigar_pos</span> <span class="o">+</span> <span class="n">n_ops</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">qualities</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">qualities</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">base_qual_thresh</span><span class="p">:</span>
-                        <span class="k">yield</span> <span class="n">seq</span><span class="p">[</span><span class="n">base</span><span class="p">],</span> <span class="n">start_pos</span>
+                    <span class="n">seg_qual</span> <span class="o">=</span> <span class="n">qualities</span><span class="p">[</span><span class="n">last_cigar_pos</span><span class="p">:</span><span class="n">last_cigar_pos</span> <span class="o">+</span> <span class="n">n_ops</span><span class="p">]</span>
+                    <span class="k">if</span> <span class="n">seg_qual</span><span class="p">[</span><span class="n">base</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">base_qual_thresh</span><span class="p">:</span>
+                        <span class="k">yield</span> <span class="n">seg_seq</span><span class="p">[</span><span class="n">base</span><span class="p">],</span> <span class="n">start_pos</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="k">yield</span> <span class="n">seq</span><span class="p">[</span><span class="n">base</span><span class="p">],</span> <span class="n">start_pos</span>
+                    <span class="k">yield</span> <span class="n">seg_seq</span><span class="p">[</span><span class="n">base</span><span class="p">],</span> <span class="n">start_pos</span>
                 <span class="n">start_pos</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="n">last_cigar_pos</span> <span class="o">+=</span> <span class="n">n_ops</span>
         <span class="k">else</span><span class="p">:</span>
@@ -940,7 +954,7 @@
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
             VERSION:'0.8.4b5',
-            LANGUAGE:'None',
+            LANGUAGE:'en',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

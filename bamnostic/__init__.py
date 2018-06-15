@@ -16,10 +16,14 @@ Note:
 
 The three main classes of `bamnostic` are:
 
-#. `bamnostic.AlignmentFile`: the BAM file handler
-#. `bamnostic.AlignedSegment`: an aligned read object interface
-#. `bamnostic.bai.Bai`: if the BAM file has an associated index file (preferred), \
+#. ``bamnostic.AlignmentFile``: the BAM file handler
+#. ``bamnostic.AlignedSegment``: an aligned read object interface
+#. ``bamnostic.bai.Bai``: if the BAM file has an associated index file (preferred), \
     this is the file handler for it.
+
+Note:
+    Within the scope of personal research, reading BAM files is the only fully
+    supported IO. The skeleton for writing BAM files is present, just not connected.
 
 .. _BAM:
     https://samtools.github.io/hts-specs/SAMv1.pdf
