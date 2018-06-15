@@ -120,7 +120,7 @@ Nucleotide Sequence
 
     # nucleotide sequence (raw)
     >>> print(complex_read.query_sequence)
-    CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
+    GTTTAGTGCCTTTGTTCACATAGACCCCCTTGCAA
     
     # nucleotide sequence (aligned)
     >>> print(first_read.query_alignment_sequence)
