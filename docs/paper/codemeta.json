@@ -2,7 +2,7 @@
   "@context": ["http://schema.org", {"author": {"@id": "schema:author", "@container": "@list"} } ] ,
   "@type": "Code",
   "title": "bamnostic",
-  "name": "BAMnostic: a Pure Python OS, version, and runtime agnostic BAM file parser",
+  "name": "BAMnostic: an OS-agnostic toolkit for genomic sequence analysis",
   "author": [
     {
       "@id": "https://orcid.org/0000-0002-0243-4609",
@@ -34,7 +34,7 @@
   "maintainer": "https://orcid.org/0000-0002-0243-4609",
   "codeRepository": "https://github.com/betteridiot/bamnostic",
   "dateModified": "2018-06-13",
-  "description": "BAMnostic is a Pure Python OS, version, and runtime agnostic BAM file parser",
+  "description": "BAMnostic: an OS-agnostic toolkit for genomic sequence analysis",
   "keywords": "BAM, pysam, genomics, genetics, htslib, samtools",
   "license": "https://github.com/betteridiot/bamnostic/blob/master/LICENSE",
   "softwareVersion": "v0.8.2",
@@ -47,5 +47,5 @@
         "name": "Python",
         "URL": "https://www.python.org/"
   },
-  "downloadUrl": ["https://github.com/codemeta/codemetar/releases/", "https://pypi.org/project/bamnostic/", "https://anaconda.org/conda-forge/bamnostic"]
+  "downloadUrl": ["https://pypi.org/project/bamnostic/", "https://anaconda.org/conda-forge/bamnostic"]
 }
