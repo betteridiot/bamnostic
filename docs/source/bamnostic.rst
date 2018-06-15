@@ -9,32 +9,32 @@ bamnostic package
 Submodules
 ----------
 
-bamnostic.bai module
---------------------
-
-.. automodule:: bamnostic.bai
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-bamnostic.bgzf module
----------------------
-
-.. automodule:: bamnostic.bgzf
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-bamnostic.core module
----------------------
+Core Module (``bamnostic.core``)
+--------------------------------
 
 .. automodule:: bamnostic.core
     :members:
     :undoc-members:
     :show-inheritance:
 
-bamnostic.utils module
-----------------------
+Binary Alignment Map (BAM) file handlers (``bamnostic.bgzf``)
+-------------------------------------------------------------
+
+.. automodule:: bamnostic.bgzf
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+BAM Index (BAI) file handler (``bamnostic.bai``)
+------------------------------------------------
+
+.. automodule:: bamnostic.bai
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+BAMnostic Utilities (``bamnostic.utils``)
+-----------------------------------------
 
 .. automodule:: bamnostic.utils
     :members:

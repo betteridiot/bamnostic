@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
+
 `bamnostic` is an OS-agnostic, Pure Python `BAM`_
 file parser.
 
@@ -14,30 +15,16 @@ Note:
     SAM and CRAM support is not yet implemented
 
 The three main classes of `bamnostic` are:
-1. `bamnostic.AlignmentFile`: the BAM file handler
-2. `bamnostic.AlignedSegment`: an aligned read object interface
-3. `bamnostic.bai.Bai`: if the BAM file has an associated index file (preferred), \
-    this is the file handler for it.
 
-Examples:
-    .. highlight:: python
-        :linenothreshold: 1
-    
-    .. code-block:: python
-        
-        import bamnostic as bs
-        
-        print('Hello, Poopy Butt')
+#. `bamnostic.AlignmentFile`: the BAM file handler
+#. `bamnostic.AlignedSegment`: an aligned read object interface
+#. `bamnostic.bai.Bai`: if the BAM file has an associated index file (preferred), \
+    this is the file handler for it.
 
 .. _BAM:
     https://samtools.github.io/hts-specs/SAMv1.pdf
 .. _PyPy:
     https://pypy.org/
-
-@author: "Marcus D. Sherman"
-@copyright: "Copyright 2018, University of Michigan, Mills Lab
-@email: "mdsherman<at>betteridiot<dot>tech"
-@version: "v0.4.2b13"
 
 This code is part of the bamnostic distribution and governed by its
 license.  Please see the LICENSE file that should have been included

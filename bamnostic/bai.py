@@ -2,7 +2,9 @@
 # -*- coding: utf-8 -*-
 """BAI file parser 
 
-Copyright (c) 2018, Marcus D. Sherman
+.. include:: <isonum.txt>
+
+Copyright |copy| 2018, Marcus D. Sherman
 
 This code is part of the bamnostic distribution and governed by its
 license.  Please see the LICENSE file that should have been included
@@ -19,10 +21,6 @@ Furthermore, it allows subsections of the BAI to be loaded into memory, reducing
 footprint and speeding up queries within a small number of references. Lastly, by parsing it
 as such, random access queries directly into the associated BAM file is available to other
 tools within bamnostic
-
-@author: 'Marcus D. Sherman'
-@copyright: 'Copyright 2018, University of Michigan, Mills Lab'
-@email: 'mdsherman<at>betteridiot<dot>tech'
 
 """
 
