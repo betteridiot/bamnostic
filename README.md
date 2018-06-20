@@ -2,7 +2,6 @@
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
 [![PyPI version](https://badge.fury.io/py/bamnostic.svg)](https://badge.fury.io/py/bamnostic) 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/betteridiot/bamnostic/blob/master/LICENSE) 
-[![Anaconda-Server Badge](https://anaconda.org/conda-forge/bamnostic/badges/platforms.svg)](https://anaconda.org/conda-forge/bamnostic) 
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
 [![Documentation Status](https://readthedocs.org/projects/bamnostic/badge/?version=latest)](https://bamnostic.readthedocs.io/en/latest/?badge=latest)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d7e36e72f109c598c86d/maintainability)](https://codeclimate.com/github/betteridiot/bamnostic/maintainability)
