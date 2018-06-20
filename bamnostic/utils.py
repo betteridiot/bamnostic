@@ -198,7 +198,8 @@ def yes_no():
 def filter_read(read, read_callback='all'):
 
     # Accept all reads
-    if read_callback == 'nofilter': return True
+    if read_callback == 'nofilter':
+        return True
 
     # check the read flags against filter criteria
     elif read_callback == 'all':
