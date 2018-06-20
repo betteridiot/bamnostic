@@ -6,6 +6,7 @@ def readme():
     with open(os.path.dirname(__file__) + '/README.rst') as rst:
         return rst.read()
 
+
 setup(
     name='bamnostic',
     version='0.8.6b1',
