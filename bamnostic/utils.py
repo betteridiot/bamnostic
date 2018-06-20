@@ -559,6 +559,27 @@ def parse_cigar(cigar_str):
     return cigar_array
 
 
+def check_cigar_arg(cigar):
+    """ Checks to make sure CIGAR arugment is valid.
+
+    Args:
+        argument (str or :py:obj:`list`): CIGAR string (pre-formatted or raw)
+
+    Returns:
+        (:py:obj:`list`): CIGAR re-formatted as a list
+
+    Raises:
+        ValueError: if CIGAR is not a string or pre-formatted list
+    """
+    if type(cigar) == str:
+        cigar = parse_cigar(cigar)
+    elif type(cigar) == list:
+        pass
+    else:
+        raise ValueError('CIGAR must be string or list of tuples of cigar operations (by ID) and number of operations')
+    return cigar
+
+
 def cigar_changes(seq, cigar):
     """Recreates the reference sequence to the extent that the CIGAR string can
         represent.
@@ -585,12 +606,7 @@ def cigar_changes(seq, cigar):
 
     """
 
-    if type(cigar) == str:
-        cigar = parse_cigar(cigar)
-    elif type(cigar) == list:
-        pass
-    else:
-        raise ValueError('CIGAR must be string or list of tuples of cigar operations (by ID) and number of operations')
+    cigar = check_cigar_arg(cigar)
     cigar_formatted_ref = ''
     last_cigar_pos = 0
     for op, n_ops in cigar:
@@ -729,12 +745,8 @@ def cigar_alignment(seq=None, cigar=None, start_pos=None, qualities=None, base_q
         ('A', 95)
 
     """
-    if type(cigar) == str:
-        cigar = parse_cigar(cigar)
-    elif type(cigar) == list:
-        pass
-    else:
-        raise ValueError('CIGAR must be string or list of tuples of cigar operations (by ID) and number of operations')
+
+    cigar = check_cigar_arg(cigar)
     cigar_aligned = ''
     algn_seg = {}
     last_cigar_pos = 0
