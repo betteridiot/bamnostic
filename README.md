@@ -94,7 +94,7 @@ bam.header
 ```python
 first_read = next(bam)
 print(first_read)
->>> EAS56_57:6:190:289:82	69	chr1	99	0		0	99	0	CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA	    MF:C:192
+>>> EAS56_57:6:190:289:82	69	chr1	100	0	*	=	100	0	CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA	<<<7<<<;<<<<<<<<8;;<7;4<;<;;;;;94<;	MF:C:192
 ``` 
 
 ### Exploring the read
