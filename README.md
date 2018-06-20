@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/betteridiot/bamnostic.svg?branch=master)](https://travis-ci.org/betteridiot/bamnostic)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
 [![PyPI version](https://badge.fury.io/py/bamnostic.svg)](https://badge.fury.io/py/bamnostic) 
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/betteridiot/bamnostic/blob/master/LICENSE) 
