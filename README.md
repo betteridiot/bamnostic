@@ -64,22 +64,22 @@ Bamnostic is meant to be a reduced drop-in replacement for [pysam](https://githu
 ### Importing
 
 ```python
-import bamnostic as bs
+>>> import bamnostic as bs
 ``` 
 
 ### Loading your BAM file
 Bamnostic comes with an example BAM (and respective BAI) file just to play around with the output. Note, however, that the example BAM file does not contain many reference contigs. Therefore, random access is limited. This example file is made availble through `bamnostic.example_bam`, which is a just a string path to the BAM file within the package.
 
 ```python
-bam = bs.AlignmentFile(bs.example_path, 'rb')
+>>> bam = bs.AlignmentFile(bs.example_path, 'rb')
 ``` 
 
 ### Get the header
 **Note**: this will print out the SAM header. If the SAM header is not in the BAM file, it will print out the dictionary representation of the BAM header. It is a dictionary of refID keys with contig names and length tuple values.
 
 ```python
-bam.header
->>> {0: ('chr1', 1575), 1: ('chr2', 1584)}
+>>> bam.header
+{0: ('chr1', 1575), 1: ('chr2', 1584)}
 ``` 
 
 ### Data validation through `head()`
@@ -93,33 +93,33 @@ bam.header
 ### Getting the first read
 
 ```python
-first_read = next(bam)
-print(first_read)
->>> EAS56_57:6:190:289:82	69	chr1	100	0	*	=	100	0	CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA	<<<7<<<;<<<<<<<<8;;<7;4<;<;;;;;94<;	MF:C:192
+>>> first_read = next(bam)
+>>> print(first_read)
+EAS56_57:6:190:289:82	69	chr1	100	0	*	=	100	0	CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA	<<<7<<<;<<<<<<<<8;;<7;4<;<;;;;;94<;	MF:C:192
 ``` 
 
 ### Exploring the read
 
 ```python
 # read name
-print(first_read.read_name)
->>> EAS56_57:6:190:289:82
+>>> print(first_read.read_name)
+EAS56_57:6:190:289:82
 
 # 0-based position
-print(first_read.pos)
->>> 99
+>>> print(first_read.pos)
+99
 
 # nucleotide sequence
-print(first_read.seq)
->>> CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
+>>> print(first_read.seq)
+CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
 
 # Read FLAG
-print(first_read.flag)
->>> 69
+>>> print(first_read.flag)
+69
 
 # decoded FLAG
-bs.utils.flag_decode(first_read.flag)
->>> [(1, 'read paired'), (4, 'read unmapped'), (64, 'first in pair')]
+>>> bs.utils.flag_decode(first_read.flag)
+[(1, 'read paired'), (4, 'read unmapped'), (64, 'first in pair')]
 ``` 
 
 ### Random Access
