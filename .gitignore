@@ -3,3 +3,4 @@ dist/
 __pycache__/
 bamnostic/.ipynb_checkpoints/
 bamnostic.egg-info/
+.pytest_cache/
