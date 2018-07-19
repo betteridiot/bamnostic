@@ -516,7 +516,7 @@ class LruDict(OrderedDict):
 
 
 # The BAM format uses byte encoding to compress alignment data. One such
-# compression is how CIGAR operations are stored: they are stored and an
+# compression is how operations are stored: they are stored and an
 # array of integers. These integers are mapped to their respective
 # operation identifier. Below is the mapping utility.
 _CIGAR_OPS = {'M': ('BAM_CMATCH', 0),

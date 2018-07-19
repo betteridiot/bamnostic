@@ -191,6 +191,9 @@ class AlignedSegment(object):
 
         # Iteratively pull out the tags for the given aligned segment
         self._tag_builder()
+        
+        # Process the CIGAR: accounts for CIGAR strings > 65535 operations
+        self._decode_cigar()
 
         # Compute the data regarding the sequence that aligns to reference
         # This excludes insertions and clipping
@@ -241,7 +244,14 @@ class AlignedSegment(object):
         self.reference_name = self._io._header.refs[self.refID][0]
 
     def _cigar_builder(self):
-        """Uses unpacked values to properly process the CIGAR related data
+        """Just unpacks the cigar data to be processed later. Ensures the cursor
+        stays in the right place."""
+        if self._n_cigar_op != 0:
+            self._cigar = struct.unpack('<{}I'.format(self._n_cigar_op), self._range_popper(4 * self._n_cigar_op))
+
+    def _decode_cigar(self):
+        """Process the CIGAR into helpful tuples and plain text CIGAR string
+        Uses unpacked values to properly process the CIGAR related data
 
         Requires determining string size and key mapping to _CIGAR_KEY
 
@@ -253,10 +263,11 @@ class AlignedSegment(object):
                                     readability. Additionally, preserves the CIGAR op name.
 
         """
+        # can't use bamnostic.utils.unpack because self._cigar needs to be tuples for decoding
         if self._n_cigar_op != 0:
-            self._cigar = struct.unpack('<{}I'.format(self._n_cigar_op), self._range_popper(4 * self._n_cigar_op))
-
-            # can't use bamnostic.utils.unpack because self._cigar needs to be tuples for decoding
+            if 'CG' in self.tags and self._cigar[0] == self.l_seq << 4 | 4:
+               self._cigar = self.tags.pop('CG')[1]
+               self._n_cigar_op = len(self._cigar)
             decoded_cigar = [(cigar_op >> 4, _CIGAR_KEY[cigar_op & 0xF]) for cigar_op in self._cigar]
             self.cigarstring = "".join(['{}{}'.format(c[0], c[1]) for c in decoded_cigar])
             self._cigartuples = [Cigar(bamnostic.utils._CIGAR_OPS[op[1]][1], op[0], op[1], bamnostic.utils._CIGAR_OPS[op[1]][0]) for op in decoded_cigar]
@@ -288,7 +299,8 @@ class AlignedSegment(object):
 
         Attributes:
             query_qualities (:py:obj:`array.array`): Array of Phred quality scores for each base
-                                of the aligned sequence. No offset required.
+                              
+                              of the aligned sequence. No offset required.
             qual (str): ASCII-encoded quality string
         """
         self._raw_qual = unpack('<{}s'.format(self.l_seq), self._range_popper(self.l_seq))
@@ -324,7 +336,9 @@ class AlignedSegment(object):
         """
         self.tags = {}
         while len(self._byte_stream) > 0:
-            self.tags.update(self._tagger())
+            potential_tag = self._tagger()
+            if potential_tag is not None:
+                self.tags.update(self._tagger())
 
     def __repr__(self):
         """Represent the read when the object is called.
@@ -404,8 +418,8 @@ class AlignedSegment(object):
         Returns:
             dictionary of the tag, value types, and values
         """
-        types = {"A": '<c', "i": '<l', "f": '<f', "Z": '<s', "H": '<s', "c": '<b',
-                 "C": '<B', "s": '<h', "S": '<H', "i": '<i', "I": '<I'}
+        types = {"A": 'c', "i": 'l', "f": 'f', "Z": 's', "H": 's', "c": 'b',
+                 "C": 'B', "s": 'h', "S": 'H', "i": 'i', "I": 'I'}
 
         tag, val_type = _unpack_tag_val(self._range_popper(3))
         tag = tag.decode()
@@ -435,7 +449,7 @@ class AlignedSegment(object):
         # Everything else
         else:
             val_size = struct.calcsize(types[val_type])
-            val = unpack(types[val_type], self._range_popper(val_size))
+            val = unpack('<' + types[val_type], self._range_popper(val_size))
             if val_type == "A":
                 val = val.decode(encoding='latin_1')
             return {tag: (val_type, val)}
