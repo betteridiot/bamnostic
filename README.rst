@@ -303,6 +303,16 @@ it is lightweight enough to fit into any simple web server (e.g.
 `Flask <http://flask.pocoo.org/>`__), further expanding the science of
 genetics/genomics.
 
+--------------
+
+Community Guidelines:
+---------------------
+
+Eagerly accepting PRs for improvements, optimizations, or features. For
+any questions or issues, please feel free to make a post to bamnostic's
+`Issue tracker <https://github.com/betteridiot/bamnostic/issues>`__ on
+github.
+
 .. |Build Status| image:: https://travis-ci.org/betteridiot/bamnostic.svg?branch=master
    :target: https://travis-ci.org/betteridiot/bamnostic
 .. |noarch| image:: https://img.shields.io/circleci/project/github/conda-forge/bamnostic-feedstock/master.svg?label=noarch
