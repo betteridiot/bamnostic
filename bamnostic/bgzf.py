@@ -353,6 +353,12 @@ class BAMheader(object):
 
         self._header_block = get_block(_io)
 
+    def __len__(self):
+        return len(self.refs)
+
+    def __getitem__(self, key):
+        return self.refs[key]
+
     def to_header(self):
         """ Allows the user to directly copy the header of another BAM file
 
