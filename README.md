@@ -6,6 +6,7 @@
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
 [![Documentation Status](https://readthedocs.org/projects/bamnostic/badge/?version=latest)](https://bamnostic.readthedocs.io/en/latest/?badge=latest)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d7e36e72f109c598c86d/maintainability)](https://codeclimate.com/github/betteridiot/bamnostic/maintainability)
+[![DOI](https://zenodo.org/badge/121782433.svg)](https://zenodo.org/badge/latestdoi/121782433)
 </br>
 
 # BAMnostic 
