@@ -2176,6 +2176,26 @@ items are added to the bottom, and removed in a FIFO order.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="bamnostic.utils.check_cigar_arg">
+<code class="descclassname">bamnostic.utils.</code><code class="descname">check_cigar_arg</code><span class="sig-paren">(</span><em>cigar</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#check_cigar_arg"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.check_cigar_arg" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks to make sure CIGAR arugment is valid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>argument</strong> (str or <code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code>) – CIGAR string (pre-formatted or raw)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">CIGAR re-formatted as a list</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code>)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code> – if CIGAR is not a string or pre-formatted list</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="bamnostic.utils.cigar_changes">
 <code class="descclassname">bamnostic.utils.</code><code class="descname">cigar_changes</code><span class="sig-paren">(</span><em>seq</em>, <em>cigar</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#cigar_changes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.cigar_changes" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="docutils">

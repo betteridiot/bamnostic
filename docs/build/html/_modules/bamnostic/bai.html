@@ -151,7 +151,7 @@
   <h1>Source code for bamnostic.bai</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/user/bin/env python</span>
 <span class="c1"># -*- coding: utf-8 -*-</span>
-<span class="sd">&quot;&quot;&quot;BAI file parser </span>
+<span class="sd">&quot;&quot;&quot;BAI file parser</span>
 
 <span class="sd">.. include:: &lt;isonum.txt&gt;</span>
 
@@ -165,9 +165,9 @@
 <span class="sd">allows for indexing. When the user invokes a tool to index a given BAM file, a BAM index (BAI)</span>
 <span class="sd">file is created. Generally speaking, a BAI contains the all the virtual offsets of clusters of</span>
 <span class="sd">reads that are associated with specific subsections of the BAM file. When the BAI is produced,</span>
-<span class="sd">random access to the BAM is available. </span>
+<span class="sd">random access to the BAM is available.</span>
 
-<span class="sd">This script is for parsing the binary encoded BAI file, inherently making it human readable. </span>
+<span class="sd">This script is for parsing the binary encoded BAI file, inherently making it human readable.</span>
 <span class="sd">Furthermore, it allows subsections of the BAI to be loaded into memory, reducing the memory</span>
 <span class="sd">footprint and speeding up queries within a small number of references. Lastly, by parsing it</span>
 <span class="sd">as such, random access queries directly into the associated BAM file is available to other</span>
@@ -196,8 +196,10 @@
 
 <span class="kn">from</span> <span class="nn">bamnostic.utils</span> <span class="k">import</span> <span class="o">*</span>
 
-<div class="viewcode-block" id="format_warnings"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.format_warnings">[docs]</a><span class="k">def</span> <span class="nf">format_warnings</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
+
+<span class="k">def</span> <span class="nf">format_warnings</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="k">return</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span> <span class="o">=</span> <span class="n">format_warnings</span>
 
@@ -208,7 +210,7 @@
 <span class="n">unpack_unmapped</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;4Q&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
 
 
-<div class="viewcode-block" id="conditional_decorator"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.conditional_decorator">[docs]</a><span class="k">class</span> <span class="nc">conditional_decorator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">conditional_decorator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decorator</span> <span class="o">=</span> <span class="n">dec</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
@@ -217,101 +219,106 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">:</span>
             <span class="c1"># Return the function unchanged, not decorated.</span>
             <span class="k">return</span> <span class="n">func</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">)</span></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
 
 
 <span class="c1"># __slot__ classes for performant named indexing and future-proofing &amp;readability</span>
 <span class="n">RefIdx</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;RefIdx&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;start_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;end_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;n_bins&#39;</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="Bin"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bin">[docs]</a><span class="k">class</span> <span class="nc">Bin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Bin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bin_id&#39;</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bin_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="o">=</span> <span class="n">args</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bin_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="o">=</span> <span class="n">args</span>
 
 
-<div class="viewcode-block" id="Chunk"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Chunk">[docs]</a><span class="k">class</span> <span class="nc">Chunk</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Chunk</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;voffset_beg&#39;</span><span class="p">,</span> <span class="s1">&#39;voffset_end&#39;</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">voffset_beg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">voffset_end</span> <span class="o">=</span> <span class="n">unpack_chunk</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">voffset_beg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">voffset_end</span> <span class="o">=</span> <span class="n">unpack_chunk</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
 
 
-<div class="viewcode-block" id="Ref"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Ref">[docs]</a><span class="k">class</span> <span class="nc">Ref</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Ref</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">,</span> <span class="s1">&#39;intervals&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_id&#39;</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_id</span> <span class="o">=</span> <span class="n">args</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_id</span> <span class="o">=</span> <span class="n">args</span>
 
 
-<div class="viewcode-block" id="Unmapped"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Unmapped">[docs]</a><span class="k">class</span> <span class="nc">Unmapped</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="k">class</span> <span class="nc">Unmapped</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;unmapped_beg&#39;</span><span class="p">,</span> <span class="s1">&#39;unmapped_end&#39;</span><span class="p">,</span> <span class="s1">&#39;n_mapped&#39;</span><span class="p">,</span> <span class="s1">&#39;n_unmapped&#39;</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ubeg</span><span class="p">,</span> <span class="n">uend</span><span class="p">,</span> <span class="n">nmap</span><span class="p">,</span> <span class="n">numap</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unmapped_beg</span> <span class="o">=</span> <span class="n">ubeg</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unmapped_end</span> <span class="o">=</span> <span class="n">uend</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_mapped</span> <span class="o">=</span> <span class="n">nmap</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_unmapped</span> <span class="o">=</span> <span class="n">numap</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_unmapped</span> <span class="o">=</span> <span class="n">numap</span>
 
 
 <div class="viewcode-block" id="reg2bin"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.reg2bin">[docs]</a><span class="k">def</span> <span class="nf">reg2bin</span><span class="p">(</span><span class="n">beg</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Finds the largest superset bin of region. Numeric values taken from hts-specs</span>
-<span class="sd">    </span>
+    <span class="sd">&quot;&quot;&quot;Finds the largest superset bin of region. Numeric values taken from hts-specs</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        beg (int): inclusive beginning position of region</span>
 <span class="sd">        end (int): exclusive end position of region</span>
-<span class="sd">    </span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        (int): distinct bin ID for largest superset bin of region</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">left_shift</span> <span class="o">=</span> <span class="mi">15</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">beg</span> <span class="o">&gt;&gt;</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="n">end</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">:</span> 
-            <span class="k">return</span> <span class="nb">int</span><span class="p">(((</span><span class="mi">1</span><span class="o">&lt;&lt;</span><span class="n">left_shift</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span><span class="o">/</span><span class="mi">7</span> <span class="o">+</span> <span class="p">(</span><span class="n">beg</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">beg</span> <span class="o">&gt;&gt;</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">left_shift</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">7</span> <span class="o">+</span> <span class="p">(</span><span class="n">beg</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">))</span>
         <span class="n">left_shift</span> <span class="o">-=</span> <span class="mi">3</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span></div>
 
+
 <div class="viewcode-block" id="reg2bins"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.reg2bins">[docs]</a><span class="k">def</span> <span class="nf">reg2bins</span><span class="p">(</span><span class="n">rbeg</span><span class="p">,</span> <span class="n">rend</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39;Generates bin ids which overlap the specified region.</span>
-<span class="sd">    </span>
+    <span class="sd">&quot;&quot;&quot;Generates bin ids which overlap the specified region.</span>
+
 <span class="sd">    Args:</span>
 <span class="sd">        beg (int): inclusive beginning position of region</span>
 <span class="sd">        end (int): exclusive end position of region</span>
-<span class="sd">    </span>
+
 <span class="sd">    Yields:</span>
 <span class="sd">        (int): bin IDs for overlapping bins of region</span>
-<span class="sd">    </span>
+
 <span class="sd">    Raises:</span>
 <span class="sd">        AssertionError (Exception): if the range is malformed or invalid</span>
-<span class="sd">    &#39;&#39;&#39;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Based off the algorithm presented in:</span>
     <span class="c1"># https://samtools.github.io/hts-specs/SAMv1.pdf</span>
-    
+
     <span class="c1"># Bin calculation constants.</span>
     <span class="n">BIN_ID_STARTS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">585</span><span class="p">,</span> <span class="mi">4681</span><span class="p">)</span>
-    
+
     <span class="c1"># Maximum range supported by specifications.</span>
     <span class="n">MAX_RNG</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span> <span class="o">**</span> <span class="mi">29</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
-    
+
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">rbeg</span> <span class="o">&lt;=</span> <span class="n">rend</span> <span class="o">&lt;=</span> <span class="n">MAX_RNG</span><span class="p">,</span> <span class="s1">&#39;Invalid region </span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rbeg</span><span class="p">,</span> <span class="n">rend</span><span class="p">)</span>
-    
-    <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">shift</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">BIN_ID_STARTS</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="mi">13</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">)):</span>
+
+    <span class="k">for</span> <span class="n">start</span><span class="p">,</span> <span class="n">shift</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">BIN_ID_STARTS</span><span class="p">,</span> <span class="nb">range</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="o">-</span><span class="mi">3</span><span class="p">)):</span>
         <span class="n">i</span> <span class="o">=</span> <span class="n">rbeg</span> <span class="o">&gt;&gt;</span> <span class="n">shift</span> <span class="k">if</span> <span class="n">rbeg</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span>
         <span class="n">j</span> <span class="o">=</span> <span class="n">rend</span> <span class="o">&gt;&gt;</span> <span class="n">shift</span> <span class="k">if</span> <span class="n">rend</span> <span class="o">&lt;</span> <span class="n">MAX_RNG</span> <span class="k">else</span> <span class="n">MAX_RNG</span> <span class="o">&gt;&gt;</span> <span class="n">shift</span>
-        
-        <span class="k">for</span> <span class="n">bin_id_offset</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="o">+</span><span class="mi">1</span><span class="p">):</span>
+
+        <span class="k">for</span> <span class="n">bin_id_offset</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
             <span class="k">yield</span> <span class="n">start</span> <span class="o">+</span> <span class="n">bin_id_offset</span></div>
 
 
 <div class="viewcode-block" id="Bai"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai">[docs]</a><span class="k">class</span> <span class="nc">Bai</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&#39;&#39;&#39; This class defines the bam index file object and its interface.</span>
-<span class="sd">    </span>
-<span class="sd">    The purpose of this class is the binary parsing of the bam index file (BAI) associated with </span>
-<span class="sd">    a given bam file. When queried, the Bai object identifies the bins of data that overlap the </span>
+    <span class="sd">&quot;&quot;&quot; This class defines the bam index file object and its interface.</span>
+
+<span class="sd">    The purpose of this class is the binary parsing of the bam index file (BAI) associated with</span>
+<span class="sd">    a given bam file. When queried, the Bai object identifies the bins of data that overlap the</span>
 <span class="sd">    requested region and directs which parts of the bam file contain it.</span>
-<span class="sd">    </span>
+
 <span class="sd">    Virtual offsets are processed using the following method:</span>
 <span class="sd">    Beginning of compressed block = coffset = virtual offset &gt;&gt; 16</span>
 <span class="sd">    Position within uncompressed block = uoffset = virtual offset ^ (coffset &lt;&lt; 16)</span>
-<span class="sd">    </span>
+
 <span class="sd">    Attributes:</span>
 <span class="sd">        _io (fileObject): opened BAI file object</span>
 <span class="sd">        _LINEAR_INDEX_WINDOW (int): constant of the linear interval window size</span>
@@ -319,144 +326,138 @@
 <span class="sd">        magic (bytes): first 4 bytes of file. Must be equal to b&#39;BAI\x01&#39;</span>
 <span class="sd">        n_refs (int): number of references in BAI</span>
 <span class="sd">        unmapped (dict): dictionary of the unmapped read stats by each reference</span>
-<span class="sd">        current_ref (None|dict): dictionary of the current reference loaded into memory. </span>
+<span class="sd">        current_ref (None|dict): dictionary of the current reference loaded into memory.</span>
 <span class="sd">                                It contains the a dictionary of bin IDs and their respective</span>
 <span class="sd">                                chunks, and a list of linear intervals.</span>
 <span class="sd">        ref_indices (dict): dictionary of reference ids and their start/stop offsets within the BAI file</span>
 <span class="sd">        n_no_coord (None|int): if present in BAI, is the number of reads that have no coordinates</span>
 <span class="sd">        _last_pos (int): used for indexing, the byte position of the file head.</span>
-<span class="sd">        </span>
-<span class="sd">    &#39;&#39;&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_io&#39;</span><span class="p">,</span> <span class="s1">&#39;_LINEAR_INDEX_WINDOW&#39;</span><span class="p">,</span> <span class="s1">&#39;_UNMAP_BIN&#39;</span><span class="p">,</span> <span class="s1">&#39;BAM_LIDX_SHIFT&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;magic&#39;</span><span class="p">,</span> <span class="s1">&#39;n_refs&#39;</span><span class="p">,</span> <span class="s1">&#39;unmapped&#39;</span><span class="p">,</span> <span class="s1">&#39;current_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_indices&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;n_no_coor&#39;</span><span class="p">,</span> <span class="s1">&#39;_last_pos&#39;</span><span class="p">]</span>
+                 <span class="s1">&#39;magic&#39;</span><span class="p">,</span> <span class="s1">&#39;n_refs&#39;</span><span class="p">,</span> <span class="s1">&#39;unmapped&#39;</span><span class="p">,</span> <span class="s1">&#39;current_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_indices&#39;</span><span class="p">,</span>
+                 <span class="s1">&#39;n_no_coor&#39;</span><span class="p">,</span> <span class="s1">&#39;_last_pos&#39;</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Initialization method</span>
-<span class="sd">        </span>
-<span class="sd">        Generates an &quot;index&quot; of the index. This gives us the byte positions of each chromosome </span>
-<span class="sd">        within the index file. Now, when a user queries over a specific chromosome, it pulls </span>
+        <span class="sd">&quot;&quot;&quot;Initialization method</span>
+
+<span class="sd">        Generates an &quot;index&quot; of the index. This gives us the byte positions of each chromosome</span>
+<span class="sd">        within the index file. Now, when a user queries over a specific chromosome, it pulls</span>
 <span class="sd">        out just the index information for that chromosome--not the whole genome.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            filename (str): &#39;/path/to/bam_file&#39; that automatically adds the &#39;.bai&#39; suffix</span>
-<span class="sd">        </span>
+
 <span class="sd">        Raises:</span>
 <span class="sd">            OSError (Exception): if the BAI file is not found or does not exist</span>
 <span class="sd">            AssertionError (Exception): if BAI magic is not found</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_io</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> not found. Please change check your path or index your BAM file&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_io</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-        
+
         <span class="c1"># Constant for linear index window size and unmapped bin id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_LINEAR_INDEX_WINDOW</span> <span class="o">=</span> <span class="mi">16384</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_UNMAP_BIN</span> <span class="o">=</span> <span class="mi">37450</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">BAM_LIDX_SHIFT</span> <span class="o">=</span> <span class="mi">14</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">magic</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_refs</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&lt;4sl&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="p">)</span>
         <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">magic</span> <span class="o">==</span> <span class="sa">b</span><span class="s1">&#39;BAI</span><span class="se">\x01</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;Wrong BAI magic header&#39;</span>
-        
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">unmapped</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span> <span class="o">=</span> <span class="kc">None</span>
-        
+
         <span class="c1"># Capture the offsets for each reference within the index</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ref_indices</span> <span class="o">=</span> <span class="p">{</span><span class="n">ref</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ref</span><span class="p">(</span><span class="n">ref</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_refs</span><span class="p">)}</span>
-        
+
         <span class="c1"># Get the n_no_coor if it is present</span>
         <span class="n">nnc_dat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_no_coor</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;Q&#39;</span><span class="p">,</span> <span class="n">nnc_dat</span><span class="p">)</span> <span class="k">if</span> <span class="n">nnc_dat</span> <span class="k">else</span> <span class="kc">None</span>
-            
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
 
-    
 <div class="viewcode-block" id="Bai.get_chunks"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_chunks">[docs]</a>    <span class="k">def</span> <span class="nf">get_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Simple generator for unpacking chunk data</span>
-<span class="sd">        </span>
+        <span class="sd">&quot;&quot;&quot;Simple generator for unpacking chunk data</span>
+
 <span class="sd">        Chunks are defined as groupings of reads within a BAM file</span>
-<span class="sd">        that share the same bin. A `Chunk` object in the context of </span>
+<span class="sd">        that share the same bin. A `Chunk` object in the context of</span>
 <span class="sd">        this function is a `namedtuple` that contains the virtual offsets</span>
-<span class="sd">        for the beginning and end of each of these chunks. </span>
-<span class="sd">        </span>
+<span class="sd">        for the beginning and end of each of these chunks.</span>
+
 <span class="sd">        Note: a special case of a chunk is in any Bin labeled as 37450.</span>
 <span class="sd">        These bins always contain 2 chunks that provide the statistics</span>
 <span class="sd">        of the number of reads that are unmapped to that reference.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            n_chunks (int): number of chunks to be unpacked from stream</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            chunks (list): a list of Chunk objects with the attributes of</span>
 <span class="sd">                            chunks[i] are .voffset_beg and voffset_end</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">chunks</span> <span class="o">=</span> <span class="p">[</span><span class="n">Chunk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="p">)</span> <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_chunks</span><span class="p">)]</span>
         <span class="k">return</span> <span class="n">chunks</span></div>
-    
+
     <span class="c1"># TODO: Add a check for long reads and allow for skipping the linear index on queries</span>
 <div class="viewcode-block" id="Bai.get_ints"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_ints">[docs]</a>    <span class="k">def</span> <span class="nf">get_ints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_int</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Unpacks `n_int` number of interval virtual offsets from stream</span>
-<span class="sd">        </span>
+        <span class="sd">&quot;&quot;&quot;Unpacks `n_int` number of interval virtual offsets from stream</span>
+
 <span class="sd">        A linear interval is defined as a 16384 bp window along a given reference. The</span>
 <span class="sd">        value stored in the BAI is the virtual offset of the first read within</span>
 <span class="sd">        that given interval. This virtual offset is the byte offset (coffset) of the start of the</span>
 <span class="sd">        BGZF block that contains the beginning of the read and the byte offset (uoffset)</span>
-<span class="sd">        within the uncompressed data of the residing BGZF block to that first read. </span>
-<span class="sd">        </span>
+<span class="sd">        within the uncompressed data of the residing BGZF block to that first read.</span>
+
 <span class="sd">        Note: a caveat to using linear interval with long reads: A long read can</span>
 <span class="sd">        span multiple linear intervals. As such, the current encoding could potentially shift</span>
 <span class="sd">        the expected region of interest to the left more than expected.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            n_int (int): number of intervals to unpack</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            intervals (list): list of virtual offsets for `n_int` number of linear intervals</span>
-<span class="sd">        &#39;&#39;&#39;</span>
-        <span class="c1"># intervals = array(&#39;Q&#39;)</span>
-        <span class="c1"># intervals.fromfile(self._io, n_int)</span>
-        
-        <span class="c1"># if sys.byteorder != &#39;little&#39;:</span>
-            <span class="c1"># intevals.byteswap()</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">intervals</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">Q&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_int</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">intervals</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">intervals</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">int</span> <span class="k">else</span> <span class="p">[</span><span class="n">intervals</span><span class="p">]</span></div>
-    
-<div class="viewcode-block" id="Bai.get_bins"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_bins">[docs]</a>    <span class="k">def</span> <span class="nf">get_bins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">,</span> <span class="n">ref_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Simple function that iteratively unpacks the data of a number (`n_bin`) </span>
+
+<div class="viewcode-block" id="Bai.get_bins"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_bins">[docs]</a>    <span class="k">def</span> <span class="nf">get_bins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">,</span> <span class="n">ref_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simple function that iteratively unpacks the data of a number (`n_bin`)</span>
 <span class="sd">        of bins.</span>
-<span class="sd">        </span>
+
 <span class="sd">        As the function discovers the number of chunks needed for a given</span>
-<span class="sd">        bin, it deletages work to `self.get_chunks(n_chunks)`. A bin is </span>
+<span class="sd">        bin, it deletages work to `self.get_chunks(n_chunks)`. A bin is</span>
 <span class="sd">        comprised of 2 parts: 1) the distinct bin ID (within a given reference). If</span>
 <span class="sd">        no reads are associated with that bin, it is left out of the indexing process,</span>
 <span class="sd">        and therefore not represented in the BAI file. Furthermore, while each bin</span>
 <span class="sd">        has a bin ID, the bin IDs are only distinct within a given reference. This means</span>
 <span class="sd">        that 2 or more references can have the same bin IDs. These bin IDs are also</span>
 <span class="sd">        not in any order as they are essentially a hash dump. Lastly, the only reserved</span>
-<span class="sd">        bin ID is 37450. This bin relates to 2 chunks that contain the number of </span>
+<span class="sd">        bin ID is 37450. This bin relates to 2 chunks that contain the number of</span>
 <span class="sd">        unmapped and mapped reads for a given reference. 2) the chunk(s) of reads that</span>
 <span class="sd">        are assigned to a given bin.</span>
-<span class="sd">        </span>
+
 <span class="sd">        As a secondary feature, this function will also quickly seek over regions for</span>
 <span class="sd">        the purposes of documenting the start and stop byte offsets of a given reference</span>
 <span class="sd">        block within the file. This is invoked by setting `idx=True`</span>
-<span class="sd">        </span>
-<span class="sd">        </span>
+
+
 <span class="sd">        Args:</span>
 <span class="sd">            n_int (int): number of bins to be unpacked from stream</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            bins (None | dict): None if just indexing the index file or a dictionary</span>
 <span class="sd">                                of `bin_id: chunks` pairs</span>
 <span class="sd">        Raises:</span>
 <span class="sd">            AssertionError (Exception): if bin 37450 does not contain 2 chunks exactly</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bins</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">idx</span> <span class="k">else</span> <span class="p">{}</span>
-        
+
         <span class="k">for</span> <span class="n">b</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_bins</span><span class="p">):</span>
             <span class="n">bin_id</span><span class="p">,</span> <span class="n">n_chunks</span> <span class="o">=</span> <span class="n">unpack_bid_nchunk</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">8</span><span class="p">))</span>
-            
+
             <span class="k">if</span> <span class="n">idx</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">bin_id</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_UNMAP_BIN</span><span class="p">:</span>
                     <span class="k">assert</span> <span class="n">n_chunks</span> <span class="o">==</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;Bin 3740 is supposed to have 2 chunks. This has </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n_chunks</span><span class="p">)</span>
@@ -464,48 +465,46 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">unmapped</span><span class="p">[</span><span class="n">ref_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">unmapped</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">if</span> <span class="ow">not</span> <span class="n">n_chunks</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                        <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="n">n_chunks</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># 16 = struct.calcsize(&#39;&lt;2Q&#39;)</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="n">n_chunks</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 16 = struct.calcsize(&#39;&lt;2Q&#39;)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">chunks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_chunks</span><span class="p">(</span><span class="n">n_chunks</span><span class="p">)</span>
                 <span class="n">bins</span><span class="p">[</span><span class="n">bin_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">chunks</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">bins</span></div>
-    
-    <span class="c1"># Cache the references to speed up queries. </span>
-    
 
+    <span class="c1"># Cache the references to speed up queries.</span>
 
     <span class="c1"># @functools.lru_cache(maxsize=256, typed=True)</span>
     <span class="c1"># @lru_cache(6)</span>
 <div class="viewcode-block" id="Bai.get_ref"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_ref">[docs]</a>    <span class="nd">@conditional_decorator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">func</span><span class="p">:</span> <span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)(</span><span class="n">func</span><span class="p">),</span> <span class="n">_PY_VERSION</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">))</span>
-    <span class="k">def</span> <span class="nf">get_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span> <span class="o">=</span> <span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Interatively unpacks all the bins, linear intervals, and chunks for a given reference</span>
-<span class="sd">        </span>
+    <span class="k">def</span> <span class="nf">get_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Interatively unpacks all the bins, linear intervals, and chunks for a given reference</span>
+
 <span class="sd">        A reference is comprised of 2 things: 1) a series of bins that reference chunks of aligned</span>
 <span class="sd">        reads that are grouped within that bin. 2) a series of virtual offsets of the first read of a</span>
 <span class="sd">        16384 bp window along the given reference.</span>
-<span class="sd">        </span>
-<span class="sd">        This function also serves to &quot;index&quot; the BAI file such that, if it is invoked by setting </span>
+
+<span class="sd">        This function also serves to &quot;index&quot; the BAI file such that, if it is invoked by setting</span>
 <span class="sd">        `ids=True`, will do a single pass through the BAI file and saving the start and stop</span>
-<span class="sd">        offsets of each of the references. This is used for minimizing the memory footprint of </span>
-<span class="sd">        storing the BAI in memory. When queried against, the appropriate reference block will be </span>
+<span class="sd">        offsets of each of the references. This is used for minimizing the memory footprint of</span>
+<span class="sd">        storing the BAI in memory. When queried against, the appropriate reference block will be</span>
 <span class="sd">        loaded. Because of this constant loading, `functools.lru_cache` was applied to cache recently</span>
 <span class="sd">        used reference blocks to speed up computation. It is assumed that when querying is done, most</span>
 <span class="sd">        users are looking and just a few references at a time.</span>
-<span class="sd">        </span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            ref_id (None|int): used for random access or indexing the BAI</span>
 <span class="sd">            idx (bool): Flag for setting whether or not to run an index of the BAI</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            RefIdx: `namedtuple` containing the byte offsets of the reference start, stop, and number of bins</span>
 <span class="sd">            or</span>
 <span class="sd">            Ref: `namedtuple` containing a dictionary of bins and list of linear intervals</span>
-<span class="sd">        </span>
+
 <span class="sd">        Raises:</span>
 <span class="sd">            AssertionError (Exception): if, when random access is used, the current reference offset</span>
 <span class="sd">                                        does not match indexed reference offset.</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">ref_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">idx</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">ref_start</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_indices</span><span class="p">[</span><span class="n">ref_id</span><span class="p">]</span>
@@ -513,87 +512,83 @@
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;Reference is not found in header&#39;</span><span class="p">)</span>
         <span class="n">ref_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-        
+
         <span class="k">if</span> <span class="ow">not</span> <span class="n">idx</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">ref_start</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_indices</span><span class="p">[</span><span class="n">ref_id</span><span class="p">]</span><span class="o">.</span><span class="n">start_offset</span><span class="p">,</span> <span class="s1">&#39;ref not properly aligned&#39;</span>
-        
+
         <span class="n">n_bins</span> <span class="o">=</span> <span class="n">unpack_int32L</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">bins</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bins</span><span class="p">(</span><span class="n">n_bins</span><span class="p">,</span> <span class="n">ref_id</span><span class="p">,</span> <span class="n">idx</span><span class="p">)</span>
-        
+
         <span class="n">n_int</span> <span class="o">=</span> <span class="n">unpack_int32L</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">if</span> <span class="n">idx</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">n_int</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="c1"># 8 = struct.calcsize(&#39;&lt;Q&#39;)</span>
-        
+            <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">n_int</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># 8 = struct.calcsize(&#39;&lt;Q&#39;)</span>
+
         <span class="n">ints</span> <span class="o">=</span> <span class="kc">None</span> <span class="k">if</span> <span class="n">idx</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ints</span><span class="p">(</span><span class="n">n_int</span><span class="p">)</span>
-        
+
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-        
+
         <span class="k">if</span> <span class="n">idx</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">RefIdx</span><span class="p">(</span><span class="n">ref_start</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_last_pos</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">Ref</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">ints</span><span class="p">,</span> <span class="n">ref_id</span><span class="p">)</span></div>
-    
-    
-<div class="viewcode-block" id="Bai.query"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_id</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39; Main query function for determining seek offset to BAM section that </span>
+
+<div class="viewcode-block" id="Bai.query"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_id</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Main query function for determining seek offset to BAM section that</span>
 <span class="sd">        AlignedRead objects from specified region start</span>
-<span class="sd">        </span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            ref (int): which reference/chromosome TID</span>
 <span class="sd">            start (int): left most bp position of region (zero-based)</span>
 <span class="sd">            stop (int): right most bp position of region (zero-based)</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            (int): the voffset_beg of the first chunk given the chunk&#39;s voffset_end</span>
-<span class="sd">                    is greater than the voffset of the linear index that overlaps </span>
+<span class="sd">                    is greater than the voffset of the linear index that overlaps</span>
 <span class="sd">                    the region of interest&#39;s start offset</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">stop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="n">end_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span><span class="o">.</span><span class="n">intervals</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="k">assert</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">stop</span><span class="p">,</span> <span class="s1">&#39;Malformed region: start should be &lt;= stop, you entered </span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">)</span>
-        
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ref</span><span class="p">(</span><span class="n">ref_id</span><span class="p">)</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span><span class="o">.</span><span class="n">ref_id</span> <span class="o">!=</span> <span class="n">ref_id</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ref</span><span class="p">(</span><span class="n">ref_id</span><span class="p">)</span>
-        
+
         <span class="c1"># get linear index first</span>
-        <span class="c1"># how many windows do we need to go over </span>
+        <span class="c1"># how many windows do we need to go over</span>
         <span class="c1"># because of floor div, we need to make it 0-based</span>
-        
+
         <span class="n">reg_lin_idx</span> <span class="o">=</span> <span class="n">start</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">BAM_LIDX_SHIFT</span>
-        
-        
+
         <span class="n">l_idx</span> <span class="o">=</span> <span class="n">reg_lin_idx</span> <span class="k">if</span> <span class="n">reg_lin_idx</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span><span class="o">.</span><span class="n">intervals</span><span class="p">)</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
         <span class="n">linear_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span><span class="o">.</span><span class="n">intervals</span><span class="p">[</span><span class="n">l_idx</span><span class="p">]</span>
-        
-        
+
         <span class="k">for</span> <span class="n">binID</span> <span class="ow">in</span> <span class="n">reg2bins</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">bin_chunks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span><span class="o">.</span><span class="n">bins</span><span class="p">[</span><span class="n">binID</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">continue</span>
-            
+
             <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">bin_chunks</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">linear_offset</span> <span class="o">&lt;=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_end</span><span class="p">:</span>
                     <span class="k">continue</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_beg</span></div>
-                
-    
-<div class="viewcode-block" id="Bai.seek"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">whence</span> <span class="o">=</span> <span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Simple seek function for binary files</span>
-<span class="sd">        </span>
+
+<div class="viewcode-block" id="Bai.seek"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">whence</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simple seek function for binary files</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            offset (None|int): byte offset from whence to move the file head to.</span>
 <span class="sd">            whence (int): 0 := from start of file, 1:= from current position, 2:= from end of file</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            (int): new byte position of file head</span>
-<span class="sd">        </span>
+
 <span class="sd">        Raise:</span>
 <span class="sd">            ValueError (Exception): if the offset is not an integer or is not provided</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">)):</span>
             <span class="k">if</span> <span class="n">offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No offset provided&#39;</span><span class="p">)</span>
@@ -602,27 +597,27 @@
                 <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;offset must be an integer or None&#39;</span><span class="p">)</span></div>
-    
-<div class="viewcode-block" id="Bai.read"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Simple read function for binary files</span>
-<span class="sd">        </span>
+
+<div class="viewcode-block" id="Bai.read"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Simple read function for binary files</span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            size (int): number of bytes to read in (default: -1 --whole file)</span>
-<span class="sd">        </span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            (bytes): the number of bytes read from file</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></div>
-            
+
 <div class="viewcode-block" id="Bai.tell"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&#39;&#39;&#39;Simple tell function for reporting byte position of file head</span>
-<span class="sd">        </span>
+        <span class="sd">&quot;&quot;&quot;Simple tell function for reporting byte position of file head</span>
+
 <span class="sd">        Returns:</span>
 <span class="sd">            (int): byte position of file head</span>
-<span class="sd">        &#39;&#39;&#39;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span></div></div>
 </pre></div>
 

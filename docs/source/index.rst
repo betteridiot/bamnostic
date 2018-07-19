@@ -10,6 +10,9 @@ This documentation site is a work in progress as I continue to hone my
 reStructuredText skills. All of the module documentation is here, but a more
 detailed "Getting Started" should be available soon.
 
+.. NOTE::
+    CRAM and CSI formats are not supported at this time.
+
 .. toctree::
    :maxdepth: 3
    :caption: Contents:
