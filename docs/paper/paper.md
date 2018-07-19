@@ -43,7 +43,7 @@ its ``htslib`` dependency, the most popular Python toolset (``pysam`` [-@pysam])
  also cannot be used in a Windows environments or outside the CPython runtime 
 [@pysam_issue]. Furthermore, both ``pysam`` and ``htslib`` have no intention to 
 support Windows in the foreseeable future. This is a significant limitation as 
-no other Python implementation (besides ``pysam``) can perform random access 
+no other published Python implementation (besides ``pysam``) can perform random access 
 operation on BAM files.
 
 [//]: # (Solution: ``BAMnostic``) 
