@@ -336,9 +336,7 @@ class AlignedSegment(object):
         """
         self.tags = {}
         while len(self._byte_stream) > 0:
-            potential_tag = self._tagger()
-            if potential_tag is not None:
-                self.tags.update(self._tagger())
+            self.tags.update(self._tagger())
 
     def __repr__(self):
         """Represent the read when the object is called.
