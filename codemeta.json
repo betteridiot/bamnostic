@@ -37,7 +37,7 @@
   "description": "BAMnostic is a Pure Python OS, version, and runtime agnostic BAM file parser",
   "keywords": "BAM, pysam, genomics, genetics, htslib, samtools",
   "license": "https://github.com/betteridiot/bamnostic/blob/master/LICENSE",
-  "softwareVersion": "v0.8.7b3",
+  "softwareVersion": "v0.8.8",
   "version": "v0.8.2",
   "readme": "https://github.com/betteridiot/bamnostic/blob/master/README.md",
   "buildInstructions": "https://github.com/betteridiot/bamnostic/blob/master/README.md",
