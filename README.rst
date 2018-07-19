@@ -1,5 +1,5 @@
-|Conda Version| |PyPI version| |License| |Anaconda-Server Badge| |Conda
-Downloads| |Documentation Status|
+|Build Status| |noarch| |Conda Version| |PyPI version| |License| |Conda
+Downloads| |Documentation Status| |Maintainability|
 
 BAMnostic
 =========
@@ -79,10 +79,10 @@ Importing
 
 .. code:: python
 
-    import bamnostic as bs
+    >>> import bamnostic as bs
 
-Loading your BAM file
-~~~~~~~~~~~~~~~~~~~~~
+Loading your BAM file (Note: CRAM and CSI formats are not supported at this time)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Bamnostic comes with an example BAM (and respective BAI) file just to
 play around with the output. Note, however, that the example BAM file
@@ -93,7 +93,7 @@ within the package.
 
 .. code:: python
 
-    bam = bs.AlignmentFile(bs.example_path, 'rb')
+    >>> bam = bs.AlignmentFile(bs.example_path, 'rb')
 
 Get the header
 ~~~~~~~~~~~~~~
@@ -105,8 +105,8 @@ length tuple values.
 
 .. code:: python
 
-    bam.header
-    >>> {0: ('chr1', 1575), 1: ('chr2', 1584)}
+    >>> bam.header
+    {0: ('chr1', 1575), 1: ('chr2', 1584)}
 
 Data validation through ``head()``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -122,9 +122,9 @@ Getting the first read
 
 .. code:: python
 
-    first_read = next(bam)
-    print(first_read)
-    >>> EAS56_57:6:190:289:82   69  chr1    100 0   *   =   100 0   CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA <<<7<<<;<<<<<<<<8;;<7;4<;<;;;;;94<; MF:C:192
+    >>> first_read = next(bam)
+    >>> print(first_read)
+    EAS56_57:6:190:289:82   69  chr1    100 0   *   =   100 0   CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA <<<7<<<;<<<<<<<<8;;<7;4<;<;;;;;94<; MF:C:192
 
 Exploring the read
 ~~~~~~~~~~~~~~~~~~
@@ -132,24 +132,24 @@ Exploring the read
 .. code:: python
 
     # read name
-    print(first_read.read_name)
-    >>> EAS56_57:6:190:289:82
+    >>> print(first_read.read_name)
+    EAS56_57:6:190:289:82
 
     # 0-based position
-    print(first_read.pos)
-    >>> 99
+    >>> print(first_read.pos)
+    99
 
     # nucleotide sequence
-    print(first_read.seq)
-    >>> CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
+    >>> print(first_read.seq)
+    CTCAAGGTTGTTGCAAGGGGGTCTATGTGAACAAA
 
     # Read FLAG
-    print(first_read.flag)
-    >>> 69
+    >>> print(first_read.flag)
+    69
 
     # decoded FLAG
-    bs.utils.flag_decode(first_read.flag)
-    >>> [(1, 'read paired'), (4, 'read unmapped'), (64, 'first in pair')]
+    >>> bs.utils.flag_decode(first_read.flag)
+    [(1, 'read paired'), (4, 'read unmapped'), (64, 'first in pair')]
 
 Random Access
 ~~~~~~~~~~~~~
@@ -303,15 +303,19 @@ it is lightweight enough to fit into any simple web server (e.g.
 `Flask <http://flask.pocoo.org/>`__), further expanding the science of
 genetics/genomics.
 
+.. |Build Status| image:: https://travis-ci.org/betteridiot/bamnostic.svg?branch=master
+   :target: https://travis-ci.org/betteridiot/bamnostic
+.. |noarch| image:: https://img.shields.io/circleci/project/github/conda-forge/bamnostic-feedstock/master.svg?label=noarch
+   :target: https://circleci.com/gh/conda-forge/bamnostic-feedstock
 .. |Conda Version| image:: https://img.shields.io/conda/vn/conda-forge/bamnostic.svg
    :target: https://anaconda.org/conda-forge/bamnostic
 .. |PyPI version| image:: https://badge.fury.io/py/bamnostic.svg
    :target: https://badge.fury.io/py/bamnostic
 .. |License| image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
    :target: https://github.com/betteridiot/bamnostic/blob/master/LICENSE
-.. |Anaconda-Server Badge| image:: https://anaconda.org/conda-forge/bamnostic/badges/platforms.svg
-   :target: https://anaconda.org/conda-forge/bamnostic
 .. |Conda Downloads| image:: https://img.shields.io/conda/dn/conda-forge/bamnostic.svg
    :target: https://anaconda.org/conda-forge/bamnostic
 .. |Documentation Status| image:: https://readthedocs.org/projects/bamnostic/badge/?version=latest
    :target: https://bamnostic.readthedocs.io/en/latest/?badge=latest
+.. |Maintainability| image:: https://api.codeclimate.com/v1/badges/d7e36e72f109c598c86d/maintainability
+   :target: https://codeclimate.com/github/betteridiot/bamnostic/maintainability
