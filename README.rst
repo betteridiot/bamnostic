@@ -1,5 +1,5 @@
 |Build Status| |noarch| |Conda Version| |PyPI version| |License| |Conda
-Downloads| |Documentation Status| |Maintainability| |DOI|
+Downloads| |Documentation Status| |Maintainability| |DOI| |status|
 
 BAMnostic
 =========
@@ -331,3 +331,5 @@ github.
    :target: https://codeclimate.com/github/betteridiot/bamnostic/maintainability
 .. |DOI| image:: https://zenodo.org/badge/121782433.svg
    :target: https://zenodo.org/badge/latestdoi/121782433
+.. |status| image:: http://joss.theoj.org/papers/9952b35bbb30ca6c01e6a27b80006bd8/status.svg
+   :target: http://joss.theoj.org/papers/9952b35bbb30ca6c01e6a27b80006bd8
