@@ -8,7 +8,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/d7e36e72f109c598c86d/maintainability)](https://codeclimate.com/github/betteridiot/bamnostic/maintainability)
 [![DOI](https://zenodo.org/badge/121782433.svg)](https://zenodo.org/badge/latestdoi/121782433)
 [![status](http://joss.theoj.org/papers/9952b35bbb30ca6c01e6a27b80006bd8/status.svg)](http://joss.theoj.org/papers/9952b35bbb30ca6c01e6a27b80006bd8)
-</br>
+</br> 
 
 # BAMnostic 
 a *pure Python*, **OS-agnositic** Binary Alignment Map (BAM) file parser and random access tool.
