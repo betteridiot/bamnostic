@@ -2,3 +2,6 @@ include README.md
 include ./bamnostic/data/*
 include ./LICENSE
 include ./docs/build/*
+include ./CONTRIBUTING*
+include ./CODE_OF_CONDUCT*
+include ./requirements.txt
