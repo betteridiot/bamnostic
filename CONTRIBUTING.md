@@ -1,7 +1,7 @@
 # How to contribute to bamnostic
 ----
 **First and foremost:** by contributing in this project, you agree to abide by
-the [Contributor Covenant](https://www.contributor-covenant.org/) [code of conduct](https://github.com/betteridiot/bamnostic/blob/master/CODE_OF_CONDUCT.md)
+the Contributor Covenant [code of conduct](https://github.com/betteridiot/bamnostic/blob/master/CODE_OF_CONDUCT.md)
 
 ## Our Promise:
 The maintainers of this project promise to address each issue/question/pull
