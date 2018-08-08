@@ -6,7 +6,7 @@
 [![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
 [![Documentation Status](https://readthedocs.org/projects/bamnostic/badge/?version=latest)](https://bamnostic.readthedocs.io/en/latest/?badge=latest)
 [![Maintainability](https://api.codeclimate.com/v1/badges/d7e36e72f109c598c86d/maintainability)](https://codeclimate.com/github/betteridiot/bamnostic/maintainability)
-[![DOI](https://zenodo.org/badge/121782433.svg)](https://zenodo.org/badge/latestdoi/121782433)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1341915.svg)](https://doi.org/10.5281/zenodo.1341915)
 [![status](http://joss.theoj.org/papers/9952b35bbb30ca6c01e6a27b80006bd8/status.svg)](http://joss.theoj.org/papers/9952b35bbb30ca6c01e6a27b80006bd8)
 </br> 
 
