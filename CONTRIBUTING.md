@@ -3,6 +3,14 @@
 **First and foremost:** by contributing in this project, you agree to abide by
 the [Contributor Covenant](https://www.contributor-covenant.org/) [code of conduct](https://github.com/betteridiot/bamnostic/blob/master/CODE_OF_CONDUCT.md)
 
+## Our Promise:
+The maintainers of this project promise to address each issue/question/pull
+request in the following manner:
+* Prompt acknowledgment of receipt of issue/question/pull request
+    * Potentially assigning to a specific maintainer
+* If needed, a description of when work on a given issue has started, or an explanation of why the issues/pull request is not being addressed
+* Closing the issue upon the maintainer's determination of issue resolution.
+
 ## General Questions
 
 * Read the [documentation](https://bamnostic.readthedocs.io/en/latest/?badge=latest) on the project
