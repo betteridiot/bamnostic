@@ -945,7 +945,10 @@ class BgzfReader(object):
             if self.ref2tid[query.contig] != tid:
                 raise ValueError('tid and contig name do not match')
         elif query.contig is not None and query.tid is None:
-            query.tid = self.ref2tid[query.contig]
+            try:
+                query.tid = self.ref2tid[query.contig]
+            except KeyError:
+                raise KeyError('{} was not found in the file header'.format(query.contig))
 
         try:
             if query.start > self._header.refs[query.tid][1]:
