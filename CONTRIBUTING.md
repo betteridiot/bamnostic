@@ -24,7 +24,7 @@ A *bad* general question would look like:
 > "Your module will not work on my computer. How do I fix it?"
 
 A *good* general question would look like:
-> "I am running your code on Windows 10 version 1803 in a Anaconda build of Python version 3.6. When I try to <some implementation>, I get <some error>. Here is an example of how I invoked your code: <insert code invocation>. Can you tell what is going on?"
+> "I am running your code on Windows 10 version 1803 in a Anaconda build of Python version 3.6. When I try to \<some implementation\>, I get \<some error\>. Here is an example of how I invoked your code: <insert code invocation>. Can you tell what is going on?"
 
 ## Bug reporting
 
