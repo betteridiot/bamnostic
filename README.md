@@ -1,13 +1,14 @@
 [![Build Status](https://travis-ci.org/betteridiot/bamnostic.svg?branch=master)](https://travis-ci.org/betteridiot/bamnostic)
 [![noarch](https://img.shields.io/circleci/project/github/conda-forge/bamnostic-feedstock/master.svg?label=noarch)](https://circleci.com/gh/conda-forge/bamnostic-feedstock)
-[![Conda Version](https://img.shields.io/conda/vn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
-[![PyPI version](https://badge.fury.io/py/bamnostic.svg)](https://badge.fury.io/py/bamnostic) 
-[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/betteridiot/bamnostic/blob/master/LICENSE) 
-[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
 [![Documentation Status](https://readthedocs.org/projects/bamnostic/badge/?version=latest)](https://bamnostic.readthedocs.io/en/latest/?badge=latest)
-[![Maintainability](https://api.codeclimate.com/v1/badges/d7e36e72f109c598c86d/maintainability)](https://codeclimate.com/github/betteridiot/bamnostic/maintainability)
 
 [![status](http://joss.theoj.org/papers/9952b35bbb30ca6c01e6a27b80006bd8/status.svg)](http://joss.theoj.org/papers/9952b35bbb30ca6c01e6a27b80006bd8)
+[![Conda Version](https://img.shields.io/conda/vn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
+[![PyPI version](https://badge.fury.io/py/bamnostic.svg)](https://badge.fury.io/py/bamnostic) 
+[![Conda Downloads](https://img.shields.io/conda/dn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
+[![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/betteridiot/bamnostic/blob/master/LICENSE) 
+[![Maintainability](https://api.codeclimate.com/v1/badges/d7e36e72f109c598c86d/maintainability)](https://codeclimate.com/github/betteridiot/bamnostic/maintainability)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1341959.svg)](https://doi.org/10.5281/zenodo.1341959)
 </br> 
 
 # BAMnostic 
