@@ -200,7 +200,7 @@ In building a tool for genomic visualization, I wanted it to be platform agnosti
 
 ***
 ## Citation
-If you use bamnostic in your analyses, please consider citing Li et al (2009) <http://www.ncbi.nlm.nih.gov/pubmed/19505943> as well. Regarding the citation for bamnostic, please use the JoSS journal article (click on the JOSS badge above) or use the following:
+If you use bamnostic in your analyses, please consider citing [Li et al (2009)](http://www.ncbi.nlm.nih.gov/pubmed/19505943) as well. Regarding the citation for bamnostic, please use the JoSS journal article (click on the JOSS badge above) or use the following:
 >Sherman MD and Mills RE, (2018). BAMnostic: an OS-agnostic toolkit for genomic sequence analysis . Journal of Open Source Software, 3(28), 826, https://doi.org/10.21105/joss.00826
 
 ***
