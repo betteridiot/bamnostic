@@ -198,6 +198,10 @@ The common practice within the field of genomics/genetics when analyzing BAM fil
 </br></br>
 In building a tool for genomic visualization, I wanted it to be platform agnostic. This is precisely when I found out that the tools I had planned to use as a backend did not work on Windows...the most prevalent operation system in the end-user world. So, I wrote **bamnostic**. As of this writing, bamnostic is OS-agnostic and written completely in Pure Python--requiring only the standard library (and `pytest` for the test suite). Special care was taken to ensure that it would run on all versions of CPython 2.7 or greater. Additionally, it runs in both stable versions of PyPy. While it may perform slower than its C counterparts, bamnostic opens up the science to a much greater end-user group. Lastly, it is lightweight enough to fit into any simple web server (e.g. [Flask](http://flask.pocoo.org/)), further expanding the science of genetics/genomics.
 
+***
+## Citation
+If you use bamnostic in your analyses, please consider citing Li et al (2009) <http://www.ncbi.nlm.nih.gov/pubmed/19505943> as well. Regarding the citation for bamnostic, please use the JoSS journal article (click on the JOSS badge above) or use the following:
+>Sherman MD and Mills RE, (2018). BAMnostic: an OS-agnostic toolkit for genomic sequence analysis . Journal of Open Source Software, 3(28), 826, https://doi.org/10.21105/joss.00826
 
 ***
 ## Community Guidelines:
