@@ -20,6 +20,7 @@ detailed "Getting Started" should be available soon.
    Installation <install>
    Getting Started <quickstart>
    Module documentation <bamnostic>
+   Citation and Support <support>
 
 Indices and tables
 ==================
