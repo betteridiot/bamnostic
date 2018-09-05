@@ -209,4 +209,4 @@ If you use bamnostic in your analyses, please consider citing [Li et al (2009)](
 
 ***
 ## Community Guidelines:
-Eagerly accepting PRs for improvements, optimizations, or features. For any questions or issues, please feel free to make a post to bamnostic's [Issue tracker](https://github.com/betteridiot/bamnostic/issues) on github.
+Eagerly accepting PRs for improvements, optimizations, or features. For any questions or issues, please feel free to make a post to bamnostic's [Issue tracker](https://github.com/betteridiot/bamnostic/issues) on github or read over our [CONTRIBUTING](https://github.com/betteridiot/bamnostic/blob/master/CONTRIBUTING.md) documentation.
