@@ -8,8 +8,6 @@
 [![status](http://joss.theoj.org/papers/9952b35bbb30ca6c01e6a27b80006bd8/status.svg)](http://joss.theoj.org/papers/9952b35bbb30ca6c01e6a27b80006bd8)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1341959.svg)](https://doi.org/10.5281/zenodo.1341959)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/betteridiot/bamnostic/blob/master/LICENSE) 
-
-
 </br> 
 
 |Host | Downloads |
