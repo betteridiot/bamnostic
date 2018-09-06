@@ -308,7 +308,7 @@ class BAMheader(object):
                     key = key[1:]
                     fields_dict = {}
                     for field in fields:
-                        split_field = field.split(:)
+                        split_field = field.split(':')
                         if len(split_field) > 2:
                             tag = split_field[0]
                             value = split_field[2]
