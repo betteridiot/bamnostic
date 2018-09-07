@@ -20,7 +20,7 @@ install:
   - pip install .
 
 script: 
-  - pytest --doctest-modules bamnostic/
+  - pytest bamnostic/
 
 branches:
   only:

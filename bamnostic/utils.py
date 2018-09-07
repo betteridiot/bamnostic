@@ -179,7 +179,7 @@ def flag_decode(flag_code):
         code = flag_code.flag
     if not isinstance(code, numbers.Integral):
         raise ValueError('Provided flag is not a valid entry')
-    return [(key, flags[key]) for key in flags if key & code].sorted()
+    return sorted([(key, flags[key]) for key in flags if key & code])
 
 
 def yes_no():
