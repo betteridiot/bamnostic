@@ -13,9 +13,8 @@ python:
   - "pypy3.5"
 
 before_install:
-  - chmod +x $TRAVIS_BUILD_DIR/.travis/push.sh
+  - chmod +x .travis/push.sh
 
-# command to install dependencies
 install:
   - pip install -r requirements.txt
   - pip install .
@@ -26,10 +25,6 @@ script:
 branches:
   only:
     - devel
-    - master
+
 after_success:
-  if [ "$TRAVIS_BRANCH" == "devel" ]; then
-    $TRAVIS_BUILD_DIR/.travis/push.sh
-  else
-    :
-fi
+  - .travis/push.sh
