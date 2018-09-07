@@ -17,4 +17,16 @@ install:
   - pip install -r requirements.txt
   - pip install .
 
-script: pytest
+script: 
+  - pytest --doctest-modules
+
+branches:
+  only:
+    - devel
+    - master
+after_success:
+  if ([ "$TRAVIS_BRANCH" == "devel" ]) && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
+    bash .travis/push.sh
+  else
+    :
+  fi
