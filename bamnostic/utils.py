@@ -166,12 +166,12 @@ def flag_decode(flag_code):
     ====  =====  ==================================================================
 
     """
-    flags = dict(0x1: 'read paired', 0x2: 'read mapped in proper pair',
+    flags = {0x1: 'read paired', 0x2: 'read mapped in proper pair',
              0x4: 'read unmapped', 0x8: 'mate unmapped',
              0x10: 'read reverse strand', 0x20: 'mate reverse strand',
              0x40: 'first in pair', 0x80: 'second in pair',
              0x100: 'secondary alignment', 0x200: 'QC fail',
-             0x400: 'PCR or optical duplicate', 0x800: 'supplementary alignment')
+             0x400: 'PCR or optical duplicate', 0x800: 'supplementary alignment'}
 
     if isinstance(flag_code, numbers.Integral):
         code = flag_code
@@ -179,7 +179,7 @@ def flag_decode(flag_code):
         code = flag_code.flag
     if not isinstance(code, numbers.Integral):
         raise ValueError('Provided flag is not a valid entry')
-    return [(key, flags[key]) for key in flags if key & code]
+    return [(key, flags[key]) for key in flags if key & code].sorted()
 
 
 def yes_no():
