@@ -12,6 +12,9 @@ python:
   - "pypy"
   - "pypy3.5"
 
+before_install:
+  - chmod +x .travis/push.sh
+
 # command to install dependencies
 install:
   - pip install -r requirements.txt
