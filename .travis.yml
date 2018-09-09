@@ -26,5 +26,7 @@ branches:
   only:
     - devel
 
-after_success:
-  - .travis/push.sh
+jobs:
+  include:
+    - stage: deploy
+    - script: .travis/push.sh
