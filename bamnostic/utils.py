@@ -47,6 +47,7 @@ _PY_VERSION = sys.version
 
 if _PY_VERSION.startswith('2'):
     from collections import Sequence
+    from collections import OrderedDict as dict
 else:
     from collections.abc import Sequence
 
@@ -178,7 +179,7 @@ def flag_decode(flag_code):
         code = flag_code.flag
     if not isinstance(code, numbers.Integral):
         raise ValueError('Provided flag is not a valid entry')
-    return [(key, flags[key]) for key in flags if key & code]
+    return sorted([(key, flags[key]) for key in flags if key & code])
 
 
 def yes_no():
@@ -495,8 +496,8 @@ class LruDict(OrderedDict):
 
             if float(_PY_VERSION[:3]) <= 3.2:
                 if not key == list(self.keys())[-1]:
-                    moving = self.pop(key)
-                    self[key] = moving
+                    del self[key]
+                    self[key] = value
             else:
                 self.move_to_end(key)
             return value

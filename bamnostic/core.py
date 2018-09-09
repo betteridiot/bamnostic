@@ -364,7 +364,7 @@ class AlignedSegment(object):
                     '{}'.format(self.tlen),
                     '{}'.format(self.seq),
                     '{}'.format(self.qual)]
-        tags = ['{}:{}:{}'.format(tag, value[0], value[1]) for tag, value in self.tags.items()]
+        tags = ['{}:{}:{}'.format(tag, value[0], value[1]) for tag, value in sorted(self.tags.items())]
         SAM_repr.extend(tags)
         return '\t'.join(SAM_repr)
 
