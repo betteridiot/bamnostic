@@ -29,4 +29,5 @@ branches:
 jobs:
   include:
     - stage: deploy
-    - script: .travis/push.sh
+      script: .travis/push.sh
+      os: linux
