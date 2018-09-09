@@ -20,24 +20,11 @@ install:
   - pip install .
 
 script: 
-<<<<<<< HEAD
-  - pytest --doctest-modules
-=======
   - pytest --doctest-modules bamnostic/
->>>>>>> devel
 
 branches:
   only:
     - devel
-<<<<<<< HEAD
-    - master
-after_success:
-  if ([ "$TRAVIS_BRANCH" == "devel" ]) && [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-    bash .travis/push.sh
-  else
-    :
-  fi
-=======
 
 jobs:
   include:
@@ -46,4 +33,3 @@ jobs:
       os: linux
       language: python
       python: "3.6"
->>>>>>> devel
