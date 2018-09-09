@@ -31,3 +31,5 @@ jobs:
     - stage: deploy
       script: .travis/push.sh
       os: linux
+      language: python
+      python: "3.6"
