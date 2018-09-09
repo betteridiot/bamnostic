@@ -496,8 +496,8 @@ class LruDict(OrderedDict):
 
             if float(_PY_VERSION[:3]) <= 3.2:
                 if not key == list(self.keys())[-1]:
-                    moving = self.pop(key)
-                    self[key] = moving
+                    del self[key]
+                    self[key] = value
             else:
                 self.move_to_end(key)
             return value
