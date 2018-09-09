@@ -9,7 +9,7 @@ git_push() {
     git remote -v
     echo "Adding Remote"
     git remote add newOrigin https://${GH_TOKEN}@github.com/betteridiot/bamnostic.git
-     git push om HEAD:master
+     git push newOrigin HEAD:master
 }
 
 git_config
