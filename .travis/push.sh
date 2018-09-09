@@ -6,16 +6,19 @@ git_config() {
 }
 
 git_push() {
+    git remote -v
     echo "Adding Remote"
-    git remote add origin https://${GH_TOKEN}@github.com/betteridiot/bamnostic.git > /dev/null 2>&1
+    git remote add origin https://${GH_TOKEN}@github.com/betteridiot/bamnostic.git
     echo "Fetching origin"
     git fetch origin
+    echo "Branches"
+    git branch -vv
     echo "Checking out master"
-    git checkout -b master origin/master
+    git checkout -b om origin/master
     echo "Attempting merge"
     git merge origin/devel
     echo "Attempting push"
-    git push origin/master
+    git push om
 }
 
 git_config
