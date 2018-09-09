@@ -20,7 +20,7 @@ install:
   - pip install .
 
 script: 
-  - pytest --doctest-modules --doctest-continue-on-failure bamnostic/
+  - pytest --doctest-modules bamnostic/
 
 branches:
   only:
