@@ -2,7 +2,8 @@ os:
   - linux
   - windows
 
-include:
+language: python
+python:
   - python: 2.7
   - python: 3.4
   - python: 3.5
