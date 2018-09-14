@@ -14,7 +14,7 @@ as part of this package.
 @email: "mdsherman<at>betteridiot<dot>tech"
 
 """
-
+import os
 import struct
 import sys
 from array import array
@@ -167,7 +167,20 @@ class AlignedSegment(object):
 
         """
         self._io = _io
-        block_size = unpack_int32(self._io.read(4))[0]
+        bsize_buffer = self._io.read(4)
+        try:
+            block_size = unpack_int32(bsize_buffer)[0]
+        
+        # Check for EOF: If the cursor is at the end of file, read() will return 
+        # an empty byte string. If 
+        except struct.error:
+            if all([not bsize_buffer, not self._io._handle.read()]):
+                if not self._io._igore_truncation and not self._io._truncated:
+                    raise StopIteration('End of file reached')
+                else:
+                    raise StopIteration('Potential end of file reached')
+            else:
+                raise IOError('Reached End of file, but marker does not match BAM standard')
 
         # Pull in the whole read
         self._byte_stream = bytearray(self._io.read(block_size))

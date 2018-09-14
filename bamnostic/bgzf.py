@@ -453,9 +453,11 @@ class BgzfReader(object):
         # Connect to the BAM file
         self._handle = handle
 
+        self._truncated = self._check_truncation()
+        self._igore_truncation = ignore_truncation
         # Check BAM file integrity
-        if not ignore_truncation:
-            if self._check_truncation():
+        if not self._igore_truncation:
+            if self._truncated:
                 raise Exception('BAM file may be truncated. Turn off ignore_truncation if you wish to continue')
 
         # Connect and process the Index file (if present)
@@ -525,7 +527,7 @@ class BgzfReader(object):
             if self._text:
                 self._buffer = ""
             else:
-                self._buffer = b""
+                self._buffer = b''
         self._within_block_offset = 0
         self._block_raw_length = block_size
 
