@@ -319,7 +319,7 @@ class AlignedSegment(object):
         self._raw_qual = unpack('<{}s'.format(self.l_seq), self._range_popper(self.l_seq))
 
         self.query_qualities = array('B')
-        self.query_qualities.fromstring(self._raw_qual)
+        self.query_qualities.frombytes(self._raw_qual)
         """Phred Quality scores for each base of the alignment
         ***without*** an ASCII offset."""
 
