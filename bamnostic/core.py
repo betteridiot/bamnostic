@@ -27,7 +27,7 @@ from bamnostic.utils import *
 _PY_VERSION = sys.version
 
 
-class CompatableArray(array):
+class CompatibleArray(array):
     """ Utility object for ensuring backwards compatibility for array objects
     
     Python 3 now issues a DeprecationWarning when `fromstring()` is invoked. 
@@ -40,7 +40,7 @@ class CompatableArray(array):
     def __init__(self, *args, **kwargs):
         """ {}
         """.format(array.__init__.__doc__)
-        super(CompatableArray, self).__init__()
+        super(CompatibleArray, self).__init__()
     
     def fromstring(self, string):
         """ Checks Python version and issues invokes appropriate array.array method
@@ -50,9 +50,9 @@ class CompatableArray(array):
         strings and has byte types.
         """
         if sys.version_info[0] < 3:
-            super(CompatableArray, self).fromstring(string)
+            super(CompatibleArray, self).fromstring(string)
         else:
-            super(CompatableArray, self).frombytes(string)
+            super(CompatibleArray, self).frombytes(string)
 
 
 Cigar = namedtuple('Cigar', ('op_code', 'n_op', 'op_id', 'op_name'))
@@ -347,7 +347,7 @@ class AlignedSegment(object):
         """
         self._raw_qual = unpack('<{}s'.format(self.l_seq), self._range_popper(self.l_seq))
 
-        self.query_qualities = CompatableArray('B')
+        self.query_qualities = CompatibleArray('B')
         self.query_qualities.fromstring(self._raw_qual)
         """Phred Quality scores for each base of the alignment
         ***without*** an ASCII offset."""
