@@ -26,6 +26,35 @@ from bamnostic.utils import *
 
 _PY_VERSION = sys.version
 
+
+class CompatableArray(array):
+    """ Utility object for ensuring backwards compatibility for array objects
+    
+    Python 3 now issues a DeprecationWarning when `fromstring()` is invoked. 
+    However, it is still necessary for Python 2.7 workflows since they do not
+    have the `frombytes()` method. This class checks for Python version, and returns
+    the appropriate result without the DeprecationWarnings.
+    
+    {}
+    """.format(array.__doc__)
+    def __init__(self, *args, **kwargs):
+        """ {}
+        """.format(array.__init__.__doc__)
+        super(CompatableArray, self).__init__()
+    
+    def fromstring(self, string):
+        """ Checks Python version and issues invokes appropriate array.array method
+        for handling strings. 
+        
+        Python 2.7 uses ASCII strings and no byte types.Python 3 uses Unicode
+        strings and has byte types.
+        """
+        if sys.version_info[0] < 3:
+            super(CompatableArray, self).fromstring(string)
+        else:
+            super(CompatableArray, self).frombytes(string)
+
+
 Cigar = namedtuple('Cigar', ('op_code', 'n_op', 'op_id', 'op_name'))
 """``namedtuple`` for handling CIGAR data
 
@@ -318,7 +347,7 @@ class AlignedSegment(object):
         """
         self._raw_qual = unpack('<{}s'.format(self.l_seq), self._range_popper(self.l_seq))
 
-        self.query_qualities = array('B')
+        self.query_qualities = CompatableArray('B')
         self.query_qualities.fromstring(self._raw_qual)
         """Phred Quality scores for each base of the alignment
         ***without*** an ASCII offset."""
