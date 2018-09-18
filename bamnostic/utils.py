@@ -43,9 +43,9 @@ from collections import OrderedDict, namedtuple
 
 # Python 2 doesn't put abstract base classes in the same spot as Python 3
 import sys
-_PY_VERSION = sys.version
+_PY_VERSION = sys.version_info
 
-if _PY_VERSION.startswith('2'):
+if _PY_VERSION[0] == 2:
     from collections import Sequence
     from collections import OrderedDict as dict
 else:
