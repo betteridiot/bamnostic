@@ -448,61 +448,83 @@ class LruDict(OrderedDict):
     """Simple least recently used (LRU) based dictionary that caches a given
     number of items.
     """
-
+    
     def __init__(self, *args, **kwargs):
         """ Initialize the dictionary based on collections.OrderedDict
 
         Args:
             *args : basic positional arguments for dictionary creation
             max_cache (int): integer divisible by 2 to set max size of dictionary
+            mode (str): `'fifo'` for 'first in, first out'; or `'lifo'` for last in, first out 
             **kwargs: basic keyword arguments for dictionary creation
         """
         try:
-            max_cache = kwargs.pop('max_cache', 128)
+            self.max_cache = kwargs.pop('max_cache', 128)
+            mode = kwargs.pop('mode', 'fifo')
+            if mode == 'fifo':
+                self.mode = False
+            else:
+                self.mode = True
         except AttributeError:
-            max_cache = 128
-        OrderedDict.__init__(self, *args, **kwargs)
-        self.max_cache = max_cache
+            self.max_cache = 128
+            self.mode = False # FIFO
+        super(LruDict, self).__init__(*args, **kwargs)
+            
+        if _PY_VERSION[:2] <= (3,2):
+            self.move_to_end = self._move_to_end
+        else:
+            self.move_to_end = OrderedDict.move_to_end
         self.cull()
 
-    def __str__(self):
-        return 'LruDict({})'.format(self.items())
+    def get(self, key):
+        """ Basic getter that renews LRU status upon inspection
 
-    def __repr__(self):
-        return 'LruDict({})'.format(self.items())
+        Args:
+            key (str): immutable dictionary key
+        """
+        try:
+            value = OrderedDict.__getitem__(self, key)
+            self.move_to_end(key)
+            return value
+        except KeyError:
+            pass
+    
+    def _move_to_end(self, key, last=True):
+        """Move an existing element to the end (or beginning if last is false).
+        Raise KeyError if the element does not exist.
+        
+        This is a modification of the Python 3.3 move_to_end that works in Python 2.7
+        """
+        link = self._OrderedDict__map[key]
+        link_prev, link_next, _ = link
 
+        soft_link = link_next[0]
+        link_prev[1] = link_next
+        link_next[0] = link_prev
+        root = self._OrderedDict__root
+        if last:
+            last = root[0]
+            link[0] = last
+            link[1] = root
+            root[0] = soft_link
+            last[1] = link
+        else:
+            first = root[1]
+            link[0] = root
+            link[1] = first
+            first[0] = soft_link
+            root[1] = link 
+    
     def cull(self):
         """Main driver function for removing LRU items from the dictionary. New
         items are added to the bottom, and removed in a FIFO order.
         """
         if self.max_cache:
             overflow = max(0, len(self) - self.max_cache)
-            if overflow != 0:
-                for _ in range(abs(overflow)):
-                    self.popitem(last=False)
-
-    def __getitem__(self, key):
-        """ Basic getter that renews LRU status upon inspection
-
-        Args:
-            key (str): immutable dictionary key
-        """
-        if len(self) > self.max_cache:
-            pass
-        else:
-            try:
-                value = OrderedDict.__getitem__(self, key)
-
-                if _PY_VERSION[:2] <= (3,2):
-                    if not key == list(self.keys())[-1]:
-                        del self[key]
-                        self[key] = value
-                else:
-                    self.move_to_end(key)
-                return value
-            except KeyError:
-                pass
-
+            if overflow > 0:
+                for _ in range(overflow):
+                    self.popitem(last=self.mode)
+    
     def __setitem__(self, key, value):
         """Basic setter that adds new item to dictionary, and then performs cull()
         to ensure max_cache has not been violated.
