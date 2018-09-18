@@ -44,6 +44,10 @@ from collections import OrderedDict, namedtuple
 # Python 2 doesn't put abstract base classes in the same spot as Python 3
 import sys
 _PY_VERSION = sys.version_info
+_is_pypy = '__pypy__' in sys.builtin_module_names
+
+if _is_pypy:
+    import __pypy__
 
 if _PY_VERSION[0] == 2:
     from collections import Sequence
@@ -450,14 +454,16 @@ class LruDict(OrderedDict):
     """
     
     def __init__(self, *args, **kwargs):
-        """ Initialize the dictionary based on collections.OrderedDict
+        """ Initialize the dictionary based on collections.OrderedDict. This
+        is built of the basic `OrderedDict`. The major difference in instantiation
+        is the usage of the `max_cache` argument. This sets the dictionary size 
+        to be used.
 
         Args:
-            *args : basic positional arguments for dictionary creation
+            items (iterable): an iterable object of key/value pairs
             max_cache (int): integer divisible by 2 to set max size of dictionary
-            mode (str): `'fifo'` for 'first in, first out'; or `'lifo'` for last in, first out 
-            **kwargs: basic keyword arguments for dictionary creation
         """
+        
         try:
             self.max_cache = kwargs.pop('max_cache', 128)
             mode = kwargs.pop('mode', 'fifo')
@@ -470,7 +476,9 @@ class LruDict(OrderedDict):
             self.mode = False # FIFO
         super(LruDict, self).__init__(*args, **kwargs)
             
-        if _PY_VERSION[:2] <= (3,2):
+        if _is_pypy:
+            self.move_to_end = self._pypy_move_to_end
+        elif _PY_VERSION[:2] <= (3,2):
             self.move_to_end = self._move_to_end
         else:
             self.move_to_end = OrderedDict.move_to_end
@@ -482,19 +490,19 @@ class LruDict(OrderedDict):
         Args:
             key (str): immutable dictionary key
         """
-        try:
-            value = OrderedDict.__getitem__(self, key)
-            self.move_to_end(key)
-            return value
-        except KeyError:
-            pass
+        
+        value = OrderedDict.__getitem__(self, key)
+        self.move_to_end(key)
+        return value
     
+    def _pypy_move_to_end(self, key, last=True):
+        __pypy__.move_to_end(self, key, last)
+        
     def _move_to_end(self, key, last=True):
         """Move an existing element to the end (or beginning if last is false).
         Raise KeyError if the element does not exist.
-        
-        This is a modification of the Python 3.3 move_to_end that works in Python 2.7
         """
+        
         link = self._OrderedDict__map[key]
         link_prev, link_next, _ = link
 
@@ -515,10 +523,29 @@ class LruDict(OrderedDict):
             first[0] = soft_link
             root[1] = link 
     
-    def cull(self):
-        """Main driver function for removing LRU items from the dictionary. New
-        items are added to the bottom, and removed in a FIFO order.
+    def update(self, others):
+        """ Same as a regular `dict.update`, however, since pypy's `dict.update`
+        doesn't go through `dict.__setitem__`, this is used to ensure it does
+        
+        Args:
+            others (iterable): a dictionary or iterable containing key/value pairs
         """
+        
+        if type(others) == dict:
+            for k,v in others.items():
+                self.__setitem__(k,v)
+        elif type(others) in [list, tuple]:
+            for k,v in others:
+                self.__setitem__(k,v)
+        else:
+            raise ValueError('Iteratable/dict must be in key, value pairs')
+    
+    def cull(self):
+        """ Main utility function for pruning the LruDict
+        
+        If the length of the LruDict is more than `max_cache`, it removes the LRU item
+        """
+        
         if self.max_cache:
             overflow = max(0, len(self) - self.max_cache)
             if overflow > 0:
@@ -533,6 +560,7 @@ class LruDict(OrderedDict):
             key (str): immutable dictionary key
             value (any): any dictionary value
         """
+        
         OrderedDict.__setitem__(self, key, value)
         self.cull()
 
