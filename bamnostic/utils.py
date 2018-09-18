@@ -479,8 +479,7 @@ class LruDict(OrderedDict):
             overflow = max(0, len(self) - self.max_cache)
             if overflow != 0:
                 for _ in range(abs(overflow)):
-                    del self[next(self.items())]
-                    #self.popitem(last=False)
+                    self.popitem(last=False)
 
     def __getitem__(self, key):
         """ Basic getter that renews LRU status upon inspection
@@ -488,18 +487,21 @@ class LruDict(OrderedDict):
         Args:
             key (str): immutable dictionary key
         """
-        try:
-            value = OrderedDict.__getitem__(self, key)
-
-            if _PY_VERSION[:2] <= (3,2):
-                if not key == list(self.keys())[-1]:
-                    del self[key]
-                    self[key] = value
-            else:
-                self.move_to_end(key)
-            return value
-        except KeyError:
+        if len(self) > self.max_cache:
             pass
+        else:
+            try:
+                value = OrderedDict.__getitem__(self, key)
+
+                if _PY_VERSION[:2] <= (3,2):
+                    if not key == list(self.keys())[-1]:
+                        del self[key]
+                        self[key] = value
+                else:
+                    self.move_to_end(key)
+                return value
+            except KeyError:
+                pass
 
     def __setitem__(self, key, value):
         """Basic setter that adds new item to dictionary, and then performs cull()
