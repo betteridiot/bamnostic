@@ -449,10 +449,6 @@ class LruDict(OrderedDict):
     number of items.
     """
 
-    # Need to check for versioning to ensure move-to-end is available
-    import sys
-    _PY_VERSION = sys.version
-
     def __init__(self, *args, **kwargs):
         """ Initialize the dictionary based on collections.OrderedDict
 
@@ -481,9 +477,10 @@ class LruDict(OrderedDict):
         """
         if self.max_cache:
             overflow = max(0, len(self) - self.max_cache)
-            if overflow:
-                for _ in range(overflow):
-                    self.popitem(last=False)
+            if overflow != 0:
+                for _ in range(abs(overflow)):
+                    del self[next(self.items())]
+                    #self.popitem(last=False)
 
     def __getitem__(self, key):
         """ Basic getter that renews LRU status upon inspection
@@ -494,7 +491,7 @@ class LruDict(OrderedDict):
         try:
             value = OrderedDict.__getitem__(self, key)
 
-            if float(_PY_VERSION[:3]) <= 3.2:
+            if _PY_VERSION[:2] <= (3,2):
                 if not key == list(self.keys())[-1]:
                     del self[key]
                     self[key] = value
