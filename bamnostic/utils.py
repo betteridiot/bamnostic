@@ -43,9 +43,9 @@ from collections import OrderedDict, namedtuple
 
 # Python 2 doesn't put abstract base classes in the same spot as Python 3
 import sys
-_PY_VERSION = sys.version
+_PY_VERSION = sys.version_info
 
-if _PY_VERSION.startswith('2'):
+if _PY_VERSION[0] == 2:
     from collections import Sequence
     from collections import OrderedDict as dict
 else:
@@ -449,10 +449,6 @@ class LruDict(OrderedDict):
     number of items.
     """
 
-    # Need to check for versioning to ensure move-to-end is available
-    import sys
-    _PY_VERSION = sys.version
-
     def __init__(self, *args, **kwargs):
         """ Initialize the dictionary based on collections.OrderedDict
 
@@ -481,8 +477,8 @@ class LruDict(OrderedDict):
         """
         if self.max_cache:
             overflow = max(0, len(self) - self.max_cache)
-            if overflow:
-                for _ in range(overflow):
+            if overflow != 0:
+                for _ in range(abs(overflow)):
                     self.popitem(last=False)
 
     def __getitem__(self, key):
@@ -491,18 +487,21 @@ class LruDict(OrderedDict):
         Args:
             key (str): immutable dictionary key
         """
-        try:
-            value = OrderedDict.__getitem__(self, key)
-
-            if float(_PY_VERSION[:3]) <= 3.2:
-                if not key == list(self.keys())[-1]:
-                    del self[key]
-                    self[key] = value
-            else:
-                self.move_to_end(key)
-            return value
-        except KeyError:
+        if len(self) > self.max_cache:
             pass
+        else:
+            try:
+                value = OrderedDict.__getitem__(self, key)
+
+                if _PY_VERSION[:2] <= (3,2):
+                    if not key == list(self.keys())[-1]:
+                        del self[key]
+                        self[key] = value
+                else:
+                    self.move_to_end(key)
+                return value
+            except KeyError:
+                pass
 
     def __setitem__(self, key, value):
         """Basic setter that adds new item to dictionary, and then performs cull()

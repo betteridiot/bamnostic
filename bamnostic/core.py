@@ -21,38 +21,10 @@ from array import array
 from collections import namedtuple
 
 import bamnostic
-from bamnostic import bgzf, bai
+from bamnostic import bgzf, bai, bam
 from bamnostic.utils import *
 
-_PY_VERSION = sys.version
-
-
-class CompatibleArray(array):
-    """ Utility object for ensuring backwards compatibility for array objects
-    
-    Python 3 now issues a DeprecationWarning when `fromstring()` is invoked. 
-    However, it is still necessary for Python 2.7 workflows since they do not
-    have the `frombytes()` method. This class checks for Python version, and returns
-    the appropriate result without the DeprecationWarnings.
-    
-    {}
-    """.format(array.__doc__)
-    def __init__(self, *args, **kwargs):
-        """ {}
-        """.format(array.__init__.__doc__)
-        super(CompatibleArray, self).__init__()
-    
-    def fromstring(self, string):
-        """ Checks Python version and issues invokes appropriate array.array method
-        for handling strings. 
-        
-        Python 2.7 uses ASCII strings and no byte types.Python 3 uses Unicode
-        strings and has byte types.
-        """
-        if sys.version_info[0] < 3:
-            super(CompatibleArray, self).fromstring(string)
-        else:
-            super(CompatibleArray, self).frombytes(string)
+_PY_VERSION = sys.version_info
 
 
 Cigar = namedtuple('Cigar', ('op_code', 'n_op', 'op_id', 'op_name'))
@@ -138,7 +110,7 @@ _unpack_string = struct.Struct('<s').unpack
 _unpack_array = struct.Struct('<si').unpack
 
 
-class AlignmentFile(bgzf.BgzfReader, bgzf.BgzfWriter):
+class AlignmentFile(bam.BamReader, bgzf.BgzfWriter):
     """Wrapper to allow drop in replacement for BAM functionality in a ``pysam``-like API.
 
     Args:
@@ -179,7 +151,7 @@ class AlignmentFile(bgzf.BgzfReader, bgzf.BgzfWriter):
                         raise FileExistsError('User declined overwrite')
             bgzf.BgzfWriter.__init__(self, **kwargs)
         else:
-            bgzf.BgzfReader.__init__(self, **kwargs)
+            bam.BamReader.__init__(self, **kwargs)
 
 
 class AlignedSegment(object):
@@ -347,8 +319,15 @@ class AlignedSegment(object):
         """
         self._raw_qual = unpack('<{}s'.format(self.l_seq), self._range_popper(self.l_seq))
 
-        self.query_qualities = CompatibleArray('B')
-        self.query_qualities.fromstring(self._raw_qual)
+        self.query_qualities = array('B')
+        
+        # Should account for all versions of Python
+        if type(self._raw_qual) == str:
+            self.query_qualities.fromstring(self._raw_qual)
+        elif type(self._raw_qual) == bytes:
+            self.query_qualities.frombytes(self._raw_qual)
+        else:
+            raise TypeError('Raw quality score is neither string nor bytes object')
         """Phred Quality scores for each base of the alignment
         ***without*** an ASCII offset."""
 
@@ -475,7 +454,7 @@ class AlignedSegment(object):
         # Capture given length string or hex array
         elif val_type == "Z" or val_type == "H":
             val = _unpack_string(self._range_popper(1))[0]
-            if _PY_VERSION.startswith('2'):
+            if _PY_VERSION[0] == 2:
                 while val[-1] != '\x00':
                     val += _unpack_string(self._range_popper(1))[0]
             else:
