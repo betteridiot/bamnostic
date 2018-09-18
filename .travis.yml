@@ -22,14 +22,3 @@ install:
 script: 
   - pytest --doctest-modules bamnostic/
 
-branches:
-  only:
-    - devel
-
-jobs:
-  include:
-    - stage: deploy
-      script: .travis/push.sh
-      os: linux
-      language: python
-      python: "3.6"
