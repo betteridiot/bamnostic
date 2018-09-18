@@ -507,7 +507,7 @@ class BgzfReader(object):
         elif start_offset in self._buffers:
             # Already in cache
             try:
-                self._buffer, self._block_raw_length = self._buffers[start_offset]
+                self._buffer, self._block_raw_length = self._buffers.get(start_offset)
             except TypeError:
                 pass
             self._within_block_offset = 0
