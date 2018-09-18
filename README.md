@@ -48,10 +48,10 @@ pip install --user bamnostic
 
 ```bash
 # again, use --user if you don't have superuser access
-pip install -e git+https://github.com/betteridiot/bamnostic.git
+pip install -e git+https://github.com/betteridiot/bamnostic.git#egg=bamnostic
 
 # or, if you don't have superuser access
-pip install --user -e git+https://github.com/betteridiot/bamnostic.git
+pip install --user -e git+https://github.com/betteridiot/bamnostic.git#bamnostic#egg=bamnostic
 ``` 
 
 ### Traditional GitHub clone 
