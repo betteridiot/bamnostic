@@ -22,7 +22,7 @@ install:
   - git checkout -qf $TRAVIS_COMMIT
   - pip install -r requirements.txt
   - pip install .
-  - ls $TRAVIS_REPO_SLUG
+  - ls
   - python -c 'import bamnostic as bs\nprint(bs.example_bam)'
 
 script: 
