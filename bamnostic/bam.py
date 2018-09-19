@@ -314,6 +314,7 @@ class BamReader(bgzf.BgzfReader):
             if os.path.isfile(index_filename):
                 self._index_path = index_filename
                 self._random_access = True
+                self._index_ext = index_filename.split('.')[-1]
                 return True
             else:
                 if req_idx:
