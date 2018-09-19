@@ -982,10 +982,12 @@ class BgzfReader(object):
                 # check to see if the read is out of bounds of the region
                 if next_read.reference_name != query.contig:
                     boundary_check = False
-                if query.start < query.stop < next_read.pos:
+                elif query.start < query.stop < next_read.pos:
                     boundary_check = False
+                elif not query.start <= next_read.pos <= query.stop:
+                    continue
                 # check for stop iteration
-                if next_read:
+                elif next_read:
                     yield next_read
                 else:
                     return
