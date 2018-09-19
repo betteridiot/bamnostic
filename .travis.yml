@@ -25,7 +25,7 @@ install:
   - pwd
   - ls
   - python -c 'import bamnostic as bs; print(bs.example_bam)'
-  - if [ ! -f ./bamnostic/data/example.bam ]; then echo 'File doesn't exist'; fi
+  - if [ ! -f ./bamnostic/data/example.bam ]; then echo "File does not exist"; fi
 
 script: 
   - pytest --doctest-modules bamnostic/
