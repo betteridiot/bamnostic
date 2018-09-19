@@ -23,7 +23,7 @@ install:
   - pip install -r requirements.txt
   - pip install .
   - ls
-  - python -c 'import bamnostic as bs\nprint(bs.example_bam)'
+  - python -c 'import bamnostic as bs; print(bs.example_bam)'
 
 script: 
   - pytest --doctest-modules bamnostic/
