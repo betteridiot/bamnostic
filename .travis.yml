@@ -22,6 +22,8 @@ install:
   - git checkout -qf $TRAVIS_COMMIT
   - pip install -r requirements.txt
   - pip install .
+  - ls $TRAVIS_REPO_SLUG
+  - python -c 'import bamnostic as bs\nprint(bs.example_bam)'
 
 script: 
   - pytest --doctest-modules bamnostic/
