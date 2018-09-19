@@ -153,12 +153,11 @@ def get_block(handle, offset=0):
         ValueError: if the BGZF block header is malformed
 
     Example:
-        >>> with bamnostic.AlignmentFile(bamnostic.example_bam,'rb') as bam:
-        ...     bam_header = get_block(bam)
-        ...     try:
-        ...         bam_header.startswith(b'\x1f\x8b\x08\x04')
-        ...     except SyntaxError:
-        ...         bam_header.startswith('\x1f\x8b\x08\x04')
+        >>> bam_header = get_block(bamnostic.example_bam)
+        ... try:
+        ...     bam_header.startswith(b'\x1f\x8b\x08\x04')
+        ... except SyntaxError:
+        ...     bam_header.startswith('\x1f\x8b\x08\x04')
         True
 
     """
