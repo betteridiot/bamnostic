@@ -153,7 +153,7 @@ def get_block(handle, offset=0):
         ValueError: if the BGZF block header is malformed
 
     Example:
-        >>> with open('./bamnostic/data/example.bam','rb') as bam:
+        >>> with open(bamnostic.example_bam,'rb') as bam:
         ...     bam_header = get_block(bam)
         ...     try:
         ...         bam_header.startswith(b'\x1f\x8b\x08\x04')
@@ -200,7 +200,7 @@ def _load_bgzf_block(handle):
         ValueError: if CRC32 or ISIZE do not match deflated data
 
     Example:
-        >>> with open('./bamnostic/data/example.bam','rb') as bam:
+        >>> with open(bamnostic.example_bam,'rb') as bam:
         ...     block = _load_bgzf_block(bam)
         ...     try:
         ...         block[0] == 53 and block[1].startswith(b'BAM\x01')
