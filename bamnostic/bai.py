@@ -45,17 +45,12 @@ else:
 from bamnostic.utils import *
 
 
-def format_warnings(message, category, filename, lineno, file=None, line=None):
-    return ' {}:{}: {}:{}'.format(filename, lineno, category.__name__, message)
-
-
 warnings.formatwarning = format_warnings
 
 # Helper compiled structs
 unpack_chunk = struct.Struct('<2Q').unpack
 unpack_intervals = struct.Struct('<Q').unpack
 unpack_bid_nchunk = struct.Struct('<Ii').unpack
-unpack_bid_loffset_nchunk = struct.Struct('<IQi').unpack
 unpack_unmapped = struct.Struct('<4Q').unpack
 
 
@@ -75,19 +70,14 @@ class conditional_decorator(object):
 RefIdx = namedtuple('RefIdx', ('start_offset', 'end_offset', 'n_bins'))
 
 
-class CsiBin(object):
-    __slots__ = ['loffset', 'chunks']
-
-    def __init__(self, *args):
-        self.loffset, self.chunks = args
-
-
 class Chunk(object):
     __slots__ = ['voffset_beg', 'voffset_end']
 
     def __init__(self, handle):
         self.voffset_beg, self.voffset_end = unpack_chunk(handle.read(16))
 
+    def __repr__(self):
+        return 'Chunk(voffset_beg={}, voffset_end={})'.format(self.voffset_beg, self.voffset_end)
 
 class Ref(object):
     __slots__ = ['bins', 'intervals', 'ref_id']
@@ -95,11 +85,8 @@ class Ref(object):
     def __init__(self, *args):
         self.bins, self.intervals, self.ref_id = args
 
-class RefCsi(object):
-    __slots__ = ['bins', 'ref_id']
-
-    def __init__(self, *args):
-        self.bins, self.ref_id = args
+    def __getitem__(self, key):
+        return self.bins[key]
 
 
 class Unmapped(object):
@@ -420,7 +407,7 @@ class Bai(object):
 
         for binID in reg2bins(start, stop):
             try:
-                bin_chunks = self.current_ref.bins[binID]
+                bin_chunks = self.current_ref[binID]
             except KeyError:
                 continue
 

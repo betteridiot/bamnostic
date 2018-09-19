@@ -32,8 +32,7 @@ import struct
 import os
 import sys
 import warnings
-from array import array
-from collections import namedtuple
+import gzip
 
 _PY_VERSION = sys.version_info
 
@@ -43,35 +42,21 @@ else:
     from functools import lru_cache
 
 import bamnostic
-import bamnostic.bgzf as bgzf
+from bamnostic import bai
 from bamnostic.utils import *
-from bamnostic.bai import *
 
 
 def format_warnings(message, category, filename, lineno, file=None, line=None):
     return ' {}:{}: {}:{}'.format(filename, lineno, category.__name__, message)
 
 
-warnings.formatwarning = format_warnings
+warnings.formatwarning = bai.format_warnings
+
 
 # Helper compiled structs
-unpack_chunk = struct.Struct('<2Q').unpack
-unpack_intervals = struct.Struct('<Q').unpack
-unpack_bid_nchunk = struct.Struct('<Ii').unpack
+unpack_chunk = bai.unpack_chunk
 unpack_bid_loffset_nchunk = struct.Struct('<IQi').unpack
-unpack_unmapped = struct.Struct('<4Q').unpack
-
-
-class conditional_decorator(object):
-    def __init__(self, dec, condition):
-        self.decorator = dec
-        self.condition = condition
-
-    def __call__(self, func):
-        if self.condition:
-            # Return the function unchanged, not decorated.
-            return func
-        return self.decorator(func)
+unpack_unmapped = bai.unpack_unmapped
 
 
 class CsiBin(object):
@@ -80,12 +65,20 @@ class CsiBin(object):
     def __init__(self, *args):
         self.loffset, self.chunks = args
 
+    def __repr__(self):
+        return 'CsiBin(loffset={}, chunks={})'.format(self.loffset, self.chunks)
 
 class RefCsi(object):
     __slots__ = ['bins', 'ref_id']
 
     def __init__(self, *args):
         self.bins, self.ref_id = args
+
+    def __repr__(self):
+        return 'RefCsi(bins={}, ref_id={})'.format(self.bins, self.ref_id)
+
+    def __getitem__(self, key):
+        return self.bins[key]
 
 
 def reg2bin_csi(rbeg, rend, min_shift=14, depth=5):
@@ -133,7 +126,7 @@ def reg2bins_csi(rbeg, rend, min_shift=14, depth=5):
     assert 0 <= rbeg <= rend, 'Invalid region {}, {}'.format(rbeg, rend)
     bins = []
     shift = min_shift + depth * 3
-    stop -= 1
+    rend -= 1
     level = total = 0
     
     while level <= depth:
@@ -149,7 +142,7 @@ def reg2bins_csi(rbeg, rend, min_shift=14, depth=5):
         level += 1
 
 
-class Csi(Bai):
+class Csi(bai.Bai):
     """ This class defines the bam CSI index file object and its interface.
 
     The purpose of this class is the binary parsing of the bam index file (CSI) associated with
@@ -174,9 +167,8 @@ class Csi(Bai):
         _last_pos (int): used for indexing, the byte position of the file head.
 
     """
-    __slots__ = ['_io', '_min_shift', '_UNMAP_BIN', 'BAM_LIDX_SHIFT',
-                 '_magic', '_depth', 'aux', 'current_ref', 'ref_indices',
-                 'n_no_coor', '_last_pos', 'n_refs']
+    __slots__ = ['_io', '_min_shift', '_UNMAP_BIN', '_magic', '_depth', 'aux', 
+                'current_ref', 'ref_indices', 'n_no_coor', '_last_pos', 'n_refs']
 
     def __init__(self, filename):
         """Initialization method
@@ -193,7 +185,7 @@ class Csi(Bai):
             AssertionError (Exception): if CSI magic is not found
         """
         if os.path.isfile(filename):
-            self._io = bgzf.BgzfReader(open(filename, 'rb'))
+            self._io = gzip.GzipFile(filename)
         else:
             raise OSError('{} not found. Please change check your path or index your BAM file'.format(filename))
 
@@ -207,7 +199,7 @@ class Csi(Bai):
         
         if l_aux > 0:
             self.aux = aux_nref[:-1]
-            self.n_ref = aux_nref[-1]
+            self.n_refs = aux_nref[-1]
         elif l_aux == 0:
             self.n_refs = aux_nref
         else:
@@ -244,7 +236,7 @@ class Csi(Bai):
             chunks (list): a list of Chunk objects with the attributes of
                             chunks[i] are .voffset_beg and voffset_end
         """
-        chunks = [Chunk(self._io) for chunk in range(n_chunks)]
+        chunks = [bai.Chunk(self._io) for chunk in range(n_chunks)]
         return chunks
 
     def get_bins(self, n_bins, ref_id=None, idx=False):
@@ -280,16 +272,15 @@ class Csi(Bai):
         bins = None if idx else {}
 
         for b in range(n_bins):
-            bin_id, loffset, n_chunks = unpack_bid_loffset_nchunk(self._io.read(12))
-
+            bin_id, loffset, n_chunks = unpack_bid_loffset_nchunk(self._io.read(16))
             if idx:
                 if bin_id == self._UNMAP_BIN:
                     assert n_chunks == 2, 'Bin 3740 is supposed to have 2 chunks. This has {}'.format(n_chunks)
-                    unmapped = Unmapped(*unpack_unmapped(self._io.read(32)))
+                    unmapped = bai.Unmapped(*unpack_unmapped(self._io.read(32)))
                     self.unmapped[ref_id] = unmapped
                 else:
                     if not n_chunks == 0:
-                        self._io.seek(16 * n_chunks, 1)  # 16 = struct.calcsize('<2Q')
+                        self._io.seek(16 * n_chunks, 1)
             else:
                 chunks = self.get_chunks(n_chunks)
                 bins[bin_id] = CsiBin(loffset, chunks)
@@ -300,7 +291,7 @@ class Csi(Bai):
 
     # @functools.lru_cache(maxsize=256, typed=True)
     # @lru_cache(6)
-    @conditional_decorator(lambda func: lru_cache(maxsize=6)(func), _PY_VERSION[0] == 2)
+    @bai.conditional_decorator(lambda func: lru_cache(maxsize=6)(func), _PY_VERSION[0] == 2)
     def get_ref(self, ref_id=None, idx=False):
         """Iteratively unpacks all the bins, linear intervals, and chunks for a given reference
 
@@ -329,6 +320,7 @@ class Csi(Bai):
             AssertionError (Exception): if, when random access is used, the current reference offset
                                         does not match indexed reference offset.
         """
+
         if ref_id is not None and not idx:
             try:
                 ref_start, _, _ = self.ref_indices[ref_id]
@@ -346,7 +338,7 @@ class Csi(Bai):
         self._last_pos = self._io.tell()
 
         if idx:
-            return RefIdx(ref_start, self._last_pos, n_bins)
+            return bai.RefIdx(ref_start, self._last_pos, n_bins)
         else:
             return RefCsi(bins, ref_id)
 
@@ -375,7 +367,7 @@ class Csi(Bai):
 
         for potential_bin in reg2bins_csi(start, stop, min_shift=self._min_shift, depth=self._depth):
             try:
-                pbin = self.current_ref.bins[potential_bin]
+                pbin = self.current_ref[potential_bin]
             except KeyError:
                 continue
 
@@ -384,5 +376,3 @@ class Csi(Bai):
             for chunk in pbin.chunks:
                 if pbin.loffset <= chunk.voffset_end:
                     return chunk.voffset_beg
-                else:
-                    continue

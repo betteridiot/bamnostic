@@ -120,10 +120,11 @@ def _bgzf_metaheader(handle):
         ID1 == 31,
         ID2 == 139,
         CM == 8,
-        FLG == 4,
+        FLG == 4 ,
         SI1 == 66,
         SI2 == 67,
-        SLEN == 2]
+        SLEN == 2
+        ]
 
     if not all(checks):
         raise ValueError('Malformed BGZF block')
@@ -163,8 +164,10 @@ def get_block(handle, offset=0):
     """
 
     if isinstance(handle, bamnostic.core.AlignmentFile):
-        handle = handle._handle # get the raw file object, not wrapper
-    with open(handle.name, 'rb') as header_handle:
+        handle = handle._handle.name # get the raw file object, not wrapper
+    elif type(handle) == str:
+        handle = handle
+    with open(handle, 'rb') as header_handle:
         header_handle.seek(offset)  # get to the start of the BGZF block
 
         # Capture raw bytes of metadata header
@@ -210,7 +213,7 @@ def _load_bgzf_block(handle):
     # Pull in the BGZF block header information
     header, _ = _bgzf_metaheader(handle)
     XLEN = header[-4]
-    BSIZE = struct.unpack('<H', handle.read(2))[0]
+    BSIZE = unpack('<H', handle)
 
     # Expose the compressed data
     d_size = BSIZE - XLEN - 19
@@ -232,49 +235,26 @@ def _load_bgzf_block(handle):
 
 class BgzfReader(object):
     """ The BAM reader. Heavily modified from Peter Cock's BgzfReader.
-
-    Attributes:
-        header: representation of header data (if present)
-        lengths (:py:obj:`list` of :py:obj:`int`): lengths of references listed in header
-        nocoordinate (int): number of reads that have no coordinates
-        nreferences (int): number of references in header
-        ref2tid (:py:obj:`dict` of :py:obj:`str`, :py:obj:`int`): refernce names and refID dictionary
-        references (:py:obj:`list` of :py:obj:`str`): names of references listed in header
-        text (str): SAM header (if present)
-        unmapped (int): number of unmapped reads
-
-    Note:
-        This implementation is likely to change. While the API was meant to
-        mirror `pysam`, it makes sense to include the `pysam`-like API in an extension
-        that will wrap the core reader. This would be a major refactor, and therefore
-        will not happen any time soon (30 May 2018).
-
     """
 
-    def __init__(self, filepath_or_object, mode="rb", max_cache=128, index_filename=None,
-                 filename=None, check_header=False, check_sq=True, reference_filename=None,
-                 filepath_index=None, require_index=False, duplicate_filehandle=None,
-                 ignore_truncation=False):
+    def __init__(self, filepath_or_object, mode="rb", max_cache=None, 
+                filename=None, duplicate_filehandle=None, ignore_truncation=False):
         """Initialize the class.
 
         Args:
             filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file
             mode (str): Mode for reading. BAM files are binary by nature (default: 'rb').
             max_cache (int): number of desired LRU cache size, preferably a multiple of 2 (default: 128).
-            index_filename (str): path to index file (BAI) if it is named differently than the BAM file (default: None).
             filename (str | :py:obj:`file`): synonym for `filepath_or_object`
-            check_header (bool): Obsolete method maintained for backwards compatibility (default: False)
-            check_sq (bool): Inspect BAM file for `@SQ` entries within the header
-            reference_filename (str): Not implemented. Maintained for backwards compatibility
-            filepath_index (str): synonym for `index_filename`
-            require_index (bool): require the presence of an index file or raise (default: False)
             duplicate_filehandle (bool): Not implemented. Raises warning if True.
             ignore_truncation (bool): Whether or not to allow trucated file processing (default: False).
 
         """
 
         # Set up the LRU buffer dictionary
-        if max_cache < 1:
+        if max_cache is None:
+            pass
+        elif max_cache < 1:
             raise ValueError("Use max_cache with a minimum of 1")
         self._buffers = LruDict(max_cache=max_cache)
 
@@ -297,7 +277,7 @@ class BgzfReader(object):
 
         self._text = "b" not in mode.lower()
         if 'b' not in mode.lower():
-            raise IOError('BAM file requires binary mode ("rb")')
+            raise IOError('BGZF file format requires binary mode ("rb")')
 
         # Connect to the BAM file
         self._handle = handle
@@ -465,33 +445,6 @@ class BgzfReader(object):
 
         """
         raise NotImplementedError("Readline does not work on byte data")
-
-        """
-        i = self._buffer.find(self._newline, self._within_block_offset)
-        # Three cases to consider,
-        if i == -1:
-            # No newline, need to read in more data
-            data = self._buffer[self._within_block_offset:]
-            self._load_block()  # will reset offsets
-            if not self._buffer:
-                return data  # EOF
-            else:
-                # TODO - Avoid recursion
-                return data + self.readline()
-        elif i + 1 == len(self._buffer):
-            # Found new line, but right at end of block (SPECIAL)
-            data = self._buffer[self._within_block_offset:]
-            # Must now load the next block to ensure tell() works
-            self._load_block()  # will reset offsets
-            assert data
-            return data
-        else:
-            # Found new line, not at end of block (easy case, no IO)
-            data = self._buffer[self._within_block_offset:i + 1]
-            self._within_block_offset = i + 1
-            # assert data.endswith(self._newline)
-            return data
-        """
 
     def __iter__(self):
         """Iterate over the lines in the BGZF file."""
