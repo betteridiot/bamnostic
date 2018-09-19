@@ -154,7 +154,7 @@ def get_block(handle, offset=0):
 
     Example:
         >>> bam_header = get_block(bamnostic.example_bam)
-        ... try:
+        >>> try:
         ...     bam_header.startswith(b'\x1f\x8b\x08\x04')
         ... except SyntaxError:
         ...     bam_header.startswith('\x1f\x8b\x08\x04')
