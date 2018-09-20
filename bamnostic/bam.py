@@ -144,7 +144,7 @@ class BAMheader(object):
             self.refs.update({r: (ref_name.decode(), ref_len)})
         self._BAMheader_end = _io._handle.tell()
 
-        self._header_block = bamnostic.bgzf.get_block(_io)
+        self._header_block = bgzf.get_block(_io)
 
     def __len__(self):
         return len(self.refs)
@@ -464,7 +464,7 @@ class BamReader(bgzf.BgzfReader):
         self._handle.seek(-28, 2)
         eof = self._handle.read()
         self._handle.seek(temp_pos)
-        if eof == bamnostic.bgzf._bgzf_eof:
+        if eof == bgzf._bgzf_eof:
             return False
         else:
             warnings.BytesWarning('No EOF character found. File may be truncated')
@@ -1041,131 +1041,187 @@ class BamReader(bgzf.BgzfReader):
         return self._check_idx
 
 
-# class BgzfWriter(object):
-    # """Define a BGZFWriter object."""
+def _sam_header_to_ref_list(header):
+    """Modified code from Peter Cock's [BamWriter](https://github.com/peterjc/biopython/blob/SamBam2015/Bio/Sequencing/SamBam/__init__.py#L1714)
 
-    # def __init__(self, filepath_or_object, mode="wb", compresslevel=6):
-        # """Initialize the class."""
-        # if isinstance(filepath_or_object, io.IOBase):
-            # handle = filepath_or_object
-        # else:
-            # handle = open(filepath_or_object, "wb")
-        # """
-        # if fileobj:
-            # assert filename is None
-            # handle = fileobj
-        # else:
-            # if "w" not in mode.lower() and "a" not in mode.lower():
-                # raise ValueError("Must use write or append mode, not %r" % mode)
-            # if "a" in mode.lower():
-                # handle = open(filename, "ab")
-            # else:
-                # handle = open(filename, "wb")
-        # """
-        # self._text = "b" not in mode.lower()
-        # self._handle = handle
-        # self._buffer = b""
-        # self.compresslevel = compresslevel
+    Removes blank lines, ensures trailing newlines, spots some errors.
 
-    # def _write_block(self, block):
-        # """Write provided data to file as a single BGZF compressed block (PRIVATE)."""
-        # # print("Saving %i bytes" % len(block))
-        # start_offset = self._handle.tell()
-        # assert len(block) <= 65536
-        # # Giving a negative window bits means no gzip/zlib headers,
-        # # -15 used in samtools
-        # c = zlib.compressobj(self.compresslevel,
-                             # zlib.DEFLATED,
-                             # -15,
-                             # zlib.DEF_MEM_LEVEL,
-                             # 0)
-        # compressed = c.compress(block) + c.flush()
-        # del c
-        # assert len(compressed) < 65536, \
-            # "TODO - Didn't compress enough, try less data in this block"
-        # crc = zlib.crc32(block)
-        # # Should cope with a mix of Python platforms...
-        # if crc < 0:
-            # crc = struct.pack("<i", crc)
-        # else:
-            # crc = struct.pack("<I", crc)
-        # bsize = struct.pack("<H", len(compressed) + 25)  # includes -1
-        # crc = struct.pack("<I", zlib.crc32(block) & 0xffffffff)
-        # uncompressed_length = struct.pack("<I", len(block))
-        # # Fixed 16 bytes,
-        # # gzip magic bytes (4) mod time (4),
-        # # gzip flag (1), os (1), extra length which is six (2),
-        # # sub field which is BC (2), sub field length of two (2),
-        # # Variable data,
-        # # 2 bytes: block length as BC sub field (2)
-        # # X bytes: the data
-        # # 8 bytes: crc (4), uncompressed data length (4)
-        # data = _bgzf_header + bsize + compressed + crc + uncompressed_length
-        # self._handle.write(data)
+    """
+    references = []
+    for line in header.split("\n"):
+        if line.startswith("@SQ\t"):
+            r = None
+            l = None
+            for part in line[3:].rstrip().split("\t"):
+                if part.startswith("SN:"):
+                    r = part[3:]
+                elif part.startswith("LN:"):
+                    l = int(part[3:])
+            if r is None or l is None:
+                raise ValueError("Malformed @SQ header (SN and LN required):\n%r"
+                                 % line)
+            references.append((r, l))
+    return references
 
-    # def write(self, data):
-        # """Write method for the class."""
 
-        # # TODO - Check bytes vs unicode
-        # data = _as_bytes(data)
-        # # block_size = 2**16 = 65536
-        # data_len = len(data)
-        # if len(self._buffer) + data_len < 65536:
-            # # print("Cached %r" % data)
-            # self._buffer += data
-            # return
-        # else:
-            # # print("Got %r, writing out some data..." % data)
-            # self._buffer += data
-            # while len(self._buffer) >= 65536:
-                # self._write_block(self._buffer[:65536])
-                # self._buffer = self._buffer[65536:]
+def _ref_list_to_sam_header(references):
+    """Modified code from Peter Cock's [BamWriter](https://github.com/peterjc/biopython/blob/SamBam2015/Bio/Sequencing/SamBam/__init__.py#L1714)
 
-    # def flush(self):
-        # """Flush data explicitly."""
-        # while len(self._buffer) >= 65536:
-            # self._write_block(self._buffer[:65535])
-            # self._buffer = self._buffer[65535:]
-        # self._write_block(self._buffer)
-        # self._buffer = b""
-        # self._handle.flush()
+    Removes blank lines, ensures trailing newlines, spots some errors.
 
-    # def close(self):
-        # """Flush data, write 28 bytes BGZF EOF marker, and close BGZF file.
+    """
+    return "".join(["@SQ\tSN:%s\tLN:%i\n" % (name, length) for name, length in references])
 
-        # samtools will look for a magic EOF marker, just a 28 byte empty BGZF
-        # block, and if it is missing warns the BAM file may be truncated. In
-        # addition to samtools writing this block, so too does bgzip - so this
-        # implementation does too.
-        # """
 
-        # if self._buffer:
-            # self.flush()
-        # self._handle.write(_bgzf_eof)
-        # self._handle.flush()
-        # self._handle.close()
+def _check_header_text(text):
+    """Modified code from Peter Cock's [BamWriter](https://github.com/peterjc/biopython/blob/SamBam2015/Bio/Sequencing/SamBam/__init__.py#L1714)
 
-    # def tell(self):
-        # """Return a BGZF 64-bit virtual offset."""
-        # return make_virtual_offset(self._handle.tell(), len(self._buffer))
+    Removes blank lines, ensures trailing newlines, spots some errors.
 
-    # def seekable(self):
-        # """Return True indicating the BGZF supports random access."""
-        # # Not seekable, but we do support tell...
-        # return False
+    """
 
-    # def isatty(self):
-        # """Return True if connected to a TTY device."""
-        # return False
+    lines = []
+    for line in text.split("\n"):
+        if not line:
+            continue
+            # raise ValueError("Blank line in header")
+        elif line[0] != "@":
+            raise ValueError("SAM header lines must start with @, not %s" % line)
+        lines.append(line + "\n")
+    return "".join(lines)
 
-    # def fileno(self):
-        # """Return integer file descriptor."""
-        # return self._handle.fileno()
 
-    # def __enter__(self):
-        # """Open a file operable with WITH statement."""
-        # return self
+def _cross_check_header_refs(reads, header="", referencenames = None, referencelengths = None):
+    """Modified code from Peter Cock's [BamWriter](https://github.com/peterjc/biopython/blob/SamBam2015/Bio/Sequencing/SamBam/__init__.py#L1714)
+    """
+    if not header:
+        # If the reads argument is a SamIterator or BamIterator this works:
+        try:
+            header = reads.text
+        except AttributeError:
+            pass
+    if referencenames is not None or referencelengths is not None:
+        assert len(referencenames) == len(referencelengths)
+        references = zip(referencenames, referencelengths)
+        alt_refs = _sam_header_to_ref_list(header)
+        if not alt_refs:
+            # Append minimal @SQ lines to the header
+            header += _ref_list_to_sam_header(references)
+        elif alt_refs != references:
+            raise ValueError("Reference names and lengths inconsistent with header @SQ lines")
+    else:
+        references = _sam_header_to_ref_list(header)
+    return header, references
 
-    # def __exit__(self, type, value, traceback):
-        # """Close a file with WITH statement."""
-        # self.close()
+
+class BamWriter(bgzf.BgzfWriter):
+
+    def __init__(self, filepath_or_object, mode = 'xb', compresslevel = 6, ignore_overwrite = False,
+                copy_header = None, header = b'', reference_names = None, reference_lengths = None):
+        """Useful class for writing BAM files. 
+
+        Note:
+            As of right now, it is tuned for working within a pipeline where reads 
+            are being filtered or modified from another BAM file.
+
+        Args:
+            filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file
+            mode (str): Mode for writing. BAM files are binary by nature (default: 'xb')
+            compresslevel (int): desired level of Gzip compression (default: 6)
+            ignore_overwrite (bool): whether or not to ignore overwrite detection
+            copy_header (filepath_or_object): copy the header from another BAM file
+            header (bytes): SAM-style header
+            reference_names (:py:obj:`list` of :py:obj:`str`): list of all reference names used in file
+            reference_lengths (:py:obj:`list` of :py:obj:`int`): list of all reference lengths used in file
+
+        """
+        
+        if 'b' not in mode:
+            raise IOError("BAM files must be written in binary mode, try '{}b'".format(mode))
+        if 'r' in mode and not '+' in mode:
+            raise IOError("bamnostic.bam.BamWriter cannot operate in reading (r) mode")
+        if type(filepath_or_object) is str:
+
+            # Make sure the user knows they will be overwriting the data
+            if 'w' in mode and not ignore_overwrite and os.path.isfile(filepath_or_object):
+                if yes_no('{} already exists. Going further will overwrite the file'.format(filepath_or_object)):
+                    super(BamWriter, self).__init__(filepath_or_object, mode=mode, compresslevel = compresslevel)
+                else:
+                    raise FileExistsError('User declined overwrite')
+
+            # If they know beforehand, let them overwrite
+            elif 'w' in mode and ignore_overwrite:
+                super(BamWriter, self).__init__(filepath_or_object, mode=mode, compresslevel = compresslevel)
+
+            # Just a new file
+            elif 'w' in mode:
+                super(BamWriter, self).__init__(filepath_or_object, mode=mode, compresslevel = compresslevel)
+
+            # Pluck off the EOF block for appended files and make sure to not re-write header
+            elif 'a' in mode:
+                with open(filepath_or_object, 'r+') as appended:
+                    appended.seek(-28, os.SEEK_END)
+                    appended.truncate()
+                super(BamWriter, self).__init__(filepath_or_object, mode=mode, compresslevel = compresslevel)
+                return None
+
+            # All other options
+            elif 'x' in mode or '+' in mode:
+                super(BamWriter, self).__init__(filepath_or_object, mode=mode, compresslevel = compresslevel)
+
+                # Make sure to not re-write header
+                if 'r' in mode:
+                    return None
+
+        # If they already opened the file, let them do whatever they want
+        elif isinstance(filepath_or_object, io.IOBase):
+            super(BamWriter, self).__init__(self, filepath_or_object, mode=mode, compresslevel=compresslevel)
+        self.write_header(copy_header = copy_header, header = header, 
+                        reference_names = reference_names, 
+                        reference_lengths = reference_lengths)
+
+    def write_header(self, copy_header = None, header = b'', reference_names = None, reference_lengths = None):
+        """Modified code from Peter Cock's [BamWriter](https://github.com/peterjc/biopython/blob/SamBam2015/Bio/Sequencing/SamBam/__init__.py#L1714)
+
+        Writes the header into a BAM file
+
+        Args:
+            copy_header (filepath_or_object): copy the header from another BAM file
+            header (bytes): SAM-style header
+            reference_names (:py:obj:`list` of :py:obj:`str`): list of all reference names used in file
+            reference_lengths (:py:obj:`list` of :py:obj:`int`): list of all reference lengths used in file
+        """
+        if copy_header is not None:
+            if isinstance(copy_header, bamnostic.core.AlignmentFile):
+                print('From bam')
+                self._handle.write(bgzf.get_block(copy_header))
+                self._handle.flush()
+
+        elif reference_names is not None and reference_lengths is not None:
+            if len(reference_names) != len(reference_lengths):
+                raise IOError('Reference names and reference lengths must be equal is size')
+            header, references = _cross_check_header_refs(reads,
+                                                        header,
+                                                        reference_names,
+                                                        reference_lengths)
+            header = _as_bytes(_check_header_text(header))
+            # Write BAM header:
+            handle.write(_bam_magic)
+            handle.write(struct.pack("<I", len(header)))
+            handle.write(header)
+            handle.write(struct.pack("<I", len(references)))
+            for r, l in references:
+                try:
+                    handle.write(struct.pack("<I", len(r) + 1))
+                    handle.write(_as_bytes(r) + _null_byte)
+                    handle.write(struct.pack("<I", l))
+                except Exception:
+                    raise ValueError("Problem with reference %r, %r" % (r, l))
+
+            # Want to give it its own BGZF block, even if there is no SAM header:
+            handle.flush()
+
+    def write(self, data):
+        if len(data) + len(self._buffer) > 65536 and len(self._buffer) != 0:
+            self.flush()
+        super(BamWriter, self).write(data)

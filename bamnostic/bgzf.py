@@ -498,7 +498,7 @@ class BgzfWriter(object):
         if isinstance(filepath_or_object, io.IOBase):
             handle = filepath_or_object
         else:
-            handle = open(filepath_or_object, "wb")
+            handle = open(filepath_or_object, mode=mode)
         """
         if fileobj:
             assert filename is None

@@ -110,7 +110,7 @@ _unpack_string = struct.Struct('<s').unpack
 _unpack_array = struct.Struct('<si').unpack
 
 
-class AlignmentFile(bam.BamReader, bgzf.BgzfWriter):
+class AlignmentFile(bam.BamReader, bam.BamWriter):
     """Wrapper to allow drop in replacement for BAM functionality in a ``pysam``-like API.
 
     Args:
@@ -132,26 +132,44 @@ class AlignmentFile(bam.BamReader, bgzf.BgzfWriter):
     def __init__(self, filepath_or_object, mode="rb", max_cache=128, index_filename=None,
                  filename=None, check_header=False, check_sq=True, reference_filename=None,
                  filepath_index=None, require_index=False, duplicate_filehandle=None,
-                 ignore_truncation=False):
+                 ignore_truncation=False, compresslevel = 6, ignore_overwrite = False,
+                copy_header = None, header = b'', reference_names = None, reference_lengths = None):
         """Initialize the class.
-
 
         """
 
         kwargs = locals()
         kwargs.pop('self')
 
-        assert 'b' in mode.lower()
-        if 'w' in mode.lower() or 'a' in mode.lower():
-            if 'w' in mode.lower():
-                if os.path.isfile(filepath_or_object):
-                    print('BAM file already exists')
-                    print('Continuing will delete existing data')
-                    if not yes_no():
-                        raise FileExistsError('User declined overwrite')
-            bgzf.BgzfWriter.__init__(self, **kwargs)
+        assert 'b' in mode.lower(), 'BAM files must be used in binary mode'
+        
+        write_modes = ['w', 'a', 'x', 'r+']
+
+        # Check if user wants to write a BAM file
+        if any([wm in mode.lower() for wm in write_modes]):
+            write_args = ('filepath_or_object', 'mode', 'compresslevel', 
+                        'ignore_overwrite', 'copy_header', 'header',
+                        'reference_names', 'reference_lengths')
+            wargs = {}
+            for key in write_args:
+                try:
+                    wargs.update({key: kwargs.pop(key)})
+                except KeyError:
+                    pass
+            bam.BamWriter.__init__(self, **wargs)
+
         else:
-            bam.BamReader.__init__(self, **kwargs)
+            read_args = ('filepath_or_object', 'mode', 'max_cache', 'index_filename',
+                'filename', 'check_header', 'check_sq', 'reference_filename',
+                'filepath_index', 'require_index', 'duplicate_filehandle',
+                'ignore_truncation')
+            rargs = {}
+            for key in read_args:
+                try:
+                    rargs.update({key: kwargs.pop(key)})
+                except KeyError:
+                    pass
+            bam.BamReader.__init__(self, **rargs)
 
 
 class AlignedSegment(object):
@@ -188,7 +206,7 @@ class AlignedSegment(object):
 
         # Preserve the raw data for writing purposes
         self._raw_stream = self._byte_stream[:]
-        self._raw_stream[0:0] = struct.pack('i', block_size)
+        self._raw_stream.insert(0, bsize_buffer)
         """Used to copy the entire read's byte stream for writing purposes"""
 
         # Unpack all the necessary data for the read from the bytestream
