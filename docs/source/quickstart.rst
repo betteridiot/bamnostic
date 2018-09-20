@@ -26,7 +26,7 @@ within the package.
 
 .. code:: python
 
-    >>> bam = bs.AlignmentFile(bs.example_path, 'rb')
+    >>> bam = bs.AlignmentFile(bs.example_bam, 'rb')
 
 Get the header
 ~~~~~~~~~~~~~~
