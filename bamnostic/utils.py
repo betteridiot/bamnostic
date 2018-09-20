@@ -479,7 +479,7 @@ class LruDict(OrderedDict):
         if _is_pypy:
             self.move_to_end = self._pypy_move_to_end
         elif _PY_VERSION[:2] <= (3,2):
-            self.move_to_end = self._move_to_end
+            self.move_to_end = self._py27_move_to_end
         else:
             self.move_to_end = OrderedDict.move_to_end
         self.cull()
@@ -498,7 +498,7 @@ class LruDict(OrderedDict):
     def _pypy_move_to_end(self, key, last=True):
         __pypy__.move_to_end(self, key, last)
         
-    def _move_to_end(self, key, last=True):
+    def _py27_move_to_end(self, key, last=True):
         """Move an existing element to the end (or beginning if last is false).
         Raise KeyError if the element does not exist.
         """
