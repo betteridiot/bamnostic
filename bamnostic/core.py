@@ -216,7 +216,7 @@ class AlignedSegment(object):
 
         # Preserve the raw data for writing purposes
         self._raw_stream = self._byte_stream[:]
-        self._raw_stream[0:0] = struct.pack('i', block_size)
+        self._raw_stream.insert(0, bsize_buffer)
         """Used to copy the entire read's byte stream for writing purposes"""
 
         # Unpack all the necessary data for the read from the bytestream
