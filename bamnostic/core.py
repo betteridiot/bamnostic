@@ -811,3 +811,22 @@ class AlignedSegment(object):
             KeyError: if read does not contain MD tag
         """
         return ref_gen(self.seq, self.cigar, self.tags['MD'])
+
+    def to_bam(bam_file):
+        """Writes the alignment record to a BAM file
+
+        Args:
+            bam_file (string or :py:obj:`bamnostic.bam.BamWriter`): BAM file path or open bam file in a write mode
+        """
+
+        if type(bam_file) == str:
+            # Natively go into append mode
+            if os.path.isfile(bam_file):
+                with bam.BamWriter(bam_file, mode = 'ab') as bam_out:
+                    bam_out.write(self._raw_stream)
+            else:
+                raise IOError('BAM file must already exist, or be initilaized through bamnostic.bam.BamWriter')
+        elif isinstance(bam_file, bgzf.BgzfWriter):
+            bam_file.write(self._raw_stream)
+        else:
+            raise IOError('BAM file must already exist, or be initilaized through bamnostic.bam.BamWriter')
