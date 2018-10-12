@@ -412,7 +412,7 @@ class Bai(object):
                 continue
 
             for chunk in bin_chunks:
-                if not linear_offset <= chunk.voffset_end:
+                if not chunk.voffset_beg <= linear_offset <= chunk.voffset_end:
                     continue
                 else:
                     return chunk.voffset_beg

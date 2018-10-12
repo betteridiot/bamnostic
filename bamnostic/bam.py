@@ -587,9 +587,13 @@ class BamReader(bgzf.BgzfReader):
                 # check to see if the read is out of bounds of the region
                 if next_read.reference_name != query.contig:
                     boundary_check = False
-                elif query.start < query.stop < next_read.pos:
+                elif query.start < query.stop <= next_read.pos:
                     boundary_check = False
-                elif not query.start <= next_read.pos <= query.stop:
+                elif next_read.pos <= query.start <= next_read.pos + len(next_read.seq):
+                    yield next_read
+                elif next_read.pos < query.start:
+                    continue
+                elif not query.start <= next_read.pos < query.stop:
                     continue
                 # check for stop iteration
                 elif next_read:
@@ -702,7 +706,7 @@ class BamReader(bgzf.BgzfReader):
                        reference=None, end=None, base_quality_threshold=0):
         """ Counts the coverage of each base supported by a read the given interval.
 
-        Given an interval (inclusive, inclusive), this method pulls each read that overlaps
+        Given an interval (inclusive, exclusive), this method pulls each read that overlaps
         with the region. To ensure that the read truly overlaps with the region, the CIGAR string
         is required. These reads can further be filtered out by their flags, MAPQ qualities, or
         custom filtering function. Using the CIGAR string, the aligned portion of the read
@@ -774,7 +778,7 @@ class BamReader(bgzf.BgzfReader):
         for key in ['self', 'quality_threshold', 'read_callback', 'base_quality_threshold']:
             signature.pop(key)
 
-        adenine = array.array('L', [0] * (stop - start + 1))
+        adenine = array.array('L', [0] * (stop - start))
         cytosine = adenine[:]
         guanine = adenine[:]
         thymine = adenine[:]
@@ -785,15 +789,15 @@ class BamReader(bgzf.BgzfReader):
                     for base, index in cigar_alignment(seq=read.seq, cigar=read.cigarstring,
                                                        start_pos=read.pos, qualities=read.query_qualities,
                                                        base_qual_thresh=base_quality_threshold):
-                        if start <= index <= stop:
+                        if start <= index < stop:
                             if base == 'A':
-                                adenine[index - start] += 1
+                                adenine[index - start if index-start > 0 else 0] += 1
                             elif base == 'G':
-                                guanine[index - start] += 1
+                                guanine[index - start if index-start > 0 else 0] += 1
                             elif base == 'C':
-                                guanine[index - start] += 1
+                                guanine[index - start if index-start > 0 else 0] += 1
                             elif base == 'T':
-                                thymine[index - start] += 1
+                                thymine[index - start if index-start > 0 else 0] += 1
                             else:
                                 raise ValueError('Read base was {}, not A, T, C, or G'.format(base))
 
@@ -999,7 +1003,7 @@ class BamReader(bgzf.BgzfReader):
             curr_pos = self.tell()
             # BAMheader uses byte specific positions (and not BGZF virtual offsets)
             self._handle.seek(self._header._BAMheader_end)
-            self._load_block(self._handle.tell())
+            self._load_block()
             head_iter = self
 
         head_reads = [next(head_iter) for read in range(n)]

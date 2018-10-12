@@ -432,6 +432,7 @@ class BgzfReader(object):
             elif size:
                 # pull rest of data from next block
                 return data + self.read(size)
+
             else:
                 # Only needed the end of the last block
                 return data
