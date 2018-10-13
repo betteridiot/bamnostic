@@ -16,6 +16,9 @@ before_install:
   - chmod +x .travis/push.sh
 
 install:
+  - git clone https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
+  - cd $TRAVIS_REPO_SLUG
+  - git checkout -qf $TRAVIS_COMMIT
   - pip install -r requirements.txt
   - pip install .
 

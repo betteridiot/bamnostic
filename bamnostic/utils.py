@@ -186,10 +186,11 @@ def flag_decode(flag_code):
     return sorted([(key, flags[key]) for key in flags if key & code])
 
 
-def yes_no():
+def yes_no(message):
     """ Simple prompt parser"""
-    yes = set('yes', 'ye', 'y', '')
-    no = set('no', 'n')
+    yes = set(['yes', 'ye', 'y', ''])
+    no = set(['no', 'n'])
+    print(message)
     while True:
         answer = input('Would you like to continue? [y/n] ').lower()
         if answer in yes:

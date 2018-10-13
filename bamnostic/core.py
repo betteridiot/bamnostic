@@ -21,38 +21,10 @@ from array import array
 from collections import namedtuple
 
 import bamnostic
-from bamnostic import bgzf, bai
+from bamnostic import bgzf, bai, bam
 from bamnostic.utils import *
 
-_PY_VERSION = sys.version
-
-
-class CompatibleArray(array):
-    """ Utility object for ensuring backwards compatibility for array objects
-    
-    Python 3 now issues a DeprecationWarning when `fromstring()` is invoked. 
-    However, it is still necessary for Python 2.7 workflows since they do not
-    have the `frombytes()` method. This class checks for Python version, and returns
-    the appropriate result without the DeprecationWarnings.
-    
-    {}
-    """.format(array.__doc__)
-    def __init__(self, *args, **kwargs):
-        """ {}
-        """.format(array.__init__.__doc__)
-        super(CompatibleArray, self).__init__()
-    
-    def fromstring(self, string):
-        """ Checks Python version and issues invokes appropriate array.array method
-        for handling strings. 
-        
-        Python 2.7 uses ASCII strings and no byte types.Python 3 uses Unicode
-        strings and has byte types.
-        """
-        if sys.version_info[0] < 3:
-            super(CompatibleArray, self).fromstring(string)
-        else:
-            super(CompatibleArray, self).frombytes(string)
+_PY_VERSION = sys.version_info
 
 
 Cigar = namedtuple('Cigar', ('op_code', 'n_op', 'op_id', 'op_name'))
@@ -138,7 +110,7 @@ _unpack_string = struct.Struct('<s').unpack
 _unpack_array = struct.Struct('<si').unpack
 
 
-class AlignmentFile(bgzf.BgzfReader, bgzf.BgzfWriter):
+class AlignmentFile(bam.BamReader, bam.BamWriter):
     """Wrapper to allow drop in replacement for BAM functionality in a ``pysam``-like API.
 
     Args:
@@ -160,26 +132,44 @@ class AlignmentFile(bgzf.BgzfReader, bgzf.BgzfWriter):
     def __init__(self, filepath_or_object, mode="rb", max_cache=128, index_filename=None,
                  filename=None, check_header=False, check_sq=True, reference_filename=None,
                  filepath_index=None, require_index=False, duplicate_filehandle=None,
-                 ignore_truncation=False):
+                 ignore_truncation=False, compresslevel = 6, ignore_overwrite = False,
+                copy_header = None, header = b'', reference_names = None, reference_lengths = None):
         """Initialize the class.
-
 
         """
 
         kwargs = locals()
         kwargs.pop('self')
 
-        assert 'b' in mode.lower()
-        if 'w' in mode.lower() or 'a' in mode.lower():
-            if 'w' in mode.lower():
-                if os.path.isfile(filepath_or_object):
-                    print('BAM file already exists')
-                    print('Continuing will delete existing data')
-                    if not yes_no():
-                        raise FileExistsError('User declined overwrite')
-            bgzf.BgzfWriter.__init__(self, **kwargs)
+        assert 'b' in mode.lower(), 'BAM files must be used in binary mode'
+        
+        write_modes = ['w', 'a', 'x', 'r+']
+
+        # Check if user wants to write a BAM file
+        if any([wm in mode.lower() for wm in write_modes]):
+            write_args = ('filepath_or_object', 'mode', 'compresslevel', 
+                        'ignore_overwrite', 'copy_header', 'header',
+                        'reference_names', 'reference_lengths')
+            wargs = {}
+            for key in write_args:
+                try:
+                    wargs.update({key: kwargs.pop(key)})
+                except KeyError:
+                    pass
+            bam.BamWriter.__init__(self, **wargs)
+
         else:
-            bgzf.BgzfReader.__init__(self, **kwargs)
+            read_args = ('filepath_or_object', 'mode', 'max_cache', 'index_filename',
+                'filename', 'check_header', 'check_sq', 'reference_filename',
+                'filepath_index', 'require_index', 'duplicate_filehandle',
+                'ignore_truncation')
+            rargs = {}
+            for key in read_args:
+                try:
+                    rargs.update({key: kwargs.pop(key)})
+                except KeyError:
+                    pass
+            bam.BamReader.__init__(self, **rargs)
 
 
 class AlignedSegment(object):
@@ -347,8 +337,15 @@ class AlignedSegment(object):
         """
         self._raw_qual = unpack('<{}s'.format(self.l_seq), self._range_popper(self.l_seq))
 
-        self.query_qualities = CompatibleArray('B')
-        self.query_qualities.fromstring(self._raw_qual)
+        self.query_qualities = array('B')
+        
+        # Should account for all versions of Python
+        if type(self._raw_qual) == str:
+            self.query_qualities.fromstring(self._raw_qual)
+        elif type(self._raw_qual) == bytes:
+            self.query_qualities.frombytes(self._raw_qual)
+        else:
+            raise TypeError('Raw quality score is neither string nor bytes object')
         """Phred Quality scores for each base of the alignment
         ***without*** an ASCII offset."""
 
@@ -475,7 +472,7 @@ class AlignedSegment(object):
         # Capture given length string or hex array
         elif val_type == "Z" or val_type == "H":
             val = _unpack_string(self._range_popper(1))[0]
-            if _PY_VERSION.startswith('2'):
+            if _PY_VERSION[0] == 2:
                 while val[-1] != '\x00':
                     val += _unpack_string(self._range_popper(1))[0]
             else:
@@ -814,3 +811,22 @@ class AlignedSegment(object):
             KeyError: if read does not contain MD tag
         """
         return ref_gen(self.seq, self.cigar, self.tags['MD'])
+
+    def to_bam(bam_file):
+        """Writes the alignment record to a BAM file
+
+        Args:
+            bam_file (string or :py:obj:`bamnostic.bam.BamWriter`): BAM file path or open bam file in a write mode
+        """
+
+        if type(bam_file) == str:
+            # Natively go into append mode
+            if os.path.isfile(bam_file):
+                with bam.BamWriter(bam_file, mode = 'ab') as bam_out:
+                    bam_out.write(self._raw_stream)
+            else:
+                raise IOError('BAM file must already exist, or be initilaized through bamnostic.bam.BamWriter')
+        elif isinstance(bam_file, bgzf.BgzfWriter):
+            bam_file.write(self._raw_stream)
+        else:
+            raise IOError('BAM file must already exist, or be initilaized through bamnostic.bam.BamWriter')
