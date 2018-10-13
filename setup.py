@@ -9,7 +9,7 @@ def readme():
 
 setup(
     name='bamnostic',
-    version='0.9.5',
+    version='1.0.0',
     description='Pure Python, OS-agnostic Binary Alignment Map (BAM) random access and parsing tool',
     long_description=readme(),
     url='https://github.com/betteridiot/bamnostic/',
