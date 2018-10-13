@@ -762,15 +762,15 @@ class BamReader(bgzf.BgzfReader):
             ...     print("array('{}', {})".format(arr.typecode, list(map(int, arr.tolist()))))
             array('L', [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])
             array('L', [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])
-            array('L', [0, 0, 1, 1, ..., 0, 14, 0, 14, 14])
-            array('L', [0, 0, 0, 0, ..., 15, 0, 14, 0, 0])
+            array('L', [1, 1, 2, 2, ..., 15, 0, 14, 0, 14])
+            array('L', [0, 0, 0, 0, ..., 0, 15, 0, 14, 0])
 
             >>> for arr in bam.count_coverage('chr1', 100, 150, quality_threshold=20, base_quality_threshold=25): # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
             ...     print("array('{}', {})".format(arr.typecode, list(map(int, arr.tolist()))))
             array('L', [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])
             array('L', [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])
-            array('L', [0, 0, 1, 1, ..., 0, 14, 0, 13, 11])
-            array('L', [0, 0, 0, 0, ..., 14, 0, 13, 0, 0])
+            array('L', [1, 1, 2, 2, ..., 13, 0, 14, 0, 13])
+            array('L', [0, 0, 0, 0, ..., 0, 14, 0, 13, 0])
 
         """
 
