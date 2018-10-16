@@ -1,5 +1,4 @@
-[![Build Status](https://travis-ci.org/betteridiot/bamnostic.svg?branch=master)](https://travis-ci.org/betteridiot/bamnostic)
-[![noarch](https://img.shields.io/circleci/project/github/conda-forge/bamnostic-feedstock/master.svg?label=noarch)](https://circleci.com/gh/conda-forge/bamnostic-feedstock)
+
 [![Documentation Status](https://readthedocs.org/projects/bamnostic/badge/?version=latest)](https://bamnostic.readthedocs.io/en/latest/?badge=latest)
 [![Conda Version](https://img.shields.io/conda/vn/conda-forge/bamnostic.svg)](https://anaconda.org/conda-forge/bamnostic) 
 [![PyPI version](https://badge.fury.io/py/bamnostic.svg)](https://badge.fury.io/py/bamnostic) 
@@ -9,6 +8,12 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.1341959.svg)](https://doi.org/10.5281/zenodo.1341959)
 [![License](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://github.com/betteridiot/bamnostic/blob/master/LICENSE) 
 </br> 
+
+|Platform | Build Status |
+|:--------|:------------:|
+|Linux    | [![Build Status TravisCI](https://travis-ci.org/betteridiot/bamnostic.svg?branch=master)](https://travis-ci.org/betteridiot/bamnostic) |
+|Windows  | [![Build status Appveyor](https://ci.appveyor.com/api/projects/status/y95q02gkv3lgmlf4/branch/master?svg=true)](https://ci.appveyor.com/project/betteridiot/bamnostic/branch/master)|
+|conda    | [![noarch](https://img.shields.io/circleci/project/github/conda-forge/bamnostic-feedstock/master.svg?label=noarch)](https://circleci.com/gh/conda-forge/bamnostic-feedstock)|
 
 |Host | Downloads |
 |:----|:---------:|
