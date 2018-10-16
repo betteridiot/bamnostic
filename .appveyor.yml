@@ -32,7 +32,7 @@ environment:
       PYTHON: "C:\\Python37-x64"
 
 install:
-  - "%PYTHON%/Scripts/pip.exe install pytest"
+  - "%PYTHON%/Scripts/pip install pytest"
 
 test_script:
-  - "%PYTHON%/python.exe setup.py test"
+  - "%PYTHON%/python setup.py test"
