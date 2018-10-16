@@ -4,5 +4,6 @@ __pycache__/
 bamnostic/.ipynb_checkpoints/
 bamnostic.egg-info/
 .pytest_cache/
+.eggs/
 updating_bamnostic.txt
 upload_to_pypi

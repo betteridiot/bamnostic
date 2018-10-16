@@ -1,9 +1,29 @@
+from setuptools.command.test import test as TestCommand
 from setuptools import setup
 import os
+import sys
+
+
+class PyTest(TestCommand):
+    user_args = [('pytest-args=', 'a', 'Arguments to pass to py.test')]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = []
+
+    def run_tests(self):
+        import pytest
+        errno = pytest.main(self.pytest_args)
+        if errno:
+            sys.exit(errno)
+        else:
+            errno = pytest.main(['--doctest-modules', '-Wignore'])
+            sys.exit(errno)
 
 
 def readme():
-    with open(os.path.dirname(__file__) + '/README.rst') as rst:
+    path = os.path.dirname(__file__) if os.path.dirname(__file__) else '.'
+    with open(path + '/README.rst') as rst:
         return rst.read()
 
 
@@ -16,7 +36,9 @@ setup(
     author='Marcus D. Sherman',
     author_email='mdsherm@umich.edu',
     license='BSD 3-Clause',
-    test_requires=['pytest'],
+    # setup_requires=['pytest-runner'],
+    tests_require=['pytest'],
+    cmdclass = {'test' : PyTest},
     packages=['bamnostic', 'tests'],
     package_dir={'bamnostic': './bamnostic', 'tests': './tests'},
     package_data={'bamnostic': ['data/*', 'LICENSE', 'CONTRIBUTING.md', 'CODE_OF_CONDUCT.md']},

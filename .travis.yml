@@ -1,6 +1,6 @@
 os:
   - linux
-  - windows
+#  - windows
 
 language: python
 python:
