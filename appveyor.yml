@@ -1,4 +1,4 @@
-build: false
+build: off
 
 # Ignore commits that have no effect on operations
 skip_commits:
@@ -10,10 +10,6 @@ environment:
       PYTHON: "C:\\Python27"
     - platform: x64
       PYTHON: "C:\\Python27-x64"
-    - platform: x86
-      PYTHON: "C:\\Python33"
-    - platform: x64
-      PYTHON: "C:\\Python33-x64"
     - platform: x86
       PYTHON: "C:\\Python34"
     - platform: x64
