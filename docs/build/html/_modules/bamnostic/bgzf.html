@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.bgzf &mdash; bamnostic 0.8.4b5 documentation</title>
+  <title>bamnostic.bgzf &mdash; bamnostic 1.0.1 documentation</title>
   
 
   
@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -57,7 +56,7 @@
             
             
               <div class="version">
-                0.8.4
+                1.0.1
               </div>
             
           
@@ -150,37 +149,7 @@
            <div itemprop="articleBody">
             
   <h1>Source code for bamnostic.bgzf</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
-
-<span class="sd">&quot;&quot;&quot;Modified version of BioPython.bgzf module. Includes LRU buffer dictionary.</span>
-<span class="sd">Copyright (c) 2018, Marcus D. Sherman</span>
-
-<span class="sd">This code is part of the bamnostic distribution and governed by its</span>
-<span class="sd">license.  Please see the LICENSE file that should have been included</span>
-<span class="sd">as part of this package.</span>
-
-<span class="sd">Some methods are modified versions of their counterparts within the BioPython.bgzf</span>
-<span class="sd"> module. BioPython BGZF is now under a 3-clause BSD license. The same license </span>
-<span class="sd">found in this package. Refer to LICENSE for information.</span>
-<span class="sd">Copyright (c) 2010-2015 by Peter Cock.</span>
-
-<span class="sd">Description: Read and write BGZF compressed files (the GZIP variant used in BAM).</span>
-<span class="sd">Significant changes were made to the original BGZF module, produced by</span>
-<span class="sd">Peter Cock. Aside from adding an LRU dictionary, the new BGZF module can read</span>
-<span class="sd">BAM files directly, decompressing and unpacking the byte-encoded data structure</span>
-<span class="sd">outlined in the BAM_ format.</span>
-
-<span class="sd">.. _BAM: https://samtools.github.io/hts-specs/SAMv1.pdf</span>
-
-<span class="sd">@author: &quot;Marcus D. Sherman&quot;</span>
-<span class="sd">@copyright: &quot;Copyright 2018, University of Michigan, Mills Lab</span>
-<span class="sd">@email: &quot;mdsherman&lt;at&gt;betteridiot&lt;dot&gt;tech&quot;</span>
-
-<span class="sd">&quot;&quot;&quot;</span>
-
-<span class="kn">import</span> <span class="nn">sys</span>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">zlib</span>
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">io</span>
@@ -192,9 +161,9 @@
 <span class="kn">import</span> <span class="nn">bamnostic</span>
 <span class="kn">from</span> <span class="nn">bamnostic.utils</span> <span class="k">import</span> <span class="o">*</span>
 
-<span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span>
+<span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span>
 
-<span class="k">if</span> <span class="n">_PY_VERSION</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">):</span>
+<span class="k">if</span> <span class="n">_PY_VERSION</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="nb">open</span>
 
 
@@ -302,10 +271,11 @@
         <span class="n">ID1</span> <span class="o">==</span> <span class="mi">31</span><span class="p">,</span>
         <span class="n">ID2</span> <span class="o">==</span> <span class="mi">139</span><span class="p">,</span>
         <span class="n">CM</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span>
-        <span class="n">FLG</span> <span class="o">==</span> <span class="mi">4</span><span class="p">,</span>
+        <span class="n">FLG</span> <span class="o">==</span> <span class="mi">4</span> <span class="p">,</span>
         <span class="n">SI1</span> <span class="o">==</span> <span class="mi">66</span><span class="p">,</span>
         <span class="n">SI2</span> <span class="o">==</span> <span class="mi">67</span><span class="p">,</span>
-        <span class="n">SLEN</span> <span class="o">==</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">SLEN</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="p">]</span>
 
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">checks</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Malformed BGZF block&#39;</span><span class="p">)</span>
@@ -334,19 +304,20 @@
 <span class="sd">        ValueError: if the BGZF block header is malformed</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; with open(&#39;./bamnostic/data/example.bam&#39;,&#39;rb&#39;) as bam:</span>
-<span class="sd">        ...     bam_header = get_block(bam)</span>
-<span class="sd">        ...     try:</span>
-<span class="sd">        ...         bam_header.startswith(b&#39;\x1f\x8b\x08\x04&#39;)</span>
-<span class="sd">        ...     except SyntaxError:</span>
-<span class="sd">        ...         bam_header.startswith(&#39;\x1f\x8b\x08\x04&#39;)</span>
+<span class="sd">        &gt;&gt;&gt; bam_header = get_block(bamnostic.example_bam)</span>
+<span class="sd">        &gt;&gt;&gt; try:</span>
+<span class="sd">        ...     bam_header.startswith(b&#39;\x1f\x8b\x08\x04&#39;)</span>
+<span class="sd">        ... except SyntaxError:</span>
+<span class="sd">        ...     bam_header.startswith(&#39;\x1f\x8b\x08\x04&#39;)</span>
 <span class="sd">        True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">):</span>
-        <span class="n">handle</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">_handle</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">header_handle</span><span class="p">:</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">name</span> <span class="c1"># get the raw file object, not wrapper</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">handle</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">header_handle</span><span class="p">:</span>
         <span class="n">header_handle</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>  <span class="c1"># get to the start of the BGZF block</span>
 
         <span class="c1"># Capture raw bytes of metadata header</span>
@@ -379,7 +350,7 @@
 <span class="sd">        ValueError: if CRC32 or ISIZE do not match deflated data</span>
 
 <span class="sd">    Example:</span>
-<span class="sd">        &gt;&gt;&gt; with open(&#39;./bamnostic/data/example.bam&#39;,&#39;rb&#39;) as bam:</span>
+<span class="sd">        &gt;&gt;&gt; with open(bamnostic.example_bam,&#39;rb&#39;) as bam:</span>
 <span class="sd">        ...     block = _load_bgzf_block(bam)</span>
 <span class="sd">        ...     try:</span>
 <span class="sd">        ...         block[0] == 53 and block[1].startswith(b&#39;BAM\x01&#39;)</span>
@@ -392,7 +363,7 @@
     <span class="c1"># Pull in the BGZF block header information</span>
     <span class="n">header</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_bgzf_metaheader</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
     <span class="n">XLEN</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
-    <span class="n">BSIZE</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">,</span> <span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">BSIZE</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">,</span> <span class="n">handle</span><span class="p">)</span>
 
     <span class="c1"># Expose the compressed data</span>
     <span class="n">d_size</span> <span class="o">=</span> <span class="n">BSIZE</span> <span class="o">-</span> <span class="n">XLEN</span> <span class="o">-</span> <span class="mi">19</span>
@@ -412,167 +383,28 @@
     <span class="k">return</span> <span class="n">BSIZE</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">data</span>
 
 
-<div class="viewcode-block" id="BAMheader"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BAMheader">[docs]</a><span class="k">class</span> <span class="nc">BAMheader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Parse and store the BAM file header</span>
-
-<span class="sd">    The BAM header is the plain text and byte-encoded metadata of a given BAM file.</span>
-<span class="sd">    Information stored in the header are the number, length, and name of the reference</span>
-<span class="sd">    sequences that reads were aligned to; version of software used; read group identifiers; etc.</span>
-<span class="sd">    The BAM_ format also stipulates that the first block of any BAM file should be reserved</span>
-<span class="sd">    just for the BAM header block.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        _io (:py:obj:`file`): opened BAM file object</span>
-<span class="sd">        SAMheader (:py:obj:`dict`): parsed dictionary of the SAM header</span>
-<span class="sd">        n_refs (int): number of references</span>
-<span class="sd">        refs (:py:obj:`dict`): reference names and lengths listed in the BAM header</span>
-
-<span class="sd">    .. _BAM: https://samtools.github.io/hts-specs/SAMv1.pdf</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_magic&#39;</span><span class="p">,</span> <span class="s1">&#39;_header_length&#39;</span><span class="p">,</span> <span class="s1">&#39;_header_block&#39;</span><span class="p">,</span> <span class="s1">&#39;_SAMheader_raw&#39;</span><span class="p">,</span>
-                 <span class="s1">&#39;_SAMheader_end&#39;</span><span class="p">,</span> <span class="s1">&#39;SAMheader&#39;</span><span class="p">,</span> <span class="s1">&#39;n_refs&#39;</span><span class="p">,</span> <span class="s1">&#39;refs&#39;</span><span class="p">,</span> <span class="s1">&#39;_BAMheader_end&#39;</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_io</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialize the header</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            _io (:py:obj:`file`): opened BAM file object</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if BAM magic line not found at the top of the file</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">magic</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header_length</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;4si&#39;</span><span class="p">,</span> <span class="n">_io</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">magic</span> <span class="o">!=</span> <span class="sa">b</span><span class="s1">&#39;BAM</span><span class="se">\x01</span><span class="s1">&#39;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Incorrect BAM magic line. File head may be unaligned or this is not a BAM file&#39;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header_length</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="c1"># If SAM header is present, it is in plain text. Process it and save it as rows</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_SAMheader_raw</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header_length</span><span class="p">),</span> <span class="n">_io</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">SAMheader</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAMheader_raw</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
-                <span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
-                <span class="n">key</span><span class="p">,</span> <span class="n">fields</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
-                    <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
-                    <span class="n">fields_dict</span> <span class="o">=</span> <span class="p">{}</span>
-                    <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">:</span>
-                        <span class="n">tag</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">field</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
-                        <span class="k">try</span><span class="p">:</span>
-                            <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
-                        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
-                        <span class="n">fields_dict</span><span class="p">[</span><span class="n">tag</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">SAMheader</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="p">[])</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">fields_dict</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_SAMheader_raw</span> <span class="o">=</span> <span class="kc">None</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">SAMheader</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_SAMheader_end</span> <span class="o">=</span> <span class="n">_io</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-
-        <span class="c1"># Each reference is listed with the @SQ tag. We need the number of refs to process the data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">n_refs</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;i&#39;</span><span class="p">,</span> <span class="n">_io</span><span class="p">)</span>
-
-        <span class="c1"># create a dictionary of all the references and their lengths</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">refs</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_refs</span><span class="p">):</span>
-            <span class="n">name_len</span> <span class="o">=</span> <span class="n">unpack_int32</span><span class="p">(</span><span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">ref_name</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name_len</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">name_len</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># get rid of null: \x00</span>
-            <span class="n">ref_len</span> <span class="o">=</span> <span class="n">unpack_int32</span><span class="p">(</span><span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">r</span><span class="p">:</span> <span class="p">(</span><span class="n">ref_name</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span> <span class="n">ref_len</span><span class="p">)})</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_BAMheader_end</span> <span class="o">=</span> <span class="n">_io</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_header_block</span> <span class="o">=</span> <span class="n">get_block</span><span class="p">(</span><span class="n">_io</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
-
-<div class="viewcode-block" id="BAMheader.to_header"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BAMheader.to_header">[docs]</a>    <span class="k">def</span> <span class="nf">to_header</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Allows the user to directly copy the header of another BAM file</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (bytesarray): packed byte code of entire header BGZF block</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header_block</span></div>
-
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Used as a synonym for printing by calling the object directly</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            Preferentially prints out the SAM header (if present). Otherwise, it will print</span>
-<span class="sd">            the string representation of the BAM header dictionary</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAMheader_raw</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAMheader_raw</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">refs</span>
-
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAMheader_raw</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAMheader_raw</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Used for printing the header</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            Preferentially prints out the SAM header (if present). Otherwise, it will print</span>
-<span class="sd">            the string representation of the BAM header dictionary</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAMheader_raw</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_SAMheader_raw</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span></div>
-
-
 <div class="viewcode-block" id="BgzfReader"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader">[docs]</a><span class="k">class</span> <span class="nc">BgzfReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; The BAM reader. Heavily modified from Peter Cock&#39;s BgzfReader.</span>
-
-<span class="sd">    Attributes:</span>
-<span class="sd">        header: representation of header data (if present)</span>
-<span class="sd">        lengths (:py:obj:`list` of :py:obj:`int`): lengths of references listed in header</span>
-<span class="sd">        nocoordinate (int): number of reads that have no coordinates</span>
-<span class="sd">        nreferences (int): number of references in header</span>
-<span class="sd">        ref2tid (:py:obj:`dict` of :py:obj:`str`, :py:obj:`int`): refernce names and refID dictionary</span>
-<span class="sd">        references (:py:obj:`list` of :py:obj:`str`): names of references listed in header</span>
-<span class="sd">        text (str): SAM header (if present)</span>
-<span class="sd">        unmapped (int): number of unmapped reads</span>
-
-<span class="sd">    Note:</span>
-<span class="sd">        This implementation is likely to change. While the API was meant to</span>
-<span class="sd">        mirror `pysam`, it makes sense to include the `pysam`-like API in an extension</span>
-<span class="sd">        that will wrap the core reader. This would be a major refactor, and therefore</span>
-<span class="sd">        will not happen any time soon (30 May 2018).</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">,</span> <span class="n">max_cache</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">index_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check_header</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_sq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reference_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">filepath_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">require_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">duplicate_filehandle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">ignore_truncation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">,</span> <span class="n">max_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duplicate_filehandle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_truncation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the class.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file</span>
 <span class="sd">            mode (str): Mode for reading. BAM files are binary by nature (default: &#39;rb&#39;).</span>
 <span class="sd">            max_cache (int): number of desired LRU cache size, preferably a multiple of 2 (default: 128).</span>
-<span class="sd">            index_filename (str): path to index file (BAI) if it is named differently than the BAM file (default: None).</span>
 <span class="sd">            filename (str | :py:obj:`file`): synonym for `filepath_or_object`</span>
-<span class="sd">            check_header (bool): Obsolete method maintained for backwards compatibility (default: False)</span>
-<span class="sd">            check_sq (bool): Inspect BAM file for `@SQ` entries within the header</span>
-<span class="sd">            reference_filename (str): Not implemented. Maintained for backwards compatibility</span>
-<span class="sd">            filepath_index (str): synonym for `index_filename`</span>
-<span class="sd">            require_index (bool): require the presence of an index file or raise (default: False)</span>
 <span class="sd">            duplicate_filehandle (bool): Not implemented. Raises warning if True.</span>
 <span class="sd">            ignore_truncation (bool): Whether or not to allow trucated file processing (default: False).</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># Set up the LRU buffer dictionary</span>
-        <span class="k">if</span> <span class="n">max_cache</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">max_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">max_cache</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Use max_cache with a minimum of 1&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span> <span class="o">=</span> <span class="n">LruDict</span><span class="p">(</span><span class="n">max_cache</span><span class="o">=</span><span class="n">max_cache</span><span class="p">)</span>
 
@@ -589,49 +421,21 @@
 
         <span class="c1"># Check to see if file object or path was passed</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">):</span>
-            <span class="n">handle</span> <span class="o">=</span> <span class="n">fileobj</span>
+            <span class="n">handle</span> <span class="o">=</span> <span class="n">filepath_or_object</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath_or_object</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="s2">&quot;b&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mode</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="s1">&#39;b&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mode</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;BAM file requires binary mode (&quot;rb&quot;)&#39;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;BGZF file format requires binary mode (&quot;rb&quot;)&#39;</span><span class="p">)</span>
 
         <span class="c1"># Connect to the BAM file</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span> <span class="o">=</span> <span class="n">handle</span>
 
-        <span class="c1"># Check BAM file integrity</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">ignore_truncation</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_truncation</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s1">&#39;BAM file may be truncated. Turn off ignore_truncation if you wish to continue&#39;</span><span class="p">)</span>
-
-        <span class="c1"># Connect and process the Index file (if present)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="kc">None</span>
-
-        <span class="k">if</span> <span class="n">filepath_index</span> <span class="ow">and</span> <span class="n">index_filename</span> <span class="ow">and</span> <span class="n">index_filename</span> <span class="o">!=</span> <span class="n">filepath_index</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;Use index_filename or filepath_or_object. Not both&#39;</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_check_idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_index</span><span class="p">(</span><span class="n">index_filename</span> <span class="k">if</span> <span class="n">index_filename</span> <span class="k">else</span> <span class="n">filepath_index</span><span class="p">,</span> <span class="n">require_index</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_init_index</span><span class="p">()</span>
-
-        <span class="c1"># Load the first block into the buffer and intialize cursor attributes</span>
+        <span class="c1"># Load the first block into the buffer and initialize cursor attributes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_block_raw_length</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_load_block</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">tell</span><span class="p">())</span>
-
-        <span class="c1"># Load in the BAM header as an instance attribute</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_load_header</span><span class="p">(</span><span class="n">check_sq</span><span class="p">)</span>
-
-        <span class="c1"># Helper dictionary for changing reference names to refID/TID</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ref2tid</span> <span class="o">=</span> <span class="p">{</span><span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">k</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
-
-        <span class="c1"># Final exception handling</span>
-        <span class="k">if</span> <span class="n">check_header</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;Obsolete method&#39;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">duplicate_filehandle</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">&#39;duplicate_filehandle not necessary as the C API for samtools is not used&#39;</span><span class="p">,</span> <span class="ne">UserWarning</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">reference_filename</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;CRAM file support not yet implemented&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_load_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;(PRIVATE) Used to load next BGZF block into the buffer, and orients the cursor position.</span>
@@ -652,7 +456,7 @@
         <span class="k">elif</span> <span class="n">start_offset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span>
             <span class="c1"># Already in cache</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_raw_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">[</span><span class="n">start_offset</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_raw_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">start_offset</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
                 <span class="k">pass</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">=</span> <span class="mi">0</span>
@@ -672,216 +476,12 @@
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_block_raw_length</span> <span class="o">=</span> <span class="n">block_size</span>
 
         <span class="c1"># Finally save the block in our cache,</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">,</span> <span class="n">block_size</span>
-
-<div class="viewcode-block" id="BgzfReader.check_index"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.check_index">[docs]</a>    <span class="k">def</span> <span class="nf">check_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">req_idx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Checks to make sure index file is available. If not, it disables random access.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            index_filename (str): path to index file (BAI) if it does not fit naming convention (default: None).</span>
-<span class="sd">            req_idx (bool): Raise error if index file is not present (default: False).</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (bool): True if index is present, else False</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            IOError: If the index file is closed or index could not be opened</span>
-
-<span class="sd">        Warns:</span>
-<span class="sd">            UserWarning: If index could not be loaded. Random access is disabled.</span>
-
-<span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam)</span>
-<span class="sd">            &gt;&gt;&gt; bam.check_index(bamnostic.example_bam + &#39;.bai&#39;)</span>
-<span class="sd">            True</span>
-
-<span class="sd">            &gt;&gt;&gt; bam.check_index(&#39;not_a_file.bai&#39;)</span>
-<span class="sd">            False</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">index_filename</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">possible_index_path</span> <span class="o">=</span> <span class="sa">r</span><span class="s1">&#39;./</span><span class="si">{}</span><span class="s1">.bai&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">relpath</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">possible_index_path</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_index_path</span> <span class="o">=</span> <span class="n">possible_index_path</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_random_access</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">req_idx</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;htsfile is closed or index could not be opened&#39;</span><span class="p">)</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;No supplied index file and &#39;</span><span class="si">{}</span><span class="s2">&#39; was not found. Random access disabled&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">possible_index_path</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_random_access</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">index_filename</span><span class="p">):</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_index_path</span> <span class="o">=</span> <span class="n">index_filename</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_random_access</span> <span class="o">=</span> <span class="kc">True</span>
-                <span class="k">return</span> <span class="kc">True</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">req_idx</span><span class="p">:</span>
-                    <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;htsfile is closed or index could not be opened&#39;</span><span class="p">)</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;Index file &#39;</span><span class="si">{}</span><span class="s2">&#39; was not found. Random access disabled&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index_filename</span><span class="p">),</span> <span class="ne">UserWarning</span><span class="p">)</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_random_access</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="k">return</span> <span class="kc">False</span></div>
-
-    <span class="k">def</span> <span class="nf">_init_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize the index file (BAI)&quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_idx</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">bai</span><span class="o">.</span><span class="n">Bai</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_path</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__nocoordinate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">n_no_coor</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__mapped</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">[</span><span class="n">mapped</span><span class="p">]</span><span class="o">.</span><span class="n">n_mapped</span> <span class="k">for</span> <span class="n">mapped</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nocoordinate</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__unmapped</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">[</span><span class="n">unmapped</span><span class="p">]</span><span class="o">.</span><span class="n">n_unmapped</span> <span class="k">for</span> <span class="n">unmapped</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nocoordinate</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">nocoordinate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the number of reads without coordiantes according to the statistics recorded in the index.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (int): sum of reads without coordinates</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nocoordinate</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mapped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the number of mapped reads according  to the statistics recorded in the index.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (int): sum of mapped reads</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__mapped</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">unmapped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Get the number of unmapped reads without coordiantes **and**</span>
-<span class="sd">        without coordinate.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (int): sum of unmapped reads and reads without coordinates</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__unmapped</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nocoordinate</span>
-
-    <span class="k">def</span> <span class="nf">_check_sq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Inspect BAM file for @SQ entries within the header</span>
-
-<span class="sd">        The implementation of this check is for BAM files specifically. I inspects</span>
-<span class="sd">        the SAM header (if present) for the `@SQ` entires. However, if the SAM header</span>
-<span class="sd">        is not present, will inspect the BAM header for reference sequence entries. If this</span>
-<span class="sd">        test ever returns `FALSE`, the BAM file is not operational.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (bool): True if present, else false</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; bam._check_sq()</span>
-<span class="sd">            True</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">_header_length</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;SQ&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">SAMheader</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">return</span> <span class="kc">True</span>
-
-    <span class="k">def</span> <span class="nf">_load_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">check_sq</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Loads the header into the reader object</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            check_sq (bool): whether to check for file header or not (default: True).</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            KeyError: If &#39;SQ&#39; entry is not present in BAM header</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_header</span> <span class="o">=</span> <span class="n">BAMheader</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">SAMheader</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">SAMheader</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">_SAMheader_raw</span>
-
-        <span class="c1"># make compatible with pysam attributes, even though the data exists elsewhere</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__references</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__lengths</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">n_refs</span><span class="p">):</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__references</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__lengths</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">n</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">__nreferences</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">n_refs</span>
-
-        <span class="k">if</span> <span class="n">check_sq</span><span class="p">:</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_sq</span><span class="p">():</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;No SQ entries in header&#39;</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">references</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get all references used in alignment.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (:py:obj:`tuple` of :py:obj:`str`): reference names</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__references</span><span class="p">)</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">nreferences</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get the number of references listed in alignment</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (int): count of references</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nreferences</span>
-
-    <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">lengths</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Get all reference lengths used in alignment.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (:py:obj:`tuple` of :py:obj:`int`): reference lengths</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__lengths</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_check_truncation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Confusing function to check for file truncation.</span>
-
-<span class="sd">        Every BAM file should contain an EOF signature within the last</span>
-<span class="sd">        28 bytes of the file. This function checks for that signature.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (bool): True if truncated, else False</span>
-
-<span class="sd">        Warns:</span>
-<span class="sd">            BytesWarning: if no EOF signature found.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">temp_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="o">-</span><span class="mi">28</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">eof</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">temp_pos</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">eof</span> <span class="o">==</span> <span class="n">_bgzf_eof</span><span class="p">:</span>
-            <span class="k">return</span> <span class="kc">False</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">warnings</span><span class="o">.</span><span class="n">BytesWarning</span><span class="p">(</span><span class="s1">&#39;No EOF character found. File may be truncated&#39;</span><span class="p">)</span>
-            <span class="k">return</span> <span class="kc">True</span>
-
-    <span class="k">def</span> <span class="nf">pileup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Pileup is not implemented. Consider using `fetch` instead&#39;</span><span class="p">)</span>
-
-<div class="viewcode-block" id="BgzfReader.has_index"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.has_index">[docs]</a>    <span class="k">def</span> <span class="nf">has_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Checks if file has index and it is open</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            bool: True if present and opened, else False</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_idx</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_idx</span></div>
 
 <div class="viewcode-block" id="BgzfReader.tell"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a 64-bit unsigned BGZF virtual offset.&quot;&quot;&quot;</span>
@@ -983,6 +583,7 @@
             <span class="k">elif</span> <span class="n">size</span><span class="p">:</span>
                 <span class="c1"># pull rest of data from next block</span>
                 <span class="k">return</span> <span class="n">data</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Only needed the end of the last block</span>
                 <span class="k">return</span> <span class="n">data</span></div>
@@ -994,576 +595,7 @@
 <span class="sd">        out for posterity sake</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Readline does not work on byte data&quot;</span><span class="p">)</span>
-
-        <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        i = self._buffer.find(self._newline, self._within_block_offset)</span>
-<span class="sd">        # Three cases to consider,</span>
-<span class="sd">        if i == -1:</span>
-<span class="sd">            # No newline, need to read in more data</span>
-<span class="sd">            data = self._buffer[self._within_block_offset:]</span>
-<span class="sd">            self._load_block()  # will reset offsets</span>
-<span class="sd">            if not self._buffer:</span>
-<span class="sd">                return data  # EOF</span>
-<span class="sd">            else:</span>
-<span class="sd">                # TODO - Avoid recursion</span>
-<span class="sd">                return data + self.readline()</span>
-<span class="sd">        elif i + 1 == len(self._buffer):</span>
-<span class="sd">            # Found new line, but right at end of block (SPECIAL)</span>
-<span class="sd">            data = self._buffer[self._within_block_offset:]</span>
-<span class="sd">            # Must now load the next block to ensure tell() works</span>
-<span class="sd">            self._load_block()  # will reset offsets</span>
-<span class="sd">            assert data</span>
-<span class="sd">            return data</span>
-<span class="sd">        else:</span>
-<span class="sd">            # Found new line, not at end of block (easy case, no IO)</span>
-<span class="sd">            data = self._buffer[self._within_block_offset:i + 1]</span>
-<span class="sd">            self._within_block_offset = i + 1</span>
-<span class="sd">            # assert data.endswith(self._newline)</span>
-<span class="sd">            return data</span>
-<span class="sd">        &quot;&quot;&quot;</span></div>
-
-<div class="viewcode-block" id="BgzfReader.fetch"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.fetch">[docs]</a>    <span class="k">def</span> <span class="nf">fetch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-              <span class="n">tid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">until_eof</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">multiple_iterators</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-              <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Creates a generator that returns all reads within the given region</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            contig (str): name of reference/contig</span>
-<span class="sd">            start (int): start position of region of interest (0-based)</span>
-<span class="sd">            stop (int): stop position of region of interest (0-based)</span>
-<span class="sd">            region (str): SAM region formatted string. Accepts tab-delimited values as well</span>
-<span class="sd">            tid (int): the refID or target id of a reference/contig</span>
-<span class="sd">            until_eof (bool): iterate until end of file</span>
-<span class="sd">            mutiple_iterators (bool): allow multiple iterators over region. Not Implemented. \</span>
-<span class="sd">                 Notice: each iterator will open up a new view into the BAM file, so overhead will apply.</span>
-<span class="sd">            reference (str): synonym for `contig`</span>
-<span class="sd">            end (str): synonym for `stop`</span>
-
-<span class="sd">        Yields:</span>
-<span class="sd">            reads over the region of interest if any</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if the genomic coordinates are out of range or invalid</span>
-<span class="sd">            KeyError: Reference is not found in header</span>
-
-<span class="sd">        Notes:</span>
-<span class="sd">            SAM region formatted strings take on the following form:</span>
-<span class="sd">            &#39;chr1:100000-200000&#39;</span>
-
-<span class="sd">        Usage:</span>
-<span class="sd">            AlignmentFile.fetch(contig=&#39;chr1&#39;, start=1, stop= 1000)</span>
-<span class="sd">            AlignmentFile.fetch(&#39;chr1&#39;, 1, 1000)</span>
-<span class="sd">            AlignmentFile.fetch(&#39;chr1:1-1000&#39;)</span>
-<span class="sd">            AlignmentFile.fetch(&#39;chr1&#39;, 1)</span>
-<span class="sd">            AlignmentFile.fetch(&#39;chr1&#39;)</span>
-
-<span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; next(bam.fetch(&#39;chr1&#39;, 1, 10)) # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE</span>
-<span class="sd">            EAS56_57:6:190:289:82 ... MF:C:192</span>
-
-<span class="sd">            &gt;&gt;&gt; next(bam.fetch(&#39;chr10&#39;, 1, 10))</span>
-<span class="sd">            Traceback (most recent call last):</span>
-<span class="sd">                ...</span>
-<span class="sd">            KeyError: &#39;chr10 was not found in the file header&#39;</span>
-
-<span class="sd">            &gt;&gt;&gt; next(bam.fetch(&#39;chr1&#39;, 1700, 1701))</span>
-<span class="sd">            Traceback (most recent call last):</span>
-<span class="sd">                ...</span>
-<span class="sd">            ValueError: Genomic region out of bounds.</span>
-
-<span class="sd">            &gt;&gt;&gt; next(bam.fetch(&#39;chr1&#39;, 100, 10))</span>
-<span class="sd">            Traceback (most recent call last):</span>
-<span class="sd">                ...</span>
-<span class="sd">            AssertionError: Malformed region: start should be &lt;= stop, you entered 100, 10</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_access</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Random access not available due to lack of index file&#39;</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">multiple_iterators</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;multiple_iterators not yet implemented&#39;</span><span class="p">)</span>
-
-        <span class="n">signature</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="s1">&#39;multiple_iterators&#39;</span><span class="p">]:</span>
-            <span class="n">signature</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-
-        <span class="n">query</span> <span class="o">=</span> <span class="n">parse_region</span><span class="p">(</span><span class="o">**</span><span class="n">signature</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">tid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">query</span><span class="o">.</span><span class="n">contig</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">query</span><span class="o">.</span><span class="n">contig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_reference_name</span><span class="p">(</span><span class="n">tid</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">query</span><span class="o">.</span><span class="n">tid</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">query</span><span class="o">.</span><span class="n">contig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref2tid</span><span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="n">contig</span><span class="p">]</span> <span class="o">!=</span> <span class="n">tid</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;tid and contig name do not match&#39;</span><span class="p">)</span>
-        <span class="k">elif</span> <span class="n">query</span><span class="o">.</span><span class="n">contig</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">query</span><span class="o">.</span><span class="n">tid</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">query</span><span class="o">.</span><span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref2tid</span><span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="n">contig</span><span class="p">]</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> was not found in the file header&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">contig</span><span class="p">))</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">start</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="n">tid</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Genomic region out of bounds.&#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="c1"># set end to length of chromosome</span>
-                <span class="n">query</span><span class="o">.</span><span class="n">stop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="n">tid</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">assert</span> <span class="n">query</span><span class="o">.</span><span class="n">start</span> <span class="o">&lt;=</span> <span class="n">query</span><span class="o">.</span><span class="n">stop</span><span class="p">,</span> <span class="s1">&#39;Malformed region: start should be &lt;= stop, you entered </span><span class="si">{}</span><span class="s1">, </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">query</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> was not found in the file header&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">contig</span><span class="p">))</span>
-
-        <span class="c1"># from the index, get the virtual offset of the chunk that</span>
-        <span class="c1"># begins the overlapping region of interest</span>
-        <span class="n">first_read_block</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">tid</span><span class="p">,</span> <span class="n">query</span><span class="o">.</span><span class="n">start</span><span class="p">,</span> <span class="n">query</span><span class="o">.</span><span class="n">stop</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">first_read_block</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span>
-        <span class="c1"># move to that virtual offset...should load the block into the cache</span>
-        <span class="c1"># if it hasn&#39;t been visited before</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">first_read_block</span><span class="p">)</span>
-        <span class="n">boundary_check</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">while</span> <span class="n">boundary_check</span><span class="p">:</span>
-            <span class="n">next_read</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">until_eof</span><span class="p">:</span>
-                <span class="c1"># check to see if the read is out of bounds of the region</span>
-                <span class="k">if</span> <span class="n">next_read</span><span class="o">.</span><span class="n">reference_name</span> <span class="o">!=</span> <span class="n">query</span><span class="o">.</span><span class="n">contig</span><span class="p">:</span>
-                    <span class="n">boundary_check</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">start</span> <span class="o">&lt;</span> <span class="n">query</span><span class="o">.</span><span class="n">stop</span> <span class="o">&lt;</span> <span class="n">next_read</span><span class="o">.</span><span class="n">pos</span><span class="p">:</span>
-                    <span class="n">boundary_check</span> <span class="o">=</span> <span class="kc">False</span>
-                <span class="c1"># check for stop iteration</span>
-                <span class="k">if</span> <span class="n">next_read</span><span class="p">:</span>
-                    <span class="k">yield</span> <span class="n">next_read</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="k">return</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">try</span><span class="p">:</span>
-                    <span class="k">yield</span> <span class="n">next_read</span>
-                <span class="k">except</span><span class="p">:</span>
-                    <span class="k">return</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span></div>
-
-<div class="viewcode-block" id="BgzfReader.count"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.count">[docs]</a>    <span class="k">def</span> <span class="nf">count</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-              <span class="n">until_eof</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">tid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">read_callback</span><span class="o">=</span><span class="s1">&#39;nofilter&#39;</span><span class="p">,</span>
-              <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Count the number of reads in the given region</span>
-
-<span class="sd">        Note: this counts the number of reads that **overlap** the given region.</span>
-
-<span class="sd">        Can potentially make use of a filter for the reads (or custom function</span>
-<span class="sd">        that returns `True` or `False` for each read).</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            contig (str): the reference name (Default: None)</span>
-<span class="sd">            reference (str): synonym for `contig` (Default: None)</span>
-<span class="sd">            start (int): 0-based inclusive start position (Default: None)</span>
-<span class="sd">            stop (int): 0-based exclusive start position (Default: None)</span>
-<span class="sd">            end (int): Synonym for `stop` (Default: None)</span>
-<span class="sd">            region (str): SAM-style region format. \</span>
-<span class="sd">                Example: &#39;chr1:10000-50000&#39; (Default: None)</span>
-<span class="sd">            until_eof (bool): count number of reads from start to end of file \</span>
-<span class="sd">                Note, this can potentially be an expensive operation. \</span>
-<span class="sd">                (Default: False)</span>
-<span class="sd">            read_callback (str|function): select (or create) a filter of which \</span>
-<span class="sd">                reads to count. Built-in filters:</span>
-
-<span class="sd">                * `all`: skips reads that contain the following flags:</span>
-
-<span class="sd">                    * 0x4 (4): read unmapped</span>
-<span class="sd">                    * 0x100 (256): not primary alignment</span>
-<span class="sd">                    * 0x200 (512): QC Fail</span>
-<span class="sd">                    * 0x400 (1024): PCR or optical duplicate</span>
-<span class="sd">                * `nofilter`: uses all reads (Default)</span>
-<span class="sd">                * The user can also supply a custom function that \</span>
-<span class="sd">                    returns boolean objects for each read</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            (int): count of reads in the given region that meet parameters</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if genomic coordinates are out of range or invalid or random access is disabled</span>
-<span class="sd">            RuntimeError: if `read_callback` is not properly set</span>
-<span class="sd">            KeyError: Reference is not found in header</span>
-<span class="sd">            AssertionError: if genomic region is malformed</span>
-
-<span class="sd">        Notes:</span>
-<span class="sd">            SAM region formatted strings take on the following form:</span>
-<span class="sd">            &#39;chr1:100000-200000&#39;</span>
-
-<span class="sd">        Usage:</span>
-<span class="sd">                AlignmentFile.count(contig=&#39;chr1&#39;, start=1, stop= 1000)</span>
-<span class="sd">                AlignmentFile.count(&#39;chr1&#39;, 1, 1000)</span>
-<span class="sd">                AlignmentFile.count(&#39;chr1:1-1000&#39;)</span>
-<span class="sd">                AlignmentFile.count(&#39;chr1&#39;, 1)</span>
-<span class="sd">                AlignmentFile.count(&#39;chr1&#39;)</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; bam.count(&#39;chr1&#39;, 1, 100)</span>
-<span class="sd">            3</span>
-
-<span class="sd">            &gt;&gt;&gt; bam.count(&#39;chr1&#39;, 1, 100, read_callback=&#39;all&#39;)</span>
-<span class="sd">            2</span>
-
-<span class="sd">            &gt;&gt;&gt; bam.count(&#39;chr10&#39;, 1, 10)</span>
-<span class="sd">            Traceback (most recent call last):</span>
-<span class="sd">                ...</span>
-<span class="sd">            KeyError: &#39;chr10 was not found in the file header&#39;</span>
-
-<span class="sd">            &gt;&gt;&gt; bam.count(&#39;chr1&#39;, 1700, 1701)</span>
-<span class="sd">            Traceback (most recent call last):</span>
-<span class="sd">                ...</span>
-<span class="sd">            ValueError: Genomic region out of bounds.</span>
-
-<span class="sd">            &gt;&gt;&gt; bam.count(&#39;chr1&#39;, 100, 10)</span>
-<span class="sd">            Traceback (most recent call last):</span>
-<span class="sd">                ...</span>
-<span class="sd">            AssertionError: Malformed region: start should be &lt;= stop, you entered 100, 10</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="c1"># pass the signature to fetch</span>
-        <span class="n">signature</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
-        <span class="n">signature</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;read_callback&#39;</span><span class="p">)</span>
-        <span class="n">signature</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">)</span>
-        <span class="n">roi_reads</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="o">**</span><span class="n">signature</span><span class="p">)</span>
-        <span class="c1"># make `nofilter` the default filter unless told otherwise</span>
-        <span class="c1"># read_callback = kwargs.get(&#39;read_callback&#39;, &#39;nofilter&#39;)</span>
-
-        <span class="c1"># go through all the reads over a given region and count them</span>
-        <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">for</span> <span class="n">read</span> <span class="ow">in</span> <span class="n">roi_reads</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">filter_read</span><span class="p">(</span><span class="n">read</span><span class="p">,</span> <span class="n">read_callback</span><span class="p">):</span>
-                <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="k">return</span> <span class="n">count</span></div>
-
-<div class="viewcode-block" id="BgzfReader.count_coverage"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.count_coverage">[docs]</a>    <span class="k">def</span> <span class="nf">count_coverage</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">contig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                       <span class="n">quality_threshold</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">read_callback</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">,</span>
-                       <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_quality_threshold</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Counts the coverage of each base supported by a read the given interval.</span>
-
-<span class="sd">        Given an interval (inclusive, inclusive), this method pulls each read that overlaps</span>
-<span class="sd">        with the region. To ensure that the read truly overlaps with the region, the CIGAR string</span>
-<span class="sd">        is required. These reads can further be filtered out by their flags, MAPQ qualities, or</span>
-<span class="sd">        custom filtering function. Using the CIGAR string, the aligned portion of the read</span>
-<span class="sd">        is traversed and the presence of each nucleotide base is tallied into respective arrays.</span>
-<span class="sd">        Additionally, the user can choose to filter the counted bases based on its base quality</span>
-<span class="sd">        score that is stored in the quality string.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            contig (str): the reference name (Default: None)</span>
-<span class="sd">            reference (str): synonym for `contig` (Default: None)</span>
-<span class="sd">            start (int): 0-based inclusive start position (Default: None)</span>
-<span class="sd">            stop (int): 0-based exclusive start position (Default: None)</span>
-<span class="sd">            end (int): Synonym for `stop` (Default: None)</span>
-<span class="sd">            region (str): SAM-style region format. \</span>
-<span class="sd">                Example: &#39;chr1:10000-50000&#39; (Default: None)</span>
-<span class="sd">            quality_threshold (int): MAPQ quality threshold (Default: 15)</span>
-<span class="sd">            base_quality_threshold (int): base quality score threshold (Default: 0)</span>
-<span class="sd">            read_callback (str|function): select (or create) a filter of which \</span>
-<span class="sd">                reads to count. Built-in filters:</span>
-
-<span class="sd">                * `all`: skips reads that contain the following flags:</span>
-<span class="sd">                    * 0x4 (4): read unmapped</span>
-<span class="sd">                    * 0x100 (256): not primary alignment</span>
-<span class="sd">                    * 0x200 (512): QC Fail</span>
-<span class="sd">                    * 0x400 (1024): PCR or optical duplicate</span>
-
-<span class="sd">                * `nofilter`: uses all reads (Default)</span>
-<span class="sd">                * The user can also supply a custom function that \</span>
-<span class="sd">                    returns boolean objects for each read</span>
-<span class="sd">        Returns:</span>
-<span class="sd">            (:py:obj:`array.array`): Four arrays in the order of **A**, **C**, **G**, **T**</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if genomic coordinates are out of range or invalid, random access is disabled, or nucleotide base is unrecognized</span>
-<span class="sd">            RuntimeError: if `read_callback` is not properly set</span>
-<span class="sd">            KeyError: Reference is not found in header</span>
-<span class="sd">            AssertionError: if genomic region is malformed</span>
-
-<span class="sd">        Notes:</span>
-<span class="sd">            SAM region formatted strings take on the following form:</span>
-<span class="sd">            &#39;chr1:100-200&#39;</span>
-
-<span class="sd">        Usage:</span>
-<span class="sd">                AlignmentFile.count_coverage(contig=&#39;chr1&#39;, start=1, stop= 1000)</span>
-<span class="sd">                AlignmentFile.count_coverage(&#39;chr1&#39;, 1, 1000)</span>
-<span class="sd">                AlignmentFile.count_coverage(&#39;chr1:1-1000&#39;)</span>
-<span class="sd">                AlignmentFile.count_coverage(&#39;chr1&#39;, 1)</span>
-<span class="sd">                AlignmentFile.count_coverage(&#39;chr1&#39;)</span>
-
-<span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; bam.count_coverage(&#39;chr1&#39;, 100, 150) # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE</span>
-<span class="sd">            (array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),</span>
-<span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),</span>
-<span class="sd">            array(&#39;L&#39;, [1, 1, 2, 2, ..., 0, 14, 0, 14, 14]),</span>
-<span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 15, 0, 14, 0, 0]))</span>
-
-<span class="sd">            &gt;&gt;&gt; bam.count_coverage(&#39;chr1&#39;, 100, 150, quality_threshold=20, base_quality_threshold=25) # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE</span>
-<span class="sd">            (array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),</span>
-<span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),</span>
-<span class="sd">            array(&#39;L&#39;, [1, 1, 2, 2, ..., 0, 14, 0, 13, 11]),</span>
-<span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0,..., 14, 0, 13, 0, 0]))</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">signature</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;self&#39;</span><span class="p">,</span> <span class="s1">&#39;quality_threshold&#39;</span><span class="p">,</span> <span class="s1">&#39;read_callback&#39;</span><span class="p">,</span> <span class="s1">&#39;base_quality_threshold&#39;</span><span class="p">]:</span>
-            <span class="n">signature</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-
-        <span class="n">adenine</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="s1">&#39;L&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="n">stop</span> <span class="o">-</span> <span class="n">start</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
-        <span class="n">cytosine</span> <span class="o">=</span> <span class="n">adenine</span><span class="p">[:]</span>
-        <span class="n">guanine</span> <span class="o">=</span> <span class="n">adenine</span><span class="p">[:]</span>
-        <span class="n">thymine</span> <span class="o">=</span> <span class="n">adenine</span><span class="p">[:]</span>
-
-        <span class="k">for</span> <span class="n">read</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="o">**</span><span class="n">signature</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">read</span><span class="o">.</span><span class="n">cigarstring</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">read</span><span class="o">.</span><span class="n">mapq</span> <span class="o">&gt;=</span> <span class="n">quality_threshold</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">filter_read</span><span class="p">(</span><span class="n">read</span><span class="p">,</span> <span class="n">read_callback</span><span class="p">):</span>
-                    <span class="k">for</span> <span class="n">base</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">cigar_alignment</span><span class="p">(</span><span class="n">seq</span><span class="o">=</span><span class="n">read</span><span class="o">.</span><span class="n">seq</span><span class="p">,</span> <span class="n">cigar</span><span class="o">=</span><span class="n">read</span><span class="o">.</span><span class="n">cigarstring</span><span class="p">,</span>
-                                                       <span class="n">start_pos</span><span class="o">=</span><span class="n">read</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">qualities</span><span class="o">=</span><span class="n">read</span><span class="o">.</span><span class="n">query_qualities</span><span class="p">,</span>
-                                                       <span class="n">base_qual_thresh</span><span class="o">=</span><span class="n">base_quality_threshold</span><span class="p">):</span>
-                        <span class="k">if</span> <span class="n">start</span> <span class="o">&lt;=</span> <span class="n">index</span> <span class="o">&lt;=</span> <span class="n">stop</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">base</span> <span class="o">==</span> <span class="s1">&#39;A&#39;</span><span class="p">:</span>
-                                <span class="n">adenine</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="n">start</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                            <span class="k">elif</span> <span class="n">base</span> <span class="o">==</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span>
-                                <span class="n">guanine</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="n">start</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                            <span class="k">elif</span> <span class="n">base</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
-                                <span class="n">guanine</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="n">start</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                            <span class="k">elif</span> <span class="n">base</span> <span class="o">==</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
-                                <span class="n">thymine</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="n">start</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
-                            <span class="k">else</span><span class="p">:</span>
-                                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Read base was </span><span class="si">{}</span><span class="s1">, not A, T, C, or G&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">base</span><span class="p">))</span>
-
-        <span class="k">return</span> <span class="n">adenine</span><span class="p">,</span> <span class="n">cytosine</span><span class="p">,</span> <span class="n">guanine</span><span class="p">,</span> <span class="n">thymine</span></div>
-
-<div class="viewcode-block" id="BgzfReader.get_index_stats"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.get_index_stats">[docs]</a>    <span class="k">def</span> <span class="nf">get_index_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Inspects the index file (BAI) for alignment statistics.</span>
-
-<span class="sd">        Every BAM index file contains metrics regarding the alignment</span>
-<span class="sd">        process for the given BAM file. The stored data are the number</span>
-<span class="sd">        of mapped and unmapped reads for a given reference. Unmapped reads</span>
-<span class="sd">        are paired end reads where only one part is mapped. Additionally,</span>
-<span class="sd">        index files also contain the number of unplaced unmapped reads. This</span>
-<span class="sd">        is stored within the `nocoordinate` instance attribute (if present).</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            idx_stats (:py:obj:`list` of :py:obj:`tuple`): list of tuples for each reference in the order seen in the header. Each tuple contains the number of mapped reads, unmapped reads, and the sum of both.</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            AssertionError: if the index file is not available</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; bam.get_index_stats()</span>
-<span class="sd">            [(1446, 18, 1464), (1789, 17, 1806)]</span>
-
-<span class="sd">            &gt;&gt;&gt; bam_no_bai = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;, index_filename=&#39;not_a_file.bai&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; bam_no_bai.get_index_stats()</span>
-<span class="sd">            Traceback (most recent call last):</span>
-<span class="sd">                ...</span>
-<span class="sd">            AssertionError: No index available</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_idx</span><span class="p">,</span> <span class="s1">&#39;No index available&#39;</span>
-        <span class="n">idx_stats</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">for</span> <span class="n">ref</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">n_refs</span><span class="p">):</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">mapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">[</span><span class="n">ref</span><span class="p">]</span><span class="o">.</span><span class="n">n_mapped</span>
-                <span class="n">unmapped</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">[</span><span class="n">ref</span><span class="p">]</span><span class="o">.</span><span class="n">n_unmapped</span>
-                <span class="n">idx_stats</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">mapped</span><span class="p">,</span> <span class="n">unmapped</span><span class="p">,</span> <span class="n">mapped</span> <span class="o">+</span> <span class="n">unmapped</span><span class="p">))</span>
-            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-                <span class="n">idx_stats</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">idx_stats</span></div>
-
-<div class="viewcode-block" id="BgzfReader.is_valid_tid"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.is_valid_tid">[docs]</a>    <span class="k">def</span> <span class="nf">is_valid_tid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tid</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Return `True` if TID/RefID is valid.</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            `True` if TID/refID is valid, else `False`</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; bam.is_valid_tid(0)</span>
-<span class="sd">            True</span>
-
-<span class="sd">            &gt;&gt;&gt; bam.is_valid_tid(10) # because there are only 2 in this file</span>
-<span class="sd">            False</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="n">tid</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span> <span class="k">else</span> <span class="kc">False</span></div>
-
-<div class="viewcode-block" id="BgzfReader.get_reference_name"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.get_reference_name">[docs]</a>    <span class="k">def</span> <span class="nf">get_reference_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tid</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convert TID/refID to reference name.</span>
-
-<span class="sd">        The TID/refID is the position a reference sequence is seen</span>
-<span class="sd">        within the header file of the BAM file. The references are</span>
-<span class="sd">        sorted by ASCII order. Therefore, for a **Homo sapien** aligned</span>
-<span class="sd">        to GRCh38, &#39;chr10&#39; comes before &#39;chr1&#39; in the header. Therefore,</span>
-<span class="sd">        &#39;chr10&#39; would have the TID/refID of 0, not &#39;chr1&#39;.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            tid (int): TID/refID of desired reference/contig</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            String representation of chromosome if valid, else None</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            KeyError: if TID/refID is not valid</span>
-
-<span class="sd">        Examples:</span>
-<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; bam.get_reference_name(0)</span>
-<span class="sd">            \&#39;chr1&#39;</span>
-
-<span class="sd">            &gt;&gt;&gt; bam.get_reference_name(10)</span>
-<span class="sd">            Traceback (most recent call last):</span>
-<span class="sd">                ...</span>
-<span class="sd">            KeyError: &#39;10 is not a valid TID/refID for this file.&#39;</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid_tid</span><span class="p">(</span><span class="n">tid</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">tid</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is not a valid TID/refID for this file.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tid</span><span class="p">))</span></div>
-
-<div class="viewcode-block" id="BgzfReader.get_tid"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.get_tid">[docs]</a>    <span class="k">def</span> <span class="nf">get_tid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reference</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Convert reference/contig name to refID/TID.</span>
-
-<span class="sd">        The TID/refID is the position a reference sequence is seen</span>
-<span class="sd">        within the header file of the BAM file. The references are</span>
-<span class="sd">        sorted by ASCII order. Therefore, for a **Homo sapien** aligned</span>
-<span class="sd">        to GRCh38, &#39;chr10&#39; comes before &#39;chr1&#39; in the header. Therefore,</span>
-<span class="sd">        &#39;chr10&#39; would have the TID/refID of 0, not &#39;chr1&#39;.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            reference (str): reference/contig name</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (int): the TID/refID of desired reference/contig</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            KeyError: if reference name not found file header</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; bam.get_tid(&#39;chr1&#39;)</span>
-<span class="sd">            0</span>
-
-<span class="sd">            &gt;&gt;&gt; bam.get_tid(&#39;chr10&#39;)</span>
-<span class="sd">            Traceback (most recent call last):</span>
-<span class="sd">                ...</span>
-<span class="sd">            KeyError: &#39;chr10 was not found in the file header&#39;</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-
-        <span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref2tid</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">reference</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">tid</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> was not found in the file header&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reference</span><span class="p">))</span>
-        <span class="k">return</span> <span class="n">tid</span></div>
-
-<div class="viewcode-block" id="BgzfReader.mate"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.mate">[docs]</a>    <span class="k">def</span> <span class="nf">mate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">AlignedSegment</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Gets the mate to a given AlignedSegment.</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            Slow, when compared to the C-API. Not meant for high-throughput analysis.</span>
-
-<span class="sd">        Does not advance current iterator position.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            AlignedSegment (:py:class:`bamnostic.AlignedSegment`): a bamnostic AlignedSegment read with a mate</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            (:py:class:`bamnostic.AlignedSegment`): if read has a valid mate, else None</span>
-
-<span class="sd">        Raises:</span>
-<span class="sd">            ValueError: if AlignedSegment is unpaired</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">with</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">index_filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">mate_head</span><span class="p">:</span>
-
-            <span class="c1"># Don&#39;t look if there isn&#39;t a pair</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">AlignedSegment</span><span class="o">.</span><span class="n">is_paired</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Read is unpaired&#39;</span><span class="p">)</span>
-
-            <span class="c1"># Based on standard convention</span>
-            <span class="n">read_name_base</span> <span class="o">=</span> <span class="n">read_name_pat</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">AlignedSegment</span><span class="o">.</span><span class="n">read_name</span><span class="p">)</span><span class="o">.</span><span class="n">groupdict</span><span class="p">()[</span><span class="s1">&#39;read_name&#39;</span><span class="p">]</span>
-            <span class="n">rnext</span> <span class="o">=</span> <span class="n">AlignedSegment</span><span class="o">.</span><span class="n">next_reference_id</span>
-
-            <span class="c1"># Look for available mate information</span>
-            <span class="k">if</span> <span class="n">rnext</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># Information is unavailable</span>
-            <span class="n">pnext</span> <span class="o">=</span> <span class="n">AlignedSegment</span><span class="o">.</span><span class="n">next_reference_start</span>
-            <span class="k">if</span> <span class="n">pnext</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">None</span>  <span class="c1"># no information available on read</span>
-
-            <span class="n">mate_gen</span> <span class="o">=</span> <span class="n">mate_head</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="n">tid</span><span class="o">=</span><span class="n">rnext</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="n">pnext</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="n">pnext</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">read</span> <span class="ow">in</span> <span class="n">mate_gen</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">read</span><span class="o">.</span><span class="n">read_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;#&#39;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">read_name_base</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">AlignedSegment</span><span class="o">.</span><span class="n">is_read1</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">read</span><span class="o">.</span><span class="n">is_read1</span><span class="p">:</span>
-                        <span class="k">return</span> <span class="n">read</span></div>
-
-<div class="viewcode-block" id="BgzfReader.head"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.head">[docs]</a>    <span class="k">def</span> <span class="nf">head</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">multiple_iterators</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; List out the first **n** reads of the file.</span>
-
-<span class="sd">        This method is primarily used when doing an initial exploration</span>
-<span class="sd">        of the data. Whether or not `multiple_iterators` is used, cursor</span>
-<span class="sd">        position within the file will not change.</span>
-
-<span class="sd">        Note:</span>
-<span class="sd">            Using `multiple_interators` opens a new file object of the</span>
-<span class="sd">            same file currently in use and, thus, impacts the memory</span>
-<span class="sd">            footprint of your analysis.</span>
-
-<span class="sd">        Args:</span>
-<span class="sd">            n (int): number of aligned reads to print (default: 5)</span>
-<span class="sd">            mutliple_iterators (bool): Whether to use current file object or create a new one (default: False).</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            head_reads (:py:obj:`list` of :py:obj:`AlignedSegment`): list of **n** reads from the front of the BAM file</span>
-
-<span class="sd">        Example:</span>
-<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
-<span class="sd">            &gt;&gt;&gt; bam.head(n=5)[0] # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE</span>
-<span class="sd">            EAS56_57:6:190:289:82	...	MF:C:192</span>
-
-<span class="sd">            &gt;&gt;&gt; bam.head(n = 5, multiple_iterators = True)[1] # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE</span>
-<span class="sd">            EAS56_57:6:190:289:82	...	H1:C:0</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="n">multiple_iterators</span><span class="p">:</span>
-            <span class="n">head_iter</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">index_filename</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_path</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">curr_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
-            <span class="c1"># BAMheader uses byte specific positions (and not BGZF virtual offsets)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">_BAMheader_end</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_load_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">tell</span><span class="p">())</span>
-            <span class="n">head_iter</span> <span class="o">=</span> <span class="bp">self</span>
-
-        <span class="n">head_reads</span> <span class="o">=</span> <span class="p">[</span><span class="nb">next</span><span class="p">(</span><span class="n">head_iter</span><span class="p">)</span> <span class="k">for</span> <span class="n">read</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span>
-
-        <span class="k">if</span> <span class="n">multiple_iterators</span><span class="p">:</span>
-            <span class="c1"># close the independent file object</span>
-            <span class="n">head_iter</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># otherwise, just go back to old position</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">curr_pos</span><span class="p">)</span>
-            <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">==</span> <span class="n">curr_pos</span>
-        <span class="k">return</span> <span class="n">head_reads</span></div>
-
-    <span class="k">def</span> <span class="nf">__next__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the next line (Py2 Compatibility).&quot;&quot;&quot;</span>
-
-        <span class="n">read</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignedSegment</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">read</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">StopIteration</span>
-        <span class="k">return</span> <span class="n">read</span>
-
-<div class="viewcode-block" id="BgzfReader.next"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.next">[docs]</a>    <span class="k">def</span> <span class="nf">next</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the next line.&quot;&quot;&quot;</span>
-
-        <span class="n">read</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignedSegment</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">read</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">StopIteration</span>
-        <span class="k">return</span> <span class="n">read</span></div>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Readline does not work on byte data&quot;</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Iterate over the lines in the BGZF file.&quot;&quot;&quot;</span>
@@ -1616,9 +648,9 @@
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wb&quot;</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">):</span>
-            <span class="n">handle</span> <span class="o">=</span> <span class="n">fileobj</span>
+            <span class="n">handle</span> <span class="o">=</span> <span class="n">filepath_or_object</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath_or_object</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span>
+            <span class="n">handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        if fileobj:</span>
 <span class="sd">            assert filename is None</span>
@@ -1750,7 +782,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Marcus D. Sherman.
+        &copy; Copyright 2018, Marcus D. Sherman
 
     </p>
   </div>
@@ -1769,28 +801,18 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.8.4b5',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {

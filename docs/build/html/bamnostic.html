@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic package &mdash; bamnostic 0.8.4b5 documentation</title>
+  <title>bamnostic package &mdash; bamnostic 1.0.1 documentation</title>
   
 
   
@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -59,7 +58,7 @@
             
             
               <div class="version">
-                0.8.4
+                1.0.1
               </div>
             
           
@@ -264,8 +263,8 @@ for readability and storage.</p>
 
 <dl class="class">
 <dt id="bamnostic.core.AlignmentFile">
-<em class="property">class </em><code class="descclassname">bamnostic.core.</code><code class="descname">AlignmentFile</code><span class="sig-paren">(</span><em>filepath_or_object</em>, <em>mode='rb'</em>, <em>max_cache=128</em>, <em>index_filename=None</em>, <em>filename=None</em>, <em>check_header=False</em>, <em>check_sq=True</em>, <em>reference_filename=None</em>, <em>filepath_index=None</em>, <em>require_index=False</em>, <em>duplicate_filehandle=None</em>, <em>ignore_truncation=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/core.html#AlignmentFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.core.AlignmentFile" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#bamnostic.bgzf.BgzfReader" title="bamnostic.bgzf.BgzfReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamnostic.bgzf.BgzfReader</span></code></a>, <a class="reference internal" href="#bamnostic.bgzf.BgzfWriter" title="bamnostic.bgzf.BgzfWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">bamnostic.bgzf.BgzfWriter</span></code></a></p>
+<em class="property">class </em><code class="descclassname">bamnostic.core.</code><code class="descname">AlignmentFile</code><span class="sig-paren">(</span><em>filepath_or_object</em>, <em>mode='rb'</em>, <em>max_cache=128</em>, <em>index_filename=None</em>, <em>filename=None</em>, <em>check_header=False</em>, <em>check_sq=True</em>, <em>reference_filename=None</em>, <em>filepath_index=None</em>, <em>require_index=False</em>, <em>duplicate_filehandle=None</em>, <em>ignore_truncation=False</em>, <em>compresslevel=6</em>, <em>ignore_overwrite=False</em>, <em>copy_header=None</em>, <em>header=b''</em>, <em>reference_names=None</em>, <em>reference_lengths=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/core.html#AlignmentFile"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.core.AlignmentFile" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">bamnostic.bam.BamReader</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bamnostic.bam.BamWriter</span></code></p>
 <p>Wrapper to allow drop in replacement for BAM functionality in a <code class="docutils literal notranslate"><span class="pre">pysam</span></code>-like API.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -552,11 +551,79 @@ the reference genome.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="bamnostic.core.AlignedSegment.to_bam">
+<code class="descname">to_bam</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/core.html#AlignedSegment.to_bam"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.core.AlignedSegment.to_bam" title="Permalink to this definition">¶</a></dt>
+<dd><p>Writes the alignment record to a BAM file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>bam_file</strong> (string or <code class="xref py py-obj docutils literal notranslate"><span class="pre">bamnostic.bam.BamWriter</span></code>) – BAM file path or open bam file in a write mode</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.core.unpack_int32">
+<code class="descclassname">bamnostic.core.</code><code class="descname">unpack_int32</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.core.unpack_int32" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.core.unpack_int32L">
+<code class="descclassname">bamnostic.core.</code><code class="descname">unpack_int32L</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.core.unpack_int32L" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
 </dd></dl>
 
 </div>
 <div class="section" id="module-bamnostic.bgzf">
 <span id="binary-alignment-map-bam-file-handlers-bamnostic-bgzf"></span><h2>Binary Alignment Map (BAM) file handlers (<code class="docutils literal notranslate"><span class="pre">bamnostic.bgzf</span></code>)<a class="headerlink" href="#module-bamnostic.bgzf" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bamnostic.bgzf.unpack_gzip_header">
+<code class="descclassname">bamnostic.bgzf.</code><code class="descname">unpack_gzip_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_gzip_header" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.bgzf.unpack_subfields">
+<code class="descclassname">bamnostic.bgzf.</code><code class="descname">unpack_subfields</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_subfields" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.bgzf.unpack_gzip_integrity">
+<code class="descclassname">bamnostic.bgzf.</code><code class="descname">unpack_gzip_integrity</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_gzip_integrity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.bgzf.unpack_bgzf_metaheader">
+<code class="descclassname">bamnostic.bgzf.</code><code class="descname">unpack_bgzf_metaheader</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_bgzf_metaheader" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
 <dl class="function">
 <dt id="bamnostic.bgzf.get_block">
 <code class="descclassname">bamnostic.bgzf.</code><code class="descname">get_block</code><span class="sig-paren">(</span><em>handle</em>, <em>offset=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#get_block"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.get_block" title="Permalink to this definition">¶</a></dt>
@@ -587,282 +654,21 @@ the given offset.</p>
 </tbody>
 </table>
 <p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s1">&#39;./bamnostic/data/example.bam&#39;</span><span class="p">,</span><span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">bam</span><span class="p">:</span>
-<span class="gp">... </span>    <span class="n">bam_header</span> <span class="o">=</span> <span class="n">get_block</span><span class="p">(</span><span class="n">bam</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="k">try</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="n">bam_header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1f\x8b\x08\x04</span><span class="s1">&#39;</span><span class="p">)</span>
-<span class="gp">... </span>    <span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
-<span class="gp">... </span>        <span class="n">bam_header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x1f\x8b\x08\x04</span><span class="s1">&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam_header</span> <span class="o">=</span> <span class="n">get_block</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">try</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">bam_header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="sa">b</span><span class="s1">&#39;</span><span class="se">\x1f\x8b\x08\x04</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="gp">... </span><span class="k">except</span> <span class="ne">SyntaxError</span><span class="p">:</span>
+<span class="gp">... </span>    <span class="n">bam_header</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\x1f\x8b\x08\x04</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="go">True</span>
 </pre></div>
 </div>
-</dd></dl>
-
-<dl class="class">
-<dt id="bamnostic.bgzf.BAMheader">
-<em class="property">class </em><code class="descclassname">bamnostic.bgzf.</code><code class="descname">BAMheader</code><span class="sig-paren">(</span><em>_io</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BAMheader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BAMheader" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Parse and store the BAM file header</p>
-<p>The BAM header is the plain text and byte-encoded metadata of a given BAM file.
-Information stored in the header are the number, length, and name of the reference
-sequences that reads were aligned to; version of software used; read group identifiers; etc.
-The <a class="reference external" href="https://samtools.github.io/hts-specs/SAMv1.pdf">BAM</a> format also stipulates that the first block of any BAM file should be reserved
-just for the BAM header block.</p>
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BAMheader._io">
-<code class="descname">_io</code><a class="headerlink" href="#bamnostic.bgzf.BAMheader._io" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code> – opened BAM file object</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BAMheader.SAMheader">
-<code class="descname">SAMheader</code><a class="headerlink" href="#bamnostic.bgzf.BAMheader.SAMheader" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> – parsed dictionary of the SAM header</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BAMheader.n_refs">
-<code class="descname">n_refs</code><a class="headerlink" href="#bamnostic.bgzf.BAMheader.n_refs" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of references</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BAMheader.refs">
-<code class="descname">refs</code><a class="headerlink" href="#bamnostic.bgzf.BAMheader.refs" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> – reference names and lengths listed in the BAM header</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BAMheader.to_header">
-<code class="descname">to_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BAMheader.to_header"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BAMheader.to_header" title="Permalink to this definition">¶</a></dt>
-<dd><p>Allows the user to directly copy the header of another BAM file</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">packed byte code of entire header BGZF block</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(bytesarray)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
 <dt id="bamnostic.bgzf.BgzfReader">
-<em class="property">class </em><code class="descclassname">bamnostic.bgzf.</code><code class="descname">BgzfReader</code><span class="sig-paren">(</span><em>filepath_or_object</em>, <em>mode='rb'</em>, <em>max_cache=128</em>, <em>index_filename=None</em>, <em>filename=None</em>, <em>check_header=False</em>, <em>check_sq=True</em>, <em>reference_filename=None</em>, <em>filepath_index=None</em>, <em>require_index=False</em>, <em>duplicate_filehandle=None</em>, <em>ignore_truncation=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">bamnostic.bgzf.</code><code class="descname">BgzfReader</code><span class="sig-paren">(</span><em>filepath_or_object</em>, <em>mode='rb'</em>, <em>max_cache=None</em>, <em>filename=None</em>, <em>duplicate_filehandle=None</em>, <em>ignore_truncation=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The BAM reader. Heavily modified from Peter Cock’s BgzfReader.</p>
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BgzfReader.header">
-<code class="descname">header</code><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.header" title="Permalink to this definition">¶</a></dt>
-<dd><p>representation of header data (if present)</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BgzfReader.lengths">
-<code class="descname">lengths</code><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.lengths" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code> – lengths of references listed in header</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BgzfReader.nocoordinate">
-<code class="descname">nocoordinate</code><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.nocoordinate" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of reads that have no coordinates</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BgzfReader.nreferences">
-<code class="descname">nreferences</code><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.nreferences" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of references in header</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BgzfReader.ref2tid">
-<code class="descname">ref2tid</code><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.ref2tid" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code> – refernce names and refID dictionary</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BgzfReader.references">
-<code class="descname">references</code><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.references" title="Permalink to this definition">¶</a></dt>
-<dd><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code> – names of references listed in header</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BgzfReader.text">
-<code class="descname">text</code><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.text" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>str</em> – SAM header (if present)</p>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BgzfReader.unmapped">
-<code class="descname">unmapped</code><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.unmapped" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of unmapped reads</p>
-</dd></dl>
-
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This implementation is likely to change. While the API was meant to
-mirror <cite>pysam</cite>, it makes sense to include the <cite>pysam</cite>-like API in an extension
-that will wrap the core reader. This would be a major refactor, and therefore
-will not happen any time soon (30 May 2018).</p>
-</div>
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.check_index">
-<code class="descname">check_index</code><span class="sig-paren">(</span><em>index_filename=None</em>, <em>req_idx=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.check_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.check_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks to make sure index file is available. If not, it disables random access.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>index_filename</strong> (<em>str</em>) – path to index file (BAI) if it does not fit naming convention (default: None).</li>
-<li><strong>req_idx</strong> (<em>bool</em>) – Raise error if index file is not present (default: False).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">True if index is present, else False</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">(bool)</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first"><code class="xref py py-exc docutils literal notranslate"><span class="pre">IOError</span></code> – If the index file is closed or index could not be opened</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Warns:</th><td class="field-body"><p class="first last"><strong>UserWarning</strong> – If index could not be loaded. Random access is disabled.</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">check_index</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span> <span class="o">+</span> <span class="s1">&#39;.bai&#39;</span><span class="p">)</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">check_index</span><span class="p">(</span><span class="s1">&#39;not_a_file.bai&#39;</span><span class="p">)</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">nocoordinate</code></dt>
-<dd><p>Get the number of reads without coordiantes according to the statistics recorded in the index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">sum of reads without coordinates</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(int)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt id="bamnostic.bgzf.BgzfReader.mapped">
-<code class="descname">mapped</code><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.mapped" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the number of mapped reads according  to the statistics recorded in the index.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">sum of mapped reads</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(int)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">unmapped</code></dt>
-<dd><p>Get the number of unmapped reads without coordiantes <strong>and</strong>
-without coordinate.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">sum of unmapped reads and reads without coordinates</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(int)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">references</code></dt>
-<dd><p>Get all references used in alignment.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">reference names</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(<code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">str</span></code>)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">nreferences</code></dt>
-<dd><p>Get the number of references listed in alignment</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">count of references</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(int)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="attribute">
-<dt>
-<code class="descname">lengths</code></dt>
-<dd><p>Get all reference lengths used in alignment.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">reference lengths</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">(<code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">int</span></code>)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.has_index">
-<code class="descname">has_index</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.has_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.has_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if file has index and it is open</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if present and opened, else False</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">bool</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
 <dl class="method">
 <dt id="bamnostic.bgzf.BgzfReader.tell">
 <code class="descname">tell</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.tell"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.tell" title="Permalink to this definition">¶</a></dt>
@@ -950,469 +756,6 @@ out for posterity sake</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.fetch">
-<code class="descname">fetch</code><span class="sig-paren">(</span><em>contig=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>region=None</em>, <em>tid=None</em>, <em>until_eof=False</em>, <em>multiple_iterators=False</em>, <em>reference=None</em>, <em>end=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.fetch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.fetch" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a generator that returns all reads within the given region</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>contig</strong> (<em>str</em>) – name of reference/contig</li>
-<li><strong>start</strong> (<em>int</em>) – start position of region of interest (0-based)</li>
-<li><strong>stop</strong> (<em>int</em>) – stop position of region of interest (0-based)</li>
-<li><strong>region</strong> (<em>str</em>) – SAM region formatted string. Accepts tab-delimited values as well</li>
-<li><strong>tid</strong> (<em>int</em>) – the refID or target id of a reference/contig</li>
-<li><strong>until_eof</strong> (<em>bool</em>) – iterate until end of file</li>
-<li><strong>mutiple_iterators</strong> (<em>bool</em>) – allow multiple iterators over region. Not Implemented. Notice: each iterator will open up a new view into the BAM file, so overhead will apply.</li>
-<li><strong>reference</strong> (<em>str</em>) – synonym for <cite>contig</cite></li>
-<li><strong>end</strong> (<em>str</em>) – synonym for <cite>stop</cite></li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Yields:</th><td class="field-body"><p class="first">reads over the region of interest if any</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code> – if the genomic coordinates are out of range or invalid</li>
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">KeyError</span></code> – Reference is not found in header</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>SAM region formatted strings take on the following form:
-‘chr1:100000-200000’</p>
-<dl class="docutils">
-<dt>Usage:</dt>
-<dd>AlignmentFile.fetch(contig=’chr1’, start=1, stop= 1000)
-AlignmentFile.fetch(‘chr1’, 1, 1000)
-AlignmentFile.fetch(‘chr1:1-1000’)
-AlignmentFile.fetch(‘chr1’, 1)
-AlignmentFile.fetch(‘chr1’)</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">bam</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span> 
-<span class="go">EAS56_57:6:190:289:82 ... MF:C:192</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">bam</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;chr10&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">KeyError</span>: <span class="n">&#39;chr10 was not found in the file header&#39;</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">bam</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">1700</span><span class="p">,</span> <span class="mi">1701</span><span class="p">))</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">ValueError</span>: <span class="n">Genomic region out of bounds.</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">bam</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">AssertionError</span>: <span class="n">Malformed region: start should be &lt;= stop, you entered 100, 10</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.count">
-<code class="descname">count</code><span class="sig-paren">(</span><em>contig=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>region=None</em>, <em>until_eof=False</em>, <em>tid=None</em>, <em>read_callback='nofilter'</em>, <em>reference=None</em>, <em>end=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.count"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.count" title="Permalink to this definition">¶</a></dt>
-<dd><p>Count the number of reads in the given region</p>
-<p>Note: this counts the number of reads that <strong>overlap</strong> the given region.</p>
-<p>Can potentially make use of a filter for the reads (or custom function
-that returns <cite>True</cite> or <cite>False</cite> for each read).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>contig</strong> (<em>str</em>) – the reference name (Default: None)</li>
-<li><strong>reference</strong> (<em>str</em>) – synonym for <cite>contig</cite> (Default: None)</li>
-<li><strong>start</strong> (<em>int</em>) – 0-based inclusive start position (Default: None)</li>
-<li><strong>stop</strong> (<em>int</em>) – 0-based exclusive start position (Default: None)</li>
-<li><strong>end</strong> (<em>int</em>) – Synonym for <cite>stop</cite> (Default: None)</li>
-<li><strong>region</strong> (<em>str</em>) – SAM-style region format. Example: ‘chr1:10000-50000’ (Default: None)</li>
-<li><strong>until_eof</strong> (<em>bool</em>) – count number of reads from start to end of file Note, this can potentially be an expensive operation. (Default: False)</li>
-<li><strong>read_callback</strong> (<em>str|function</em>) – <p>select (or create) a filter of which reads to count. Built-in filters:</p>
-<ul>
-<li><cite>all</cite>: skips reads that contain the following flags:<blockquote>
-<div><ul>
-<li>0x4 (4): read unmapped</li>
-<li>0x100 (256): not primary alignment</li>
-<li>0x200 (512): QC Fail</li>
-<li>0x400 (1024): PCR or optical duplicate</li>
-</ul>
-</div></blockquote>
-</li>
-<li><cite>nofilter</cite>: uses all reads (Default)</li>
-<li><dl class="first docutils">
-<dt>The user can also supply a custom function that </dt>
-<dd>returns boolean objects for each read</dd>
-</dl>
-</li>
-</ul>
-</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">count of reads in the given region that meet parameters</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">(int)</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code> – if genomic coordinates are out of range or invalid or random access is disabled</li>
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code> – if <cite>read_callback</cite> is not properly set</li>
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">KeyError</span></code> – Reference is not found in header</li>
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">AssertionError</span></code> – if genomic region is malformed</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>SAM region formatted strings take on the following form:
-‘chr1:100000-200000’</p>
-<dl class="docutils">
-<dt>Usage:</dt>
-<dd>AlignmentFile.count(contig=’chr1’, start=1, stop= 1000)
-AlignmentFile.count(‘chr1’, 1, 1000)
-AlignmentFile.count(‘chr1:1-1000’)
-AlignmentFile.count(‘chr1’, 1)
-AlignmentFile.count(‘chr1’)</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-<span class="go">3</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="n">read_callback</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
-<span class="go">2</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;chr10&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">KeyError</span>: <span class="n">&#39;chr10 was not found in the file header&#39;</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">1700</span><span class="p">,</span> <span class="mi">1701</span><span class="p">)</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">ValueError</span>: <span class="n">Genomic region out of bounds.</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">AssertionError</span>: <span class="n">Malformed region: start should be &lt;= stop, you entered 100, 10</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.count_coverage">
-<code class="descname">count_coverage</code><span class="sig-paren">(</span><em>contig=None</em>, <em>start=None</em>, <em>stop=None</em>, <em>region=None</em>, <em>quality_threshold=15</em>, <em>read_callback='all'</em>, <em>reference=None</em>, <em>end=None</em>, <em>base_quality_threshold=0</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.count_coverage"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.count_coverage" title="Permalink to this definition">¶</a></dt>
-<dd><p>Counts the coverage of each base supported by a read the given interval.</p>
-<p>Given an interval (inclusive, inclusive), this method pulls each read that overlaps
-with the region. To ensure that the read truly overlaps with the region, the CIGAR string
-is required. These reads can further be filtered out by their flags, MAPQ qualities, or
-custom filtering function. Using the CIGAR string, the aligned portion of the read
-is traversed and the presence of each nucleotide base is tallied into respective arrays.
-Additionally, the user can choose to filter the counted bases based on its base quality
-score that is stored in the quality string.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>contig</strong> (<em>str</em>) – the reference name (Default: None)</li>
-<li><strong>reference</strong> (<em>str</em>) – synonym for <cite>contig</cite> (Default: None)</li>
-<li><strong>start</strong> (<em>int</em>) – 0-based inclusive start position (Default: None)</li>
-<li><strong>stop</strong> (<em>int</em>) – 0-based exclusive start position (Default: None)</li>
-<li><strong>end</strong> (<em>int</em>) – Synonym for <cite>stop</cite> (Default: None)</li>
-<li><strong>region</strong> (<em>str</em>) – SAM-style region format.                 Example: ‘chr1:10000-50000’ (Default: None)</li>
-<li><strong>quality_threshold</strong> (<em>int</em>) – MAPQ quality threshold (Default: 15)</li>
-<li><strong>base_quality_threshold</strong> (<em>int</em>) – base quality score threshold (Default: 0)</li>
-<li><strong>read_callback</strong> (<em>str|function</em>) – <p>select (or create) a filter of which                 reads to count. Built-in filters:</p>
-<ul>
-<li><dl class="first docutils">
-<dt><cite>all</cite>: skips reads that contain the following flags:</dt>
-<dd><ul class="first last">
-<li>0x4 (4): read unmapped</li>
-<li>0x100 (256): not primary alignment</li>
-<li>0x200 (512): QC Fail</li>
-<li>0x400 (1024): PCR or optical duplicate</li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><cite>nofilter</cite>: uses all reads (Default)</li>
-<li>The user can also supply a custom function that                     returns boolean objects for each read</li>
-</ul>
-</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">Four arrays in the order of <strong>A</strong>, <strong>C</strong>, <strong>G</strong>, <strong>T</strong></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">(<code class="xref py py-obj docutils literal notranslate"><span class="pre">array.array</span></code>)</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code> – if genomic coordinates are out of range or invalid, random access is disabled, or nucleotide base is unrecognized</li>
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">RuntimeError</span></code> – if <cite>read_callback</cite> is not properly set</li>
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">KeyError</span></code> – Reference is not found in header</li>
-<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">AssertionError</span></code> – if genomic region is malformed</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Notes</p>
-<p>SAM region formatted strings take on the following form:
-‘chr1:100-200’</p>
-<dl class="docutils">
-<dt>Usage:</dt>
-<dd>AlignmentFile.count_coverage(contig=’chr1’, start=1, stop= 1000)
-AlignmentFile.count_coverage(‘chr1’, 1, 1000)
-AlignmentFile.count_coverage(‘chr1:1-1000’)
-AlignmentFile.count_coverage(‘chr1’, 1)
-AlignmentFile.count_coverage(‘chr1’)</dd>
-</dl>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">count_coverage</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">)</span> 
-<span class="go">(array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),</span>
-<span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),</span>
-<span class="go">array(&#39;L&#39;, [1, 1, 2, 2, ..., 0, 14, 0, 14, 14]),</span>
-<span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 15, 0, 14, 0, 0]))</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">count_coverage</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">quality_threshold</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">base_quality_threshold</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span> 
-<span class="go">(array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),</span>
-<span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0]),</span>
-<span class="go">array(&#39;L&#39;, [1, 1, 2, 2, ..., 0, 14, 0, 13, 11]),</span>
-<span class="go">array(&#39;L&#39;, [0, 0, 0, 0,..., 14, 0, 13, 0, 0]))</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.get_index_stats">
-<code class="descname">get_index_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.get_index_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.get_index_stats" title="Permalink to this definition">¶</a></dt>
-<dd><p>Inspects the index file (BAI) for alignment statistics.</p>
-<p>Every BAM index file contains metrics regarding the alignment
-process for the given BAM file. The stored data are the number
-of mapped and unmapped reads for a given reference. Unmapped reads
-are paired end reads where only one part is mapped. Additionally,
-index files also contain the number of unplaced unmapped reads. This
-is stored within the <cite>nocoordinate</cite> instance attribute (if present).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of tuples for each reference in the order seen in the header. Each tuple contains the number of mapped reads, unmapped reads, and the sum of both.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">idx_stats (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">tuple</span></code>)</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">AssertionError</span></code> – if the index file is not available</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">get_index_stats</span><span class="p">()</span>
-<span class="go">[(1446, 18, 1464), (1789, 17, 1806)]</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam_no_bai</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">,</span> <span class="n">index_filename</span><span class="o">=</span><span class="s1">&#39;not_a_file.bai&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam_no_bai</span><span class="o">.</span><span class="n">get_index_stats</span><span class="p">()</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">AssertionError</span>: <span class="n">No index available</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.is_valid_tid">
-<code class="descname">is_valid_tid</code><span class="sig-paren">(</span><em>tid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.is_valid_tid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.is_valid_tid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return <cite>True</cite> if TID/RefID is valid.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><cite>True</cite> if TID/refID is valid, else <cite>False</cite></td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">is_valid_tid</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">True</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">is_valid_tid</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># because there are only 2 in this file</span>
-<span class="go">False</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.get_reference_name">
-<code class="descname">get_reference_name</code><span class="sig-paren">(</span><em>tid</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.get_reference_name"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.get_reference_name" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert TID/refID to reference name.</p>
-<p>The TID/refID is the position a reference sequence is seen
-within the header file of the BAM file. The references are
-sorted by ASCII order. Therefore, for a <strong>Homo sapien</strong> aligned
-to GRCh38, ‘chr10’ comes before ‘chr1’ in the header. Therefore,
-‘chr10’ would have the TID/refID of 0, not ‘chr1’.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>tid</strong> (<em>int</em>) – TID/refID of desired reference/contig</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">String representation of chromosome if valid, else None</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">KeyError</span></code> – if TID/refID is not valid</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">get_reference_name</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="go">&#39;chr1&#39;</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">get_reference_name</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">KeyError</span>: <span class="n">&#39;10 is not a valid TID/refID for this file.&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.get_tid">
-<code class="descname">get_tid</code><span class="sig-paren">(</span><em>reference</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.get_tid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.get_tid" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert reference/contig name to refID/TID.</p>
-<p>The TID/refID is the position a reference sequence is seen
-within the header file of the BAM file. The references are
-sorted by ASCII order. Therefore, for a <strong>Homo sapien</strong> aligned
-to GRCh38, ‘chr10’ comes before ‘chr1’ in the header. Therefore,
-‘chr10’ would have the TID/refID of 0, not ‘chr1’.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>reference</strong> (<em>str</em>) – reference/contig name</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the TID/refID of desired reference/contig</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(int)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">KeyError</span></code> – if reference name not found file header</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">get_tid</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">)</span>
-<span class="go">0</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">get_tid</span><span class="p">(</span><span class="s1">&#39;chr10&#39;</span><span class="p">)</span>
-<span class="gt">Traceback (most recent call last):</span>
-    <span class="o">...</span>
-<span class="gr">KeyError</span>: <span class="n">&#39;chr10 was not found in the file header&#39;</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.mate">
-<code class="descname">mate</code><span class="sig-paren">(</span><em>AlignedSegment</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.mate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.mate" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the mate to a given AlignedSegment.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Slow, when compared to the C-API. Not meant for high-throughput analysis.</p>
-</div>
-<p>Does not advance current iterator position.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>AlignedSegment</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bamnostic.AlignedSegment</span></code>) – a bamnostic AlignedSegment read with a mate</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">if read has a valid mate, else None</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">(<code class="xref py py-class docutils literal notranslate"><span class="pre">bamnostic.AlignedSegment</span></code>)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">ValueError</span></code> – if AlignedSegment is unpaired</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.head">
-<code class="descname">head</code><span class="sig-paren">(</span><em>n=5</em>, <em>multiple_iterators=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.head"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.head" title="Permalink to this definition">¶</a></dt>
-<dd><p>List out the first <strong>n</strong> reads of the file.</p>
-<p>This method is primarily used when doing an initial exploration
-of the data. Whether or not <cite>multiple_iterators</cite> is used, cursor
-position within the file will not change.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Using <cite>multiple_interators</cite> opens a new file object of the
-same file currently in use and, thus, impacts the memory
-footprint of your analysis.</p>
-</div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>n</strong> (<em>int</em>) – number of aligned reads to print (default: 5)</li>
-<li><strong>mutliple_iterators</strong> (<em>bool</em>) – Whether to use current file object or create a new one (default: False).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">list of <strong>n</strong> reads from the front of the BAM file</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">head_reads (<code class="xref py py-obj docutils literal notranslate"><span class="pre">list</span></code> of <code class="xref py py-obj docutils literal notranslate"><span class="pre">AlignedSegment</span></code>)</p>
-</td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Example</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> 
-<span class="go">EAS56_57:6:190:289:82       ...     MF:C:192</span>
-</pre></div>
-</div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">multiple_iterators</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> 
-<span class="go">EAS56_57:6:190:289:82       ...     H1:C:0</span>
-</pre></div>
-</div>
-</dd></dl>
-
-<dl class="method">
-<dt id="bamnostic.bgzf.BgzfReader.next">
-<code class="descname">next</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.next"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.next" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the next line.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="bamnostic.bgzf.BgzfReader.close">
 <code class="descname">close</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader.close"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader.close" title="Permalink to this definition">¶</a></dt>
 <dd><p>Close BGZF file.</p>
@@ -1496,6 +839,24 @@ implementation does too.</p>
 
 </dd></dl>
 
+<dl class="function">
+<dt id="bamnostic.bgzf.unpack_int32">
+<code class="descclassname">bamnostic.bgzf.</code><code class="descname">unpack_int32</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_int32" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.bgzf.unpack_int32L">
+<code class="descclassname">bamnostic.bgzf.</code><code class="descname">unpack_int32L</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_int32L" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-bamnostic.bai">
 <span id="bam-index-bai-file-handler-bamnostic-bai"></span><h2>BAM Index (BAI) file handler (<code class="docutils literal notranslate"><span class="pre">bamnostic.bai</span></code>)<a class="headerlink" href="#module-bamnostic.bai" title="Permalink to this headline">¶</a></h2>
@@ -1514,6 +875,42 @@ Furthermore, it allows subsections of the BAI to be loaded into memory, reducing
 footprint and speeding up queries within a small number of references. Lastly, by parsing it
 as such, random access queries directly into the associated BAM file is available to other
 tools within bamnostic</p>
+<dl class="function">
+<dt id="bamnostic.bai.unpack_chunk">
+<code class="descclassname">bamnostic.bai.</code><code class="descname">unpack_chunk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_chunk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.bai.unpack_intervals">
+<code class="descclassname">bamnostic.bai.</code><code class="descname">unpack_intervals</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_intervals" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.bai.unpack_bid_nchunk">
+<code class="descclassname">bamnostic.bai.</code><code class="descname">unpack_bid_nchunk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_bid_nchunk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.bai.unpack_unmapped">
+<code class="descclassname">bamnostic.bai.</code><code class="descname">unpack_unmapped</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_unmapped" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
 <dl class="class">
 <dt id="bamnostic.bai.RefIdx">
 <em class="property">class </em><code class="descclassname">bamnostic.bai.</code><code class="descname">RefIdx</code><span class="sig-paren">(</span><em>start_offset</em>, <em>end_offset</em>, <em>n_bins</em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.RefIdx" title="Permalink to this definition">¶</a></dt>
@@ -1540,15 +937,15 @@ tools within bamnostic</p>
 
 <dl class="function">
 <dt id="bamnostic.bai.reg2bin">
-<code class="descclassname">bamnostic.bai.</code><code class="descname">reg2bin</code><span class="sig-paren">(</span><em>beg</em>, <em>end</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bai.html#reg2bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bai.reg2bin" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bamnostic.bai.</code><code class="descname">reg2bin</code><span class="sig-paren">(</span><em>rbeg</em>, <em>rend</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bai.html#reg2bin"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bai.reg2bin" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finds the largest superset bin of region. Numeric values taken from hts-specs</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>beg</strong> (<em>int</em>) – inclusive beginning position of region</li>
-<li><strong>end</strong> (<em>int</em>) – exclusive end position of region</li>
+<li><strong>rbeg</strong> (<em>int</em>) – inclusive beginning position of region</li>
+<li><strong>rend</strong> (<em>int</em>) – exclusive end position of region</li>
 </ul>
 </td>
 </tr>
@@ -1571,8 +968,8 @@ tools within bamnostic</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>beg</strong> (<em>int</em>) – inclusive beginning position of region</li>
-<li><strong>end</strong> (<em>int</em>) – exclusive end position of region</li>
+<li><strong>rbeg</strong> (<em>int</em>) – inclusive beginning position of region</li>
+<li><strong>rend</strong> (<em>int</em>) – exclusive end position of region</li>
 </ul>
 </td>
 </tr>
@@ -1600,63 +997,143 @@ Position within uncompressed block = uoffset = virtual offset ^ (coffset &lt;&lt
 <dl class="attribute">
 <dt id="bamnostic.bai.Bai._io">
 <code class="descname">_io</code><a class="headerlink" href="#bamnostic.bai.Bai._io" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>fileObject</em> – opened BAI file object</p>
+<dd><p>opened BAI file object</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">fileObject</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="bamnostic.bai.Bai._LINEAR_INDEX_WINDOW">
 <code class="descname">_LINEAR_INDEX_WINDOW</code><a class="headerlink" href="#bamnostic.bai.Bai._LINEAR_INDEX_WINDOW" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – constant of the linear interval window size</p>
+<dd><p>constant of the linear interval window size</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="bamnostic.bai.Bai._UNMAP_BIN">
 <code class="descname">_UNMAP_BIN</code><a class="headerlink" href="#bamnostic.bai.Bai._UNMAP_BIN" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – constant for bin ID of unmapped read stats</p>
+<dd><p>constant for bin ID of unmapped read stats</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="bamnostic.bai.Bai.magic">
 <code class="descname">magic</code><a class="headerlink" href="#bamnostic.bai.Bai.magic" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>bytes</em> – first 4 bytes of file. Must be equal to b’BAI’</p>
+<dd><p>first 4 bytes of file. Must be equal to b’BAI’</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">bytes</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="bamnostic.bai.Bai.n_refs">
 <code class="descname">n_refs</code><a class="headerlink" href="#bamnostic.bai.Bai.n_refs" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – number of references in BAI</p>
+<dd><p>number of references in BAI</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="bamnostic.bai.Bai.unmapped">
 <code class="descname">unmapped</code><a class="headerlink" href="#bamnostic.bai.Bai.unmapped" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dict</em> – dictionary of the unmapped read stats by each reference</p>
+<dd><p>dictionary of the unmapped read stats by each reference</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="bamnostic.bai.Bai.current_ref">
 <code class="descname">current_ref</code><a class="headerlink" href="#bamnostic.bai.Bai.current_ref" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>None|dict</em> – dictionary of the current reference loaded into memory.
+<dd><p>dictionary of the current reference loaded into memory.
 It contains the a dictionary of bin IDs and their respective
 chunks, and a list of linear intervals.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">None|dict</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="bamnostic.bai.Bai.ref_indices">
 <code class="descname">ref_indices</code><a class="headerlink" href="#bamnostic.bai.Bai.ref_indices" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>dict</em> – dictionary of reference ids and their start/stop offsets within the BAI file</p>
+<dd><p>dictionary of reference ids and their start/stop offsets within the BAI file</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">dict</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="bamnostic.bai.Bai.n_no_coord">
 <code class="descname">n_no_coord</code><a class="headerlink" href="#bamnostic.bai.Bai.n_no_coord" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>None|int</em> – if present in BAI, is the number of reads that have no coordinates</p>
+<dd><p>if present in BAI, is the number of reads that have no coordinates</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">None|int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="attribute">
 <dt id="bamnostic.bai.Bai._last_pos">
 <code class="descname">_last_pos</code><a class="headerlink" href="#bamnostic.bai.Bai._last_pos" title="Permalink to this definition">¶</a></dt>
-<dd><p><em>int</em> – used for indexing, the byte position of the file head.</p>
+<dd><p>used for indexing, the byte position of the file head.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Type:</th><td class="field-body">int</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="method">
@@ -1753,9 +1230,9 @@ block within the file. This is invoked by setting <cite>idx=True</cite></p>
 </table>
 </dd></dl>
 
-<dl class="method">
+<dl class="attribute">
 <dt id="bamnostic.bai.Bai.get_ref">
-<code class="descname">get_ref</code><span class="sig-paren">(</span><em>ref_id=None</em>, <em>idx=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bai.html#Bai.get_ref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bai.Bai.get_ref" title="Permalink to this definition">¶</a></dt>
+<code class="descname">get_ref</code><a class="reference internal" href="_modules/bamnostic/bai.html#Bai.get_ref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bai.Bai.get_ref" title="Permalink to this definition">¶</a></dt>
 <dd><p>Interatively unpacks all the bins, linear intervals, and chunks for a given reference</p>
 <p>A reference is comprised of 2 things: 1) a series of bins that reference chunks of aligned
 reads that are grouped within that bin. 2) a series of virtual offsets of the first read of a
@@ -1889,6 +1366,24 @@ the region of interest’s start offset</p>
 
 </dd></dl>
 
+<dl class="function">
+<dt id="bamnostic.bai.unpack_int32">
+<code class="descclassname">bamnostic.bai.</code><code class="descname">unpack_int32</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_int32" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.bai.unpack_int32L">
+<code class="descclassname">bamnostic.bai.</code><code class="descname">unpack_int32L</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_int32L" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-bamnostic.utils">
 <span id="bamnostic-utilities-bamnostic-utils"></span><h2>BAMnostic Utilities (<code class="docutils literal notranslate"><span class="pre">bamnostic.utils</span></code>)<a class="headerlink" href="#module-bamnostic.utils" title="Permalink to this headline">¶</a></h2>
@@ -1913,6 +1408,24 @@ the region of interest’s start offset</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.utils.unpack_int32">
+<code class="descclassname">bamnostic.utils.</code><code class="descname">unpack_int32</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.utils.unpack_int32" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bamnostic.utils.unpack_int32L">
+<code class="descclassname">bamnostic.utils.</code><code class="descname">unpack_int32L</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.utils.unpack_int32L" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a tuple containing unpacked values.</p>
+<p>Unpack according to the format string Struct.format. The buffer’s size
+in bytes must be Struct.size.</p>
+<p>See help(struct) for more on format strings.</p>
 </dd></dl>
 
 <dl class="class">
@@ -1980,7 +1493,7 @@ Additionally, they can be found <a class="reference external" href="https://samt
 
 <dl class="function">
 <dt id="bamnostic.utils.yes_no">
-<code class="descclassname">bamnostic.utils.</code><code class="descname">yes_no</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#yes_no"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.yes_no" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bamnostic.utils.</code><code class="descname">yes_no</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#yes_no"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.yes_no" title="Permalink to this definition">¶</a></dt>
 <dd><p>Simple prompt parser</p>
 </dd></dl>
 
@@ -2135,20 +1648,44 @@ within_block_offset within the (decompressed) block (unsigned
 <dl class="class">
 <dt id="bamnostic.utils.LruDict">
 <em class="property">class </em><code class="descclassname">bamnostic.utils.</code><code class="descname">LruDict</code><span class="sig-paren">(</span><em>*args</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#LruDict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.LruDict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_pypy_collections.OrderedDict</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">collections.OrderedDict</span></code></p>
 <p>Simple least recently used (LRU) based dictionary that caches a given
 number of items.</p>
 <dl class="method">
-<dt id="bamnostic.utils.LruDict.cull">
-<code class="descname">cull</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#LruDict.cull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.LruDict.cull" title="Permalink to this definition">¶</a></dt>
-<dd><p>Main driver function for removing LRU items from the dictionary. New
-items are added to the bottom, and removed in a FIFO order.</p>
+<dt id="bamnostic.utils.LruDict.get">
+<code class="descname">get</code><span class="sig-paren">(</span><em>key</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#LruDict.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.LruDict.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Basic getter that renews LRU status upon inspection</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>key</strong> (<em>str</em>) – immutable dictionary key</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
-<dl class="attribute">
-<dt id="bamnostic.utils.LruDict.sys">
-<code class="descname">sys</code><em class="property"> = &lt;module 'sys' (built-in)&gt;</em><a class="headerlink" href="#bamnostic.utils.LruDict.sys" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dl class="method">
+<dt id="bamnostic.utils.LruDict.update">
+<code class="descname">update</code><span class="sig-paren">(</span><em>others</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#LruDict.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.LruDict.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Same as a regular <cite>dict.update</cite>, however, since pypy’s <cite>dict.update</cite>
+doesn’t go through <cite>dict.__setitem__</cite>, this is used to ensure it does</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>others</strong> (<em>iterable</em>) – a dictionary or iterable containing key/value pairs</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bamnostic.utils.LruDict.cull">
+<code class="descname">cull</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#LruDict.cull"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.LruDict.cull" title="Permalink to this definition">¶</a></dt>
+<dd><p>Main utility function for pruning the LruDict</p>
+<p>If the length of the LruDict is more than <cite>max_cache</cite>, it removes the LRU item</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -2171,7 +1708,7 @@ items are added to the bottom, and removed in a FIFO order.</p>
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_cigar</span><span class="p">(</span><span class="s1">&#39;3M1I3M1D5M&#39;</span><span class="p">)</span> 
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_cigar</span><span class="p">(</span><span class="s1">&#39;3M1I3M1D5M&#39;</span><span class="p">)</span> <span class="c1"># doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE</span>
 <span class="go">[((&#39;BAM_CMATCH&#39;, 0), 3), ..., ((&#39;BAM_CMATCH&#39;, 0), 5)]</span>
 </pre></div>
 </div>
@@ -2381,7 +1918,7 @@ the CIGAR, those bases are padded with a period (‘.’) symbol.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Marcus D. Sherman.
+        &copy; Copyright 2018, Marcus D. Sherman
 
     </p>
   </div>
@@ -2400,28 +1937,18 @@ the CIGAR, those bases are padded with a period (‘.’) symbol.</p>
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.8.4b5',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {

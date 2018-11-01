@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.bai &mdash; bamnostic 0.8.4b5 documentation</title>
+  <title>bamnostic.bai &mdash; bamnostic 1.0.1 documentation</title>
   
 
   
@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -57,7 +56,7 @@
             
             
               <div class="version">
-                0.8.4
+                1.0.1
               </div>
             
           
@@ -187,19 +186,14 @@
 <span class="kn">from</span> <span class="nn">array</span> <span class="k">import</span> <span class="n">array</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
-<span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span>
+<span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span>
 
-<span class="k">if</span> <span class="n">_PY_VERSION</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">):</span>
+<span class="k">if</span> <span class="n">_PY_VERSION</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="nb">open</span>
-
-<span class="k">if</span> <span class="ow">not</span> <span class="n">_PY_VERSION</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">):</span>
+<span class="k">else</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">lru_cache</span>
 
 <span class="kn">from</span> <span class="nn">bamnostic.utils</span> <span class="k">import</span> <span class="o">*</span>
-
-
-<span class="k">def</span> <span class="nf">format_warnings</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-    <span class="k">return</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
 
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span> <span class="o">=</span> <span class="n">format_warnings</span>
@@ -227,25 +221,23 @@
 <span class="n">RefIdx</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s1">&#39;RefIdx&#39;</span><span class="p">,</span> <span class="p">(</span><span class="s1">&#39;start_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;end_offset&#39;</span><span class="p">,</span> <span class="s1">&#39;n_bins&#39;</span><span class="p">))</span>
 
 
-<span class="k">class</span> <span class="nc">Bin</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bin_id&#39;</span><span class="p">,</span> <span class="s1">&#39;chunks&#39;</span><span class="p">]</span>
-
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">bin_id</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunks</span> <span class="o">=</span> <span class="n">args</span>
-
-
 <span class="k">class</span> <span class="nc">Chunk</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;voffset_beg&#39;</span><span class="p">,</span> <span class="s1">&#39;voffset_end&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">voffset_beg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">voffset_end</span> <span class="o">=</span> <span class="n">unpack_chunk</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
 
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;Chunk(voffset_beg=</span><span class="si">{}</span><span class="s1">, voffset_end=</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">voffset_beg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">voffset_end</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Ref</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">,</span> <span class="s1">&#39;intervals&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_id&#39;</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_id</span> <span class="o">=</span> <span class="n">args</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">Unmapped</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -258,20 +250,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">n_unmapped</span> <span class="o">=</span> <span class="n">numap</span>
 
 
-<div class="viewcode-block" id="reg2bin"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.reg2bin">[docs]</a><span class="k">def</span> <span class="nf">reg2bin</span><span class="p">(</span><span class="n">beg</span><span class="p">,</span> <span class="n">end</span><span class="p">):</span>
+<div class="viewcode-block" id="reg2bin"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.reg2bin">[docs]</a><span class="k">def</span> <span class="nf">reg2bin</span><span class="p">(</span><span class="n">rbeg</span><span class="p">,</span> <span class="n">rend</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Finds the largest superset bin of region. Numeric values taken from hts-specs</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        beg (int): inclusive beginning position of region</span>
-<span class="sd">        end (int): exclusive end position of region</span>
+<span class="sd">        rbeg (int): inclusive beginning position of region</span>
+<span class="sd">        rend (int): exclusive end position of region</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        (int): distinct bin ID for largest superset bin of region</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">left_shift</span> <span class="o">=</span> <span class="mi">15</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">27</span><span class="p">,</span> <span class="mi">3</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">beg</span> <span class="o">&gt;&gt;</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">:</span>
-            <span class="k">return</span> <span class="nb">int</span><span class="p">(((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">left_shift</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">7</span> <span class="o">+</span> <span class="p">(</span><span class="n">beg</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">rbeg</span> <span class="o">&gt;&gt;</span> <span class="n">i</span> <span class="o">==</span> <span class="p">(</span><span class="n">rend</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">int</span><span class="p">(((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">left_shift</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">7</span> <span class="o">+</span> <span class="p">(</span><span class="n">rbeg</span> <span class="o">&gt;&gt;</span> <span class="n">i</span><span class="p">))</span>
         <span class="n">left_shift</span> <span class="o">-=</span> <span class="mi">3</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="mi">0</span></div>
@@ -281,8 +273,8 @@
     <span class="sd">&quot;&quot;&quot;Generates bin ids which overlap the specified region.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        beg (int): inclusive beginning position of region</span>
-<span class="sd">        end (int): exclusive end position of region</span>
+<span class="sd">        rbeg (int): inclusive beginning position of region</span>
+<span class="sd">        rend (int): exclusive end position of region</span>
 
 <span class="sd">    Yields:</span>
 <span class="sd">        (int): bin IDs for overlapping bins of region</span>
@@ -357,7 +349,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_io</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">OSError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> not found. Please change check your path or index your BAM file&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_io</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
 
         <span class="c1"># Constant for linear index window size and unmapped bin id</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_LINEAR_INDEX_WINDOW</span> <span class="o">=</span> <span class="mi">16384</span>
@@ -477,7 +468,7 @@
 
     <span class="c1"># @functools.lru_cache(maxsize=256, typed=True)</span>
     <span class="c1"># @lru_cache(6)</span>
-<div class="viewcode-block" id="Bai.get_ref"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_ref">[docs]</a>    <span class="nd">@conditional_decorator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">func</span><span class="p">:</span> <span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)(</span><span class="n">func</span><span class="p">),</span> <span class="n">_PY_VERSION</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">))</span>
+<div class="viewcode-block" id="Bai.get_ref"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_ref">[docs]</a>    <span class="nd">@conditional_decorator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">func</span><span class="p">:</span> <span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)(</span><span class="n">func</span><span class="p">),</span> <span class="n">_PY_VERSION</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">get_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Interatively unpacks all the bins, linear intervals, and chunks for a given reference</span>
 
@@ -567,12 +558,12 @@
 
         <span class="k">for</span> <span class="n">binID</span> <span class="ow">in</span> <span class="n">reg2bins</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="p">):</span>
             <span class="k">try</span><span class="p">:</span>
-                <span class="n">bin_chunks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span><span class="o">.</span><span class="n">bins</span><span class="p">[</span><span class="n">binID</span><span class="p">]</span>
+                <span class="n">bin_chunks</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span><span class="p">[</span><span class="n">binID</span><span class="p">]</span>
             <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
                 <span class="k">continue</span>
 
             <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">bin_chunks</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">linear_offset</span> <span class="o">&lt;=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_end</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_beg</span> <span class="o">&lt;=</span> <span class="n">linear_offset</span> <span class="o">&lt;=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_end</span><span class="p">:</span>
                     <span class="k">continue</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_beg</span></div>
@@ -632,7 +623,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Marcus D. Sherman.
+        &copy; Copyright 2018, Marcus D. Sherman
 
     </p>
   </div>
@@ -651,28 +642,18 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.8.4b5',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {

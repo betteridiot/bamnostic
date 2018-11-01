@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.utils &mdash; bamnostic 0.8.4b5 documentation</title>
+  <title>bamnostic.utils &mdash; bamnostic 1.0.1 documentation</title>
   
 
   
@@ -24,8 +24,7 @@
 
   
 
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
@@ -57,7 +56,7 @@
             
             
               <div class="version">
-                0.8.4
+                1.0.1
               </div>
             
           
@@ -195,10 +194,15 @@
 
 <span class="c1"># Python 2 doesn&#39;t put abstract base classes in the same spot as Python 3</span>
 <span class="kn">import</span> <span class="nn">sys</span>
-<span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span>
+<span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span>
+<span class="n">_is_pypy</span> <span class="o">=</span> <span class="s1">&#39;__pypy__&#39;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">builtin_module_names</span>
 
-<span class="k">if</span> <span class="n">_PY_VERSION</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;2&#39;</span><span class="p">):</span>
+<span class="k">if</span> <span class="n">_is_pypy</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">__pypy__</span>
+
+<span class="k">if</span> <span class="n">_PY_VERSION</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">Sequence</span>
+    <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span> <span class="k">as</span> <span class="nb">dict</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="k">import</span> <span class="n">Sequence</span>
 
@@ -330,13 +334,14 @@
         <span class="n">code</span> <span class="o">=</span> <span class="n">flag_code</span><span class="o">.</span><span class="n">flag</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">code</span><span class="p">,</span> <span class="n">numbers</span><span class="o">.</span><span class="n">Integral</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Provided flag is not a valid entry&#39;</span><span class="p">)</span>
-    <span class="k">return</span> <span class="p">[(</span><span class="n">key</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">flags</span> <span class="k">if</span> <span class="n">key</span> <span class="o">&amp;</span> <span class="n">code</span><span class="p">]</span></div>
+    <span class="k">return</span> <span class="nb">sorted</span><span class="p">([(</span><span class="n">key</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">flags</span> <span class="k">if</span> <span class="n">key</span> <span class="o">&amp;</span> <span class="n">code</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="yes_no"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.yes_no">[docs]</a><span class="k">def</span> <span class="nf">yes_no</span><span class="p">():</span>
+<div class="viewcode-block" id="yes_no"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.yes_no">[docs]</a><span class="k">def</span> <span class="nf">yes_no</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Simple prompt parser&quot;&quot;&quot;</span>
-    <span class="n">yes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;ye&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
-    <span class="n">no</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">)</span>
+    <span class="n">yes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;ye&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">])</span>
+    <span class="n">no</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;no&#39;</span><span class="p">,</span> <span class="s1">&#39;n&#39;</span><span class="p">])</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
     <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
         <span class="n">answer</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s1">&#39;Would you like to continue? [y/n] &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">answer</span> <span class="ow">in</span> <span class="n">yes</span><span class="p">:</span>
@@ -394,7 +399,7 @@
 
         <span class="c1"># if the user gives an integer description of chromosome, convert to string</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">split_roi</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
-            <span class="n">split_roi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">split_roi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">split_roi</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">split_roi</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
         <span class="k">if</span> <span class="kc">None</span> <span class="ow">in</span> <span class="n">split_roi</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
             <span class="c1"># make sure the user wants to continue if they have used an open-ended region</span>
@@ -599,62 +604,106 @@
     <span class="sd">&quot;&quot;&quot;Simple least recently used (LRU) based dictionary that caches a given</span>
 <span class="sd">    number of items.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># Need to check for versioning to ensure move-to-end is available</span>
-    <span class="kn">import</span> <span class="nn">sys</span>
-    <span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version</span>
-
+    
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Initialize the dictionary based on collections.OrderedDict</span>
+        <span class="sd">&quot;&quot;&quot; Initialize the dictionary based on collections.OrderedDict. This</span>
+<span class="sd">        is built of the basic `OrderedDict`. The major difference in instantiation</span>
+<span class="sd">        is the usage of the `max_cache` argument. This sets the dictionary size </span>
+<span class="sd">        to be used.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            *args : basic positional arguments for dictionary creation</span>
+<span class="sd">            items (iterable): an iterable object of key/value pairs</span>
 <span class="sd">            max_cache (int): integer divisible by 2 to set max size of dictionary</span>
-<span class="sd">            **kwargs: basic keyword arguments for dictionary creation</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        
         <span class="k">try</span><span class="p">:</span>
-            <span class="n">max_cache</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_cache&#39;</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_cache&#39;</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
+            <span class="n">mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;fifo&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;fifo&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
-            <span class="n">max_cache</span> <span class="o">=</span> <span class="mi">128</span>
-        <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span> <span class="o">=</span> <span class="n">max_cache</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span> <span class="o">=</span> <span class="mi">128</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># FIFO</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LruDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            
+        <span class="k">if</span> <span class="n">_is_pypy</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move_to_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pypy_move_to_end</span>
+        <span class="k">elif</span> <span class="n">_PY_VERSION</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move_to_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_py27_move_to_end</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move_to_end</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="o">.</span><span class="n">move_to_end</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cull</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;LruDict(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="s1">&#39;LruDict(</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
-
-<div class="viewcode-block" id="LruDict.cull"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.LruDict.cull">[docs]</a>    <span class="k">def</span> <span class="nf">cull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Main driver function for removing LRU items from the dictionary. New</span>
-<span class="sd">        items are added to the bottom, and removed in a FIFO order.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span><span class="p">:</span>
-            <span class="n">overflow</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">overflow</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">overflow</span><span class="p">):</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">popitem</span><span class="p">(</span><span class="n">last</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+<div class="viewcode-block" id="LruDict.get"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.LruDict.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Basic getter that renews LRU status upon inspection</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            key (str): immutable dictionary key</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">value</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        
+        <span class="n">value</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">move_to_end</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">value</span></div>
+    
+    <span class="k">def</span> <span class="nf">_pypy_move_to_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="n">__pypy__</span><span class="o">.</span><span class="n">move_to_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span>
+        
+    <span class="k">def</span> <span class="nf">_py27_move_to_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Move an existing element to the end (or beginning if last is false).</span>
+<span class="sd">        Raise KeyError if the element does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_OrderedDict__map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+        <span class="n">link_prev</span><span class="p">,</span> <span class="n">link_next</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">link</span>
 
-            <span class="k">if</span> <span class="nb">float</span><span class="p">(</span><span class="n">_PY_VERSION</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span> <span class="o">&lt;=</span> <span class="mf">3.2</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
-                    <span class="n">moving</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-                    <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">moving</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">move_to_end</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
-            <span class="k">return</span> <span class="n">value</span>
-        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">pass</span>
-
+        <span class="n">soft_link</span> <span class="o">=</span> <span class="n">link_next</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">link_prev</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">link_next</span>
+        <span class="n">link_next</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">link_prev</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_OrderedDict__root</span>
+        <span class="k">if</span> <span class="n">last</span><span class="p">:</span>
+            <span class="n">last</span> <span class="o">=</span> <span class="n">root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">link</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">last</span>
+            <span class="n">link</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">root</span>
+            <span class="n">root</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">soft_link</span>
+            <span class="n">last</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">link</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">first</span> <span class="o">=</span> <span class="n">root</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">link</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">root</span>
+            <span class="n">link</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">first</span>
+            <span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">soft_link</span>
+            <span class="n">root</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">link</span> 
+    
+<div class="viewcode-block" id="LruDict.update"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.LruDict.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Same as a regular `dict.update`, however, since pypy&#39;s `dict.update`</span>
+<span class="sd">        doesn&#39;t go through `dict.__setitem__`, this is used to ensure it does</span>
+<span class="sd">        </span>
+<span class="sd">        Args:</span>
+<span class="sd">            others (iterable): a dictionary or iterable containing key/value pairs</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">others</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">others</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">others</span><span class="p">)</span> <span class="ow">in</span> <span class="p">[</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">]:</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">others</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Iteratable/dict must be in key, value pairs&#39;</span><span class="p">)</span></div>
+    
+<div class="viewcode-block" id="LruDict.cull"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.LruDict.cull">[docs]</a>    <span class="k">def</span> <span class="nf">cull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Main utility function for pruning the LruDict</span>
+<span class="sd">        </span>
+<span class="sd">        If the length of the LruDict is more than `max_cache`, it removes the LRU item</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span><span class="p">:</span>
+            <span class="n">overflow</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">overflow</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">overflow</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">popitem</span><span class="p">(</span><span class="n">last</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span></div>
+    
     <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Basic setter that adds new item to dictionary, and then performs cull()</span>
 <span class="sd">        to ensure max_cache has not been violated.</span>
@@ -663,6 +712,7 @@
 <span class="sd">            key (str): immutable dictionary key</span>
 <span class="sd">            value (any): any dictionary value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        
         <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cull</span><span class="p">()</span></div>
 
@@ -948,7 +998,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2018, Marcus D. Sherman.
+        &copy; Copyright 2018, Marcus D. Sherman
 
     </p>
   </div>
@@ -967,28 +1017,18 @@
 
   
 
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'0.8.4b5',
-            LANGUAGE:'en',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
 
   
 
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
+  <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
   <script type="text/javascript">
       jQuery(function () {

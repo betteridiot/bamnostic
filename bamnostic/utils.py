@@ -248,7 +248,7 @@ def _handle_split_region(split_roi, until_eof=False):
 
         # if the user gives an integer description of chromosome, convert to string
         if isinstance(split_roi[0], (str, int)):
-            split_roi[0] = str(split_roi[0]).lower()
+            split_roi[0] = str(split_roi[0])
 
         if None in split_roi[1:]:
             # make sure the user wants to continue if they have used an open-ended region
