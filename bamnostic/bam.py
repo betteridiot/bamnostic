@@ -591,14 +591,14 @@ class BamReader(bgzf.BgzfReader):
                 # check to see if the read is out of bounds of the region
                 # On the wrong contig -> not the right place
                 if next_read.reference_name != query.contig: 
-                    return None
+                    return
 
                 # Read is too far left -> keep going
                 elif (next_read.pos + len(next_read.seq)) < query.start:
                     continue
                 
                 # Originates outside, but overlaps
-                elif next_read.pos < query.start <= (next_read.pos + len(next_read)):
+                elif next_read.pos < query.start <= (next_read.pos + len(next_read.seq)):
                     yield next_read
 
                 # Read wholly inside region
@@ -607,7 +607,7 @@ class BamReader(bgzf.BgzfReader):
 
                 # Read too far right -> gotta stop
                 elif query.stop <= next_read.pos:
-                    return None
+                    return
 
                 # check for stop iteration
                 elif next_read:
@@ -615,7 +615,7 @@ class BamReader(bgzf.BgzfReader):
 
                 # Empty read
                 else:
-                    return None
+                    return
 
             # Read until the end of file
             else: 
