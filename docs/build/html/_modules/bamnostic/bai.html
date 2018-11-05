@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.bai &mdash; bamnostic 1.0.1 documentation</title>
+  <title>bamnostic.bai &mdash; bamnostic 1.0.2 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                1.0.1
+                1.0.2
               </div>
             
           
@@ -548,8 +548,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">current_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_ref</span><span class="p">(</span><span class="n">ref_id</span><span class="p">)</span>
 
         <span class="c1"># get linear index first</span>
-        <span class="c1"># how many windows do we need to go over</span>
-        <span class="c1"># because of floor div, we need to make it 0-based</span>
 
         <span class="n">reg_lin_idx</span> <span class="o">=</span> <span class="n">start</span> <span class="o">&gt;&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">BAM_LIDX_SHIFT</span>
 
@@ -563,9 +561,7 @@
                 <span class="k">continue</span>
 
             <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">bin_chunks</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_beg</span> <span class="o">&lt;=</span> <span class="n">linear_offset</span> <span class="o">&lt;=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_end</span><span class="p">:</span>
-                    <span class="k">continue</span>
-                <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_beg</span> <span class="o">&lt;=</span> <span class="n">linear_offset</span> <span class="o">&lt;=</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_end</span><span class="p">:</span>
                     <span class="k">return</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_beg</span></div>
 
 <div class="viewcode-block" id="Bai.seek"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">whence</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>

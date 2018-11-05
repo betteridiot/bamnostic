@@ -397,8 +397,6 @@ class Bai(object):
             self.current_ref = self.get_ref(ref_id)
 
         # get linear index first
-        # how many windows do we need to go over
-        # because of floor div, we need to make it 0-based
 
         reg_lin_idx = start >> self.BAM_LIDX_SHIFT
 
@@ -412,9 +410,7 @@ class Bai(object):
                 continue
 
             for chunk in bin_chunks:
-                if not chunk.voffset_beg <= linear_offset <= chunk.voffset_end:
-                    continue
-                else:
+                if chunk.voffset_beg <= linear_offset <= chunk.voffset_end:
                     return chunk.voffset_beg
 
     def seek(self, offset=None, whence=0):

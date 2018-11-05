@@ -381,8 +381,7 @@ class BgzfReader(object):
             assert start_offset == self._block_start_offset
         if within_block > len(self._buffer):
             if not (within_block == 0 and len(self._buffer) == 0):
-                raise ValueError("Within offset %i but block size only %i"
-                                 % (within_block, len(self._buffer)))
+                raise ValueError("Within offset {} but block size only {}".format(within_block, len(self._buffer)))
         self._within_block_offset = within_block
         return virtual_offset
 
@@ -431,7 +430,9 @@ class BgzfReader(object):
             # if there is still more to read
             elif size:
                 # pull rest of data from next block
-                return data + self.read(size)
+                data += self._buffer[self._within_block_offset: self._within_block_offset + size]
+                self._within_block_offset += size
+                return data
 
             else:
                 # Only needed the end of the last block

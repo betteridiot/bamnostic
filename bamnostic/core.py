@@ -191,10 +191,10 @@ class AlignedSegment(object):
             block_size = unpack_int32(bsize_buffer)[0]
         
         # Check for EOF: If the cursor is at the end of file, read() will return 
-        # an empty byte string. If 
+        # an empty byte string.
         except struct.error:
             if all([not bsize_buffer, not self._io._handle.read()]):
-                if not self._io._igore_truncation and not self._io._truncated:
+                if not self._io._ignore_truncation and not self._io._truncated:
                     raise StopIteration('End of file reached')
                 else:
                     raise StopIteration('Potential end of file reached')

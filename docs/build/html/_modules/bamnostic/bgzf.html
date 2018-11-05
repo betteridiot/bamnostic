@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.bgzf &mdash; bamnostic 1.0.1 documentation</title>
+  <title>bamnostic.bgzf &mdash; bamnostic 1.0.2 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                1.0.1
+                1.0.2
               </div>
             
           
@@ -532,8 +532,7 @@
             <span class="k">assert</span> <span class="n">start_offset</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span>
         <span class="k">if</span> <span class="n">within_block</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">):</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">within_block</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Within offset </span><span class="si">%i</span><span class="s2"> but block size only </span><span class="si">%i</span><span class="s2">&quot;</span>
-                                 <span class="o">%</span> <span class="p">(</span><span class="n">within_block</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)))</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Within offset </span><span class="si">{}</span><span class="s2"> but block size only </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">within_block</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)))</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">=</span> <span class="n">within_block</span>
         <span class="k">return</span> <span class="n">virtual_offset</span></div>
 
@@ -582,7 +581,9 @@
             <span class="c1"># if there is still more to read</span>
             <span class="k">elif</span> <span class="n">size</span><span class="p">:</span>
                 <span class="c1"># pull rest of data from next block</span>
-                <span class="k">return</span> <span class="n">data</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
+                <span class="n">data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">+</span> <span class="n">size</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">+=</span> <span class="n">size</span>
+                <span class="k">return</span> <span class="n">data</span>
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Only needed the end of the last block</span>

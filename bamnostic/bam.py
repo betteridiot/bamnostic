@@ -238,11 +238,11 @@ class BamReader(bgzf.BgzfReader):
                     'duplicate_filehandle': locals()['duplicate_filehandle']}
         super(BamReader, self).__init__(**super_args)
         
-        self._igore_truncation = ignore_truncation
+        self._ignore_truncation = ignore_truncation
         self._truncated = self._check_truncation()
 
         # Check BAM file integrity
-        if not self._igore_truncation:
+        if not self._ignore_truncation:
             if self._truncated:
                 raise Exception('BAM file may be truncated. Turn off ignore_truncation if you wish to continue')
 
@@ -486,7 +486,7 @@ class BamReader(bgzf.BgzfReader):
     def fetch(self, contig=None, start=None, stop=None, region=None,
               tid=None, until_eof=False, multiple_iterators=False,
               reference=None, end=None):
-        r"""Creates a generator that returns all reads within the given region
+        r"""Creates a generator that returns all reads within the given region. (inclusive, exclusive)
 
         Args:
             contig (str): name of reference/contig
@@ -539,6 +539,11 @@ class BamReader(bgzf.BgzfReader):
             AssertionError: Malformed region: start should be <= stop, you entered 100, 10
 
         """
+        # Inclusive, exclusive. This means if start and stop are
+        # the same, then the user is *essentially* looking at nothing
+        # e.g. a = "abc"; print(a[1:1]) -> ''
+        if start == stop:
+            return
 
         if not self._random_access:
             raise ValueError('Random access not available due to lack of index file')
@@ -580,27 +585,40 @@ class BamReader(bgzf.BgzfReader):
         # move to that virtual offset...should load the block into the cache
         # if it hasn't been visited before
         self.seek(first_read_block)
-        boundary_check = True
-        while boundary_check:
-            next_read = next(self)
+
+        for next_read in self:
             if not until_eof:
                 # check to see if the read is out of bounds of the region
-                if next_read.reference_name != query.contig:
-                    boundary_check = False
-                elif query.start < query.stop <= next_read.pos:
-                    boundary_check = False
-                elif next_read.pos <= query.start <= next_read.pos + len(next_read.seq):
+                # On the wrong contig -> not the right place
+                if next_read.reference_name != query.contig: 
+                    return None
+
+                # Read is too far left -> keep going
+                elif (next_read.pos + len(next_read.seq)) < query.start:
+                    continue
+                
+                # Originates outside, but overlaps
+                elif next_read.pos < query.start <= (next_read.pos + len(next_read)):
                     yield next_read
-                elif next_read.pos < query.start:
-                    continue
-                elif not query.start <= next_read.pos < query.stop:
-                    continue
+
+                # Read wholly inside region
+                elif query.start <= next_read.pos < query.stop:
+                    yield next_read
+
+                # Read too far right -> gotta stop
+                elif query.stop <= next_read.pos:
+                    return None
+
                 # check for stop iteration
                 elif next_read:
                     yield next_read
+
+                # Empty read
                 else:
-                    return
-            else:
+                    return None
+
+            # Read until the end of file
+            else: 
                 try:
                     yield next_read
                 except:
@@ -1030,7 +1048,7 @@ class BamReader(bgzf.BgzfReader):
 
         read = bamnostic.AlignedSegment(self)
         if not read:
-            raise StopIteration
+            return
         return read
 
     def seekable(self):

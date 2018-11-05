@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.core &mdash; bamnostic 1.0.1 documentation</title>
+  <title>bamnostic.core &mdash; bamnostic 1.0.2 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                1.0.1
+                1.0.2
               </div>
             
           
@@ -342,10 +342,10 @@
             <span class="n">block_size</span> <span class="o">=</span> <span class="n">unpack_int32</span><span class="p">(</span><span class="n">bsize_buffer</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
         
         <span class="c1"># Check for EOF: If the cursor is at the end of file, read() will return </span>
-        <span class="c1"># an empty byte string. If </span>
+        <span class="c1"># an empty byte string.</span>
         <span class="k">except</span> <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="ow">not</span> <span class="n">bsize_buffer</span><span class="p">,</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">read</span><span class="p">()]):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">_igore_truncation</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">_truncated</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">_ignore_truncation</span> <span class="ow">and</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">_truncated</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s1">&#39;End of file reached&#39;</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">StopIteration</span><span class="p">(</span><span class="s1">&#39;Potential end of file reached&#39;</span><span class="p">)</span>
