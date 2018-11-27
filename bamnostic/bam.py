@@ -467,7 +467,7 @@ class BamReader(bgzf.BgzfReader):
         if eof == bgzf._bgzf_eof:
             return False
         else:
-            warnings.BytesWarning('No EOF character found. File may be truncated')
+            warnings.warn('No EOF character found. File may be truncated', BytesWarning)
             return True
 
     def pileup(self):

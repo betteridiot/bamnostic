@@ -29,7 +29,7 @@ def readme():
 
 setup(
     name='bamnostic',
-    version='1.0.3',
+    version='1.0.4',
     description='Pure Python, OS-agnostic Binary Alignment Map (BAM) random access and parsing tool',
     long_description=readme(),
     url='https://github.com/betteridiot/bamnostic/',
@@ -43,7 +43,7 @@ setup(
     package_dir={'bamnostic': './bamnostic', 'tests': './tests'},
     package_data={'bamnostic': ['data/*', 'LICENSE', 'CONTRIBUTING.md', 'CODE_OF_CONDUCT.md']},
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',
         'Intended Audience :: End Users/Desktop',
         'Intended Audience :: Science/Research',

@@ -20,7 +20,7 @@ Loading your BAM file
 Bamnostic comes with an *example BAM* (and respective BAI) file just to
 play around with the output. Note, however, that the example BAM file
 does not contain many reference contigs. Therefore, random access is
-limited. This example file is made availble through
+limited. This example file is made available through
 ``bamnostic.example_bam``, which is a just a string path to the BAM file
 within the package.
 
