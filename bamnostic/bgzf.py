@@ -429,7 +429,7 @@ class BgzfReader(object):
                 else:
                     # if read data overflows to next block
                     # pull in rest of data in current block
-                    sub_data += self._buffer[self._within_block_offset:]
+                    sub_data = self._buffer[self._within_block_offset:]
                     data += sub_data
                     # decrement size so that we only pull the rest of the data
                     # from next block
