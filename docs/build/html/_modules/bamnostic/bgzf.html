@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.bgzf &mdash; bamnostic 1.0.5 documentation</title>
+  <title>bamnostic.bgzf &mdash; bamnostic 1.0.6 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                1.0.5
+                1.0.6
               </div>
             
           
@@ -580,7 +580,7 @@
                 <span class="k">else</span><span class="p">:</span>
                     <span class="c1"># if read data overflows to next block</span>
                     <span class="c1"># pull in rest of data in current block</span>
-                    <span class="n">sub_data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span><span class="p">:]</span>
+                    <span class="n">sub_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span><span class="p">:]</span>
                     <span class="n">data</span> <span class="o">+=</span> <span class="n">sub_data</span>
                     <span class="c1"># decrement size so that we only pull the rest of the data</span>
                     <span class="c1"># from next block</span>
