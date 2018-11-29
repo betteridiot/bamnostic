@@ -407,32 +407,37 @@ class BgzfReader(object):
                 return ""
             else:
                 return b""
-        elif self._within_block_offset + size <= len(self._buffer):
-            # This may leave us right at the end of a block
-            # (lazy loading, don't load the next block unless we have too)
-            data = self._buffer[self._within_block_offset:self._within_block_offset + size]
-            self._within_block_offset += size
-            assert data  # Must be at least 1 byte
-            return data
+
+        # If size is a real positive integer
         else:
-            # if read data overflows to next block
-            # pull in rest of data in current block
-            data = self._buffer[self._within_block_offset:]
+            if self._text:
+                data = ""
+            else:
+                data = b""
 
-            # decrement size so that we only pull the rest of the data
-            # from next block
-            size -= len(data)
-            self._load_block()  # will reset offsets
+            # Avoids recursion, but will still effectively get all the data
+            # for both long and short reads. It doesn't matter if it overflows
+            # to multiple blocks, or fully contained within one.
+            while size:
+                if self._within_block_offset + size <= len(self._buffer):
+                    # This may leave us right at the end of a block
+                    # (lazy loading, don't load the next block unless we have too)
+                    data += self._buffer[self._within_block_offset:self._within_block_offset + size]
+                    self._within_block_offset += size
+                    assert data  # Must be at least 1 byte
+                    return data
+                else:
+                    # if read data overflows to next block
+                    # pull in rest of data in current block
+                    sub_data += self._buffer[self._within_block_offset:]
+                    data += sub_data
+                    # decrement size so that we only pull the rest of the data
+                    # from next block
+                    size -= len(sub_data)
+                    self._load_block()  # will reset offsets
 
-            if not self._buffer:
-                return data  # EOF
-
-            # if there is still more to read
-            elif size:
-                # pull rest of data from next block
-                data += self._buffer[self._within_block_offset: self._within_block_offset + size]
-                self._within_block_offset += size
-                return data
+                    if not self._buffer:
+                        return data  # EOF
 
             else:
                 # Only needed the end of the last block

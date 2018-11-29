@@ -388,7 +388,7 @@ def unpack(fmt, _io):
     try:
         # if it is byte object
         out = struct.unpack(fmt, _io)
-    except:
+    except TypeError:
         # if it is a file object
         out = struct.unpack(fmt, _io.read(size))
     if len(out) > 1:

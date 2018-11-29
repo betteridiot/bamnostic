@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.utils &mdash; bamnostic 1.0.4 documentation</title>
+  <title>bamnostic.utils &mdash; bamnostic 1.0.5 documentation</title>
   
 
   
@@ -56,7 +56,7 @@
             
             
               <div class="version">
-                1.0.4
+                1.0.5
               </div>
             
           
@@ -539,7 +539,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># if it is byte object</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">_io</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
         <span class="c1"># if it is a file object</span>
         <span class="n">out</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">size</span><span class="p">))</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
