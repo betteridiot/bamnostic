@@ -24,9 +24,9 @@ copyright = '2018, Marcus D. Sherman'
 author = 'Marcus D. Sherman'
 
 # The short X.Y version
-version = '1.0.7'
+version = '1.0.8'
 # The full version, including alpha/beta/rc tags
-release = '1.0.7'
+release = '1.0.8'
 
 
 # -- General configuration ---------------------------------------------------
