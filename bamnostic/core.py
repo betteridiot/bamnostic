@@ -273,7 +273,11 @@ class AlignedSegment(object):
         self.read_name = unpack('<{}s'.format(self._l_read_name), self._range_popper(self._l_read_name)).decode()[:-1]
 
         self.tid = self.reference_id = self.refID
-        self.reference_name = self._io._header.refs[self.refID][0]
+        try:
+            self.reference_name = self._io._header.refs[self.refID][0]
+        except KeyError:
+            if self.refID == -1 and len(self._io._header.refs) == 1:
+                self.reference_name = self._io._header.refs[0][0]
 
     def _cigar_builder(self):
         """Just unpacks the cigar data to be processed later. Ensures the cursor
