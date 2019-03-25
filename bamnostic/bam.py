@@ -1008,10 +1008,10 @@ class BamReader(bgzf.BgzfReader):
 
         Example:
             >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')
-            >>> bam.head(n=5)[0] # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+            >>> bam.head(n=5, multiple_iterators = False)[0] # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
             EAS56_57:6:190:289:82	...	MF:C:192
 
-            >>> bam.head(n = 5, multiple_iterators = True)[1] # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
+            >>> bam.head(n = 5)[1] # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE
             EAS56_57:6:190:289:82	...	UQ:C:0
 
         """
@@ -1020,8 +1020,8 @@ class BamReader(bgzf.BgzfReader):
         else:
             curr_pos = self.tell()
             # BAMheader uses byte specific positions (and not BGZF virtual offsets)
-            self._handle.seek(self._header._BAMheader_end)
-            self._load_block()
+#             self._handle.seek(self._header._BAMheader_end)
+            self._load_block(self._header._BAMheader_end)
             head_iter = self
 
         head_reads = [next(head_iter) for read in range(n)]

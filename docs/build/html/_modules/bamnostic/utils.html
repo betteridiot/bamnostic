@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.utils &mdash; bamnostic 1.0.8 documentation</title>
+  <title>bamnostic.utils &mdash; bamnostic 1.0.9 documentation</title>
   
 
   
@@ -59,7 +59,7 @@
             
             
               <div class="version">
-                1.0.8
+                1.0.9
               </div>
             
           
@@ -194,6 +194,7 @@
 
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">OrderedDict</span><span class="p">,</span> <span class="n">namedtuple</span>
+<span class="kn">import</span> <span class="nn">collections</span>
 
 <span class="c1"># Python 2 doesn&#39;t put abstract base classes in the same spot as Python 3</span>
 <span class="kn">import</span> <span class="nn">sys</span>
@@ -213,7 +214,6 @@
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">re</span>
 
-
 <div class="viewcode-block" id="format_warnings"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.format_warnings">[docs]</a><span class="k">def</span> <span class="nf">format_warnings</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Sets STDOUT warnings</span>
 
@@ -228,13 +228,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span></div>
 
-
 <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span> <span class="o">=</span> <span class="n">format_warnings</span>
 
 <span class="c1"># pre-compiled structures to reduce iterative unpacking</span>
 <span class="n">unpack_int32</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;i&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
 <span class="n">unpack_int32L</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;l&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
-
 
 <span class="c1"># Helper class for performant named indexing of region of interests</span>
 <div class="viewcode-block" id="Roi"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.Roi">[docs]</a><span class="k">class</span> <span class="nc">Roi</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
@@ -279,7 +277,6 @@
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span></div>
 
-
 <div class="viewcode-block" id="flag_decode"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.flag_decode">[docs]</a><span class="k">def</span> <span class="nf">flag_decode</span><span class="p">(</span><span class="n">flag_code</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Simple read alignment flag decoder</span>
 
@@ -303,7 +300,6 @@
 
 <span class="sd">        &gt;&gt;&gt; flag_decode(516)</span>
 <span class="sd">        [(4, &#39;read unmapped&#39;), (512, &#39;QC fail&#39;)]</span>
-
 
 <span class="sd">    ====  =====  ==================================================================</span>
 <span class="sd">    Int   Bit    Description</span>
@@ -339,7 +335,6 @@
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Provided flag is not a valid entry&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="nb">sorted</span><span class="p">([(</span><span class="n">key</span><span class="p">,</span> <span class="n">flags</span><span class="p">[</span><span class="n">key</span><span class="p">])</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">flags</span> <span class="k">if</span> <span class="n">key</span> <span class="o">&amp;</span> <span class="n">code</span><span class="p">])</span></div>
 
-
 <div class="viewcode-block" id="yes_no"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.yes_no">[docs]</a><span class="k">def</span> <span class="nf">yes_no</span><span class="p">(</span><span class="n">message</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Simple prompt parser&quot;&quot;&quot;</span>
     <span class="n">yes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s1">&#39;yes&#39;</span><span class="p">,</span> <span class="s1">&#39;ye&#39;</span><span class="p">,</span> <span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">])</span>
@@ -353,7 +348,6 @@
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Please answer &quot;Yes&quot; or &quot;No&quot;&#39;</span><span class="p">)</span></div>
-
 
 <span class="k">def</span> <span class="nf">filter_read</span><span class="p">(</span><span class="n">read</span><span class="p">,</span> <span class="n">read_callback</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">):</span>
 
@@ -371,7 +365,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s1">&#39;read_callback should be &quot;all&quot;, &quot;nofilter&quot;, or a custom function that returns a boolean&#39;</span><span class="p">)</span>
 
-
 <span class="k">def</span> <span class="nf">_parse_sam_region</span><span class="p">(</span><span class="n">region</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Splits and casts SAM-formatted regions&quot;&quot;&quot;</span>
     <span class="n">sam_region</span> <span class="o">=</span> <span class="s1">&#39;:&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">region</span><span class="o">.</span><span class="n">split</span><span class="p">())</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">,</span> <span class="s1">&#39;:&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">)</span>
@@ -380,7 +373,6 @@
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">arg</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">sam_region</span><span class="p">[</span><span class="mi">1</span><span class="p">:]):</span>
         <span class="n">sam_region</span><span class="p">[</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">sam_region</span>
-
 
 <span class="k">def</span> <span class="nf">_handle_split_region</span><span class="p">(</span><span class="n">split_roi</span><span class="p">,</span> <span class="n">until_eof</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Checks format against `until_eof` and creates the Roi object</span>
@@ -411,7 +403,6 @@
         <span class="k">return</span> <span class="n">Roi</span><span class="p">(</span><span class="o">*</span><span class="n">split_roi</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;improper region format&#39;</span><span class="p">)</span>
-
 
 <div class="viewcode-block" id="parse_region"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.parse_region">[docs]</a><span class="k">def</span> <span class="nf">parse_region</span><span class="p">(</span><span class="n">contig</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">region</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">tid</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">reference</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">until_eof</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
@@ -520,7 +511,6 @@
 
     <span class="k">return</span> <span class="n">query</span></div>
 
-
 <div class="viewcode-block" id="unpack"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.unpack">[docs]</a><span class="k">def</span> <span class="nf">unpack</span><span class="p">(</span><span class="n">fmt</span><span class="p">,</span> <span class="n">_io</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Utility function for unpacking binary data from file object or byte</span>
 <span class="sd">    stream.</span>
@@ -549,7 +539,6 @@
         <span class="k">return</span> <span class="n">out</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
-
 
 <div class="viewcode-block" id="make_virtual_offset"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.make_virtual_offset">[docs]</a><span class="k">def</span> <span class="nf">make_virtual_offset</span><span class="p">(</span><span class="n">block_start_offset</span><span class="p">,</span> <span class="n">within_block_offset</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Compute a BGZF virtual offset from block start and within block offsets.</span>
@@ -587,7 +576,6 @@
                          <span class="n">block_start_offset</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">block_start_offset</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">|</span> <span class="n">within_block_offset</span></div>
 
-
 <div class="viewcode-block" id="split_virtual_offset"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.split_virtual_offset">[docs]</a><span class="k">def</span> <span class="nf">split_virtual_offset</span><span class="p">(</span><span class="n">virtual_offset</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Divides a 64-bit BGZF virtual offset into block start &amp; within block offsets.</span>
 
@@ -607,7 +595,7 @@
     <span class="sd">&quot;&quot;&quot;Simple least recently used (LRU) based dictionary that caches a given</span>
 <span class="sd">    number of items.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    
+
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Initialize the dictionary based on collections.OrderedDict. This</span>
 <span class="sd">        is built of the basic `OrderedDict`. The major difference in instantiation</span>
@@ -618,7 +606,7 @@
 <span class="sd">            items (iterable): an iterable object of key/value pairs</span>
 <span class="sd">            max_cache (int): integer divisible by 2 to set max size of dictionary</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;max_cache&#39;</span><span class="p">,</span> <span class="mi">128</span><span class="p">)</span>
             <span class="n">mode</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;fifo&#39;</span><span class="p">)</span>
@@ -630,13 +618,14 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span> <span class="o">=</span> <span class="mi">128</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">mode</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># FIFO</span>
         <span class="nb">super</span><span class="p">(</span><span class="n">LruDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
-            
+        <span class="bp">self</span><span class="o">.</span><span class="n">__map</span> <span class="o">=</span> <span class="p">{}</span>
+
         <span class="k">if</span> <span class="n">_is_pypy</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">move_to_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_pypy_move_to_end</span>
         <span class="k">elif</span> <span class="n">_PY_VERSION</span><span class="p">[:</span><span class="mi">2</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">2</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">move_to_end</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_py27_move_to_end</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">move_to_end</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="o">.</span><span class="n">move_to_end</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">move_to_end</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">LruDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">move_to_end</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cull</span><span class="p">()</span>
 
 <div class="viewcode-block" id="LruDict.get"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.LruDict.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
@@ -645,19 +634,19 @@
 <span class="sd">        Args:</span>
 <span class="sd">            key (str): immutable dictionary key</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="n">value</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">move_to_end</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">value</span></div>
-    
+
     <span class="k">def</span> <span class="nf">_pypy_move_to_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="n">__pypy__</span><span class="o">.</span><span class="n">move_to_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">last</span><span class="p">)</span>
-        
+
     <span class="k">def</span> <span class="nf">_py27_move_to_end</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Move an existing element to the end (or beginning if last is false).</span>
 <span class="sd">        Raise KeyError if the element does not exist.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="n">link</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_OrderedDict__map</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
         <span class="n">link_prev</span><span class="p">,</span> <span class="n">link_next</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">link</span>
 
@@ -677,15 +666,15 @@
             <span class="n">link</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">first</span>
             <span class="n">first</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">soft_link</span>
             <span class="n">root</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">link</span> 
-    
+
 <div class="viewcode-block" id="LruDict.update"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.LruDict.update">[docs]</a>    <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">others</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Same as a regular `dict.update`, however, since pypy&#39;s `dict.update`</span>
 <span class="sd">        doesn&#39;t go through `dict.__setitem__`, this is used to ensure it does</span>
-<span class="sd">        </span>
+
 <span class="sd">        Args:</span>
 <span class="sd">            others (iterable): a dictionary or iterable containing key/value pairs</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">others</span><span class="p">)</span> <span class="o">==</span> <span class="nb">dict</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">k</span><span class="p">,</span><span class="n">v</span> <span class="ow">in</span> <span class="n">others</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
@@ -694,19 +683,19 @@
                 <span class="bp">self</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Iteratable/dict must be in key, value pairs&#39;</span><span class="p">)</span></div>
-    
+
 <div class="viewcode-block" id="LruDict.cull"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.LruDict.cull">[docs]</a>    <span class="k">def</span> <span class="nf">cull</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Main utility function for pruning the LruDict</span>
-<span class="sd">        </span>
+
 <span class="sd">        If the length of the LruDict is more than `max_cache`, it removes the LRU item</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span><span class="p">:</span>
             <span class="n">overflow</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">max_cache</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">overflow</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">overflow</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">popitem</span><span class="p">(</span><span class="n">last</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">mode</span><span class="p">)</span></div>
-    
+
     <span class="k">def</span> <span class="nf">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Basic setter that adds new item to dictionary, and then performs cull()</span>
 <span class="sd">        to ensure max_cache has not been violated.</span>
@@ -715,10 +704,9 @@
 <span class="sd">            key (str): immutable dictionary key</span>
 <span class="sd">            value (any): any dictionary value</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        
+
         <span class="n">OrderedDict</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">cull</span><span class="p">()</span></div>
-
 
 <span class="c1"># The BAM format uses byte encoding to compress alignment data. One such</span>
 <span class="c1"># compression is how operations are stored: they are stored and an</span>
@@ -734,7 +722,6 @@
               <span class="s1">&#39;=&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;BAM_CEQUAL&#39;</span><span class="p">,</span> <span class="mi">7</span><span class="p">),</span>
               <span class="s1">&#39;X&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;BAM_CDIFF&#39;</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span>
               <span class="s1">&#39;B&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s1">&#39;BAM_CBACK&#39;</span><span class="p">,</span> <span class="mi">9</span><span class="p">)}</span>
-
 
 <div class="viewcode-block" id="parse_cigar"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.parse_cigar">[docs]</a><span class="k">def</span> <span class="nf">parse_cigar</span><span class="p">(</span><span class="n">cigar_str</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parses a CIGAR string and turns it into a list of tuples</span>
@@ -763,7 +750,6 @@
         <span class="n">cigar_array</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">op</span><span class="p">,</span> <span class="n">n_ops</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">cigar_array</span></div>
 
-
 <div class="viewcode-block" id="check_cigar_arg"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.check_cigar_arg">[docs]</a><span class="k">def</span> <span class="nf">check_cigar_arg</span><span class="p">(</span><span class="n">cigar</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot; Checks to make sure CIGAR arugment is valid.</span>
 
@@ -783,7 +769,6 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;CIGAR must be string or list of tuples of cigar operations (by ID) and number of operations&#39;</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cigar</span></div>
-
 
 <div class="viewcode-block" id="cigar_changes"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.cigar_changes">[docs]</a><span class="k">def</span> <span class="nf">cigar_changes</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">cigar</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Recreates the reference sequence to the extent that the CIGAR string can</span>
@@ -829,7 +814,6 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid CIGAR string: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">op</span><span class="p">))</span>
     <span class="k">return</span> <span class="n">cigar_formatted_ref</span></div>
 
-
 <div class="viewcode-block" id="md_changes"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.md_changes">[docs]</a><span class="k">def</span> <span class="nf">md_changes</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">md_tag</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Recreates the reference sequence of a given alignment to the extent that the</span>
 <span class="sd">    MD tag can represent.</span>
@@ -874,7 +858,6 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="k">pass</span>
     <span class="k">return</span> <span class="n">ref_seq</span></div>
-
 
 <div class="viewcode-block" id="ref_gen"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.ref_gen">[docs]</a><span class="k">def</span> <span class="nf">ref_gen</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">cigar_string</span><span class="p">,</span> <span class="n">md_tag</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Recreates the reference sequence associated with the given segment.</span>
@@ -923,7 +906,6 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">md_changes</span><span class="p">(</span><span class="n">cigar_changes</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">cigar_string</span><span class="p">),</span> <span class="n">md_tag</span><span class="p">)</span></div>
-
 
 <div class="viewcode-block" id="cigar_alignment"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.cigar_alignment">[docs]</a><span class="k">def</span> <span class="nf">cigar_alignment</span><span class="p">(</span><span class="n">seq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cigar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qualities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_qual_thresh</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Use the CIGAR to filter out all unaligned data bases</span>

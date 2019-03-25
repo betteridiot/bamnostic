@@ -40,6 +40,7 @@ SOFTWARE.
 
 import struct
 from collections import OrderedDict, namedtuple
+import collections
 
 # Python 2 doesn't put abstract base classes in the same spot as Python 3
 import sys
@@ -59,7 +60,6 @@ import numbers
 import warnings
 import re
 
-
 def format_warnings(message, category, filename, lineno, file=None, line=None):
     r"""Sets STDOUT warnings
 
@@ -74,13 +74,11 @@ def format_warnings(message, category, filename, lineno, file=None, line=None):
     """
     return ' {}:{}: {}:{}'.format(filename, lineno, category.__name__, message)
 
-
 warnings.formatwarning = format_warnings
 
 # pre-compiled structures to reduce iterative unpacking
 unpack_int32 = struct.Struct('<i').unpack
 unpack_int32L = struct.Struct('<l').unpack
-
 
 # Helper class for performant named indexing of region of interests
 class Roi(object):
@@ -125,7 +123,6 @@ class Roi(object):
     def __str__(self):
         return self.__repr__()
 
-
 def flag_decode(flag_code):
     r"""Simple read alignment flag decoder
 
@@ -149,7 +146,6 @@ def flag_decode(flag_code):
 
         >>> flag_decode(516)
         [(4, 'read unmapped'), (512, 'QC fail')]
-
 
     ====  =====  ==================================================================
     Int   Bit    Description
@@ -185,7 +181,6 @@ def flag_decode(flag_code):
         raise ValueError('Provided flag is not a valid entry')
     return sorted([(key, flags[key]) for key in flags if key & code])
 
-
 def yes_no(message):
     """ Simple prompt parser"""
     yes = set(['yes', 'ye', 'y', ''])
@@ -199,7 +194,6 @@ def yes_no(message):
             return False
         else:
             print('Please answer "Yes" or "No"')
-
 
 def filter_read(read, read_callback='all'):
 
@@ -217,7 +211,6 @@ def filter_read(read, read_callback='all'):
     else:
         raise RuntimeError('read_callback should be "all", "nofilter", or a custom function that returns a boolean')
 
-
 def _parse_sam_region(region):
     """ Splits and casts SAM-formatted regions"""
     sam_region = ':'.join(region.split()).replace('-', ':').split(':')
@@ -226,7 +219,6 @@ def _parse_sam_region(region):
     for i, arg in enumerate(sam_region[1:]):
         sam_region[i + 1] = int(arg)
     return sam_region
-
 
 def _handle_split_region(split_roi, until_eof=False):
     """ Checks format against `until_eof` and creates the Roi object
@@ -257,7 +249,6 @@ def _handle_split_region(split_roi, until_eof=False):
         return Roi(*split_roi)
     else:
         raise ValueError('improper region format')
-
 
 def parse_region(contig=None, start=None, stop=None, region=None,
                  tid=None, reference=None, end=None, until_eof=False):
@@ -366,7 +357,6 @@ def parse_region(contig=None, start=None, stop=None, region=None,
 
     return query
 
-
 def unpack(fmt, _io):
     """Utility function for unpacking binary data from file object or byte
     stream.
@@ -395,7 +385,6 @@ def unpack(fmt, _io):
         return out
     else:
         return out[0]
-
 
 def make_virtual_offset(block_start_offset, within_block_offset):
     """Compute a BGZF virtual offset from block start and within block offsets.
@@ -433,7 +422,6 @@ def make_virtual_offset(block_start_offset, within_block_offset):
                          block_start_offset)
     return (block_start_offset << 16) | within_block_offset
 
-
 def split_virtual_offset(virtual_offset):
     """Divides a 64-bit BGZF virtual offset into block start & within block offsets.
 
@@ -453,7 +441,7 @@ class LruDict(OrderedDict):
     """Simple least recently used (LRU) based dictionary that caches a given
     number of items.
     """
-    
+
     def __init__(self, *args, **kwargs):
         """ Initialize the dictionary based on collections.OrderedDict. This
         is built of the basic `OrderedDict`. The major difference in instantiation
@@ -464,7 +452,7 @@ class LruDict(OrderedDict):
             items (iterable): an iterable object of key/value pairs
             max_cache (int): integer divisible by 2 to set max size of dictionary
         """
-        
+
         try:
             self.max_cache = kwargs.pop('max_cache', 128)
             mode = kwargs.pop('mode', 'fifo')
@@ -476,13 +464,14 @@ class LruDict(OrderedDict):
             self.max_cache = 128
             self.mode = False # FIFO
         super(LruDict, self).__init__(*args, **kwargs)
-            
+        self.__map = {}
+
         if _is_pypy:
             self.move_to_end = self._pypy_move_to_end
         elif _PY_VERSION[:2] <= (3,2):
             self.move_to_end = self._py27_move_to_end
         else:
-            self.move_to_end = OrderedDict.move_to_end
+            self.move_to_end = super(LruDict, self).move_to_end
         self.cull()
 
     def get(self, key):
@@ -491,19 +480,19 @@ class LruDict(OrderedDict):
         Args:
             key (str): immutable dictionary key
         """
-        
+
         value = OrderedDict.__getitem__(self, key)
         self.move_to_end(key)
         return value
-    
+
     def _pypy_move_to_end(self, key, last=True):
         __pypy__.move_to_end(self, key, last)
-        
+
     def _py27_move_to_end(self, key, last=True):
         """Move an existing element to the end (or beginning if last is false).
         Raise KeyError if the element does not exist.
         """
-        
+
         link = self._OrderedDict__map[key]
         link_prev, link_next, _ = link
 
@@ -523,15 +512,15 @@ class LruDict(OrderedDict):
             link[1] = first
             first[0] = soft_link
             root[1] = link 
-    
+
     def update(self, others):
         """ Same as a regular `dict.update`, however, since pypy's `dict.update`
         doesn't go through `dict.__setitem__`, this is used to ensure it does
-        
+
         Args:
             others (iterable): a dictionary or iterable containing key/value pairs
         """
-        
+
         if type(others) == dict:
             for k,v in others.items():
                 self.__setitem__(k,v)
@@ -540,19 +529,19 @@ class LruDict(OrderedDict):
                 self.__setitem__(k,v)
         else:
             raise ValueError('Iteratable/dict must be in key, value pairs')
-    
+
     def cull(self):
         """ Main utility function for pruning the LruDict
-        
+
         If the length of the LruDict is more than `max_cache`, it removes the LRU item
         """
-        
+
         if self.max_cache:
             overflow = max(0, len(self) - self.max_cache)
             if overflow > 0:
                 for _ in range(overflow):
                     self.popitem(last=self.mode)
-    
+
     def __setitem__(self, key, value):
         """Basic setter that adds new item to dictionary, and then performs cull()
         to ensure max_cache has not been violated.
@@ -561,10 +550,9 @@ class LruDict(OrderedDict):
             key (str): immutable dictionary key
             value (any): any dictionary value
         """
-        
+
         OrderedDict.__setitem__(self, key, value)
         self.cull()
-
 
 # The BAM format uses byte encoding to compress alignment data. One such
 # compression is how operations are stored: they are stored and an
@@ -580,7 +568,6 @@ _CIGAR_OPS = {'M': ('BAM_CMATCH', 0),
               '=': ('BAM_CEQUAL', 7),
               'X': ('BAM_CDIFF', 8),
               'B': ('BAM_CBACK', 9)}
-
 
 def parse_cigar(cigar_str):
     """Parses a CIGAR string and turns it into a list of tuples
@@ -609,7 +596,6 @@ def parse_cigar(cigar_str):
         cigar_array.append((op, n_ops))
     return cigar_array
 
-
 def check_cigar_arg(cigar):
     """ Checks to make sure CIGAR arugment is valid.
 
@@ -629,7 +615,6 @@ def check_cigar_arg(cigar):
     else:
         raise ValueError('CIGAR must be string or list of tuples of cigar operations (by ID) and number of operations')
     return cigar
-
 
 def cigar_changes(seq, cigar):
     """Recreates the reference sequence to the extent that the CIGAR string can
@@ -675,7 +660,6 @@ def cigar_changes(seq, cigar):
             raise ValueError('Invalid CIGAR string: {}'.format(op))
     return cigar_formatted_ref
 
-
 def md_changes(seq, md_tag):
     """Recreates the reference sequence of a given alignment to the extent that the
     MD tag can represent.
@@ -720,7 +704,6 @@ def md_changes(seq, md_tag):
         else:
             pass
     return ref_seq
-
 
 def ref_gen(seq, cigar_string, md_tag):
     """Recreates the reference sequence associated with the given segment.
@@ -769,7 +752,6 @@ def ref_gen(seq, cigar_string, md_tag):
 
     """
     return md_changes(cigar_changes(seq, cigar_string), md_tag)
-
 
 def cigar_alignment(seq=None, cigar=None, start_pos=None, qualities=None, base_qual_thresh=0, query=False):
     """Use the CIGAR to filter out all unaligned data bases
