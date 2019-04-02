@@ -30,4 +30,9 @@ install:
 script: 
   - pytest --doctest-modules bamnostic/
   - pytest
+  
+after_success:
+  - # Check that PyPI version works
+  - pip uninstall --yes bamnostic
+  - pip install bamnostic
 
