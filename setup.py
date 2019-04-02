@@ -41,7 +41,7 @@ setup(
     cmdclass = {'test' : PyTest},
     packages=['bamnostic', 'tests'],
     package_dir={'bamnostic': './bamnostic', 'tests': './tests'},
-    package_data={'bamnostic': ['data/*', 'LICENSE', 'CONTRIBUTING.md', 'CODE_OF_CONDUCT.md']},
+    package_data={'bamnostic': ['data/*', 'LICENSE', 'CONTRIBUTING.md', 'CODE_OF_CONDUCT.md', 'version']},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Intended Audience :: Developers',

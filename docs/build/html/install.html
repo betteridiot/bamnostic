@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Installation &mdash; bamnostic 1.0.9 documentation</title>
+  <title>Installation &mdash; bamnostic 1.0.10 documentation</title>
   
 
   
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                1.0.9
+                1.0.10
               </div>
             
           
@@ -166,41 +166,41 @@
 <p>There are 4 methods of installation available (choose one):</p>
 <div class="section" id="through-the-conda-package-manager-anaconda-cloud">
 <h2>Through the <code class="docutils literal notranslate"><span class="pre">conda</span></code> package manager (<a class="reference external" href="https://anaconda.org/conda-forge/bamnostic">Anaconda Cloud</a>)<a class="headerlink" href="#through-the-conda-package-manager-anaconda-cloud" title="Permalink to this headline">¶</a></h2>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># first, add the conda-forge channel to your conda build</span>
-<span class="n">conda</span> <span class="n">config</span> <span class="o">--</span><span class="n">add</span> <span class="n">channels</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># first, add the conda-forge channel to your conda build</span>
+conda config --add channels conda-forge
 
 <span class="c1"># now bamnostic is available for install</span>
-<span class="n">conda</span> <span class="n">install</span> <span class="n">bamnostic</span>
+conda install bamnostic
 </pre></div>
 </div>
 </div>
 <div class="section" id="through-the-python-package-index-pypi">
 <h2>Through the Python Package Index (<a class="reference external" href="https://pypi.org/">PyPI</a>)<a class="headerlink" href="#through-the-python-package-index-pypi" title="Permalink to this headline">¶</a></h2>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">bamnostic</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip install bamnostic
 
 <span class="c1"># or, if you don&#39;t have superuser access</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="n">bamnostic</span>
+pip install --user bamnostic
 </pre></div>
 </div>
 </div>
 <div class="section" id="through-pip-github">
 <h2>Through pip+Github<a class="headerlink" href="#through-pip-github" title="Permalink to this headline">¶</a></h2>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># again, use --user if you don&#39;t have superuser access</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">betteridiot</span><span class="o">/</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">git</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># again, use --user if you don&#39;t have superuser access</span>
+pip install -e git+https://github.com/betteridiot/bamnostic.git
 
 <span class="c1"># or, if you don&#39;t have superuser access</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="o">-</span><span class="n">e</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">betteridiot</span><span class="o">/</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">git</span>
+pip install --user -e git+https://github.com/betteridiot/bamnostic.git
 </pre></div>
 </div>
 </div>
 <div class="section" id="traditional-github-clone">
 <h2>Traditional GitHub clone<a class="headerlink" href="#traditional-github-clone" title="Permalink to this headline">¶</a></h2>
-<div class="code bash highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">betteridiot</span><span class="o">/</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">git</span>
-<span class="n">cd</span> <span class="n">bamnostic</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/betteridiot/bamnostic.git
+<span class="nb">cd</span> bamnostic
+pip install -e .
 
 <span class="c1"># or, if you don&#39;t have superuser access</span>
-<span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span> <span class="o">-</span><span class="n">e</span> <span class="o">.</span>
+pip install --user -e .
 </pre></div>
 </div>
 </div>
