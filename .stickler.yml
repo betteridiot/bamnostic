@@ -1,7 +1,11 @@
 linters:
+  black:
+    fixer: true
   flake8:
     fixer: true
   shellcheck:
     shell: bash
 fixers:
   enable: true
+review:
+  fail_on_comments: false
