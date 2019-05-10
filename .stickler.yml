@@ -1,10 +1,10 @@
 linters:
   black:
+    config: ./pyproject.toml
     fixer: true
   flake8:
+    config: ./.flake8
     fixer: true
-  shellcheck:
-    shell: bash
 fixers:
   enable: true
 review:
