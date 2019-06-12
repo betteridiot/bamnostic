@@ -268,9 +268,14 @@ class AlignedSegment(object):
 
         self.flag = self._flag_nc >> 16
         self._n_cigar_op = self._flag_nc & 0xFFFF
-        self.l_seq, self.next_refID, self.next_pos, self.tlen = _unpack_lseq_nrid_npos_tlen(self._range_popper(16))
+        self.l_seq, self.next_refID, self.next_pos, self.tlen = _unpack_lseq_nrid_npos_tlen(
+            self._range_popper(16)
+        )
 
-        self.read_name = unpack('<{}s'.format(self._l_read_name), self._range_popper(self._l_read_name)).decode()[:-1]
+        self.read_name = unpack(
+            "<{}s".format(self._l_read_name),
+            self._range_popper(self._l_read_name),
+        ).decode()[:-1]
 
         self.tid = self.reference_id = self.refID
         try:
@@ -430,25 +435,30 @@ class AlignedSegment(object):
 
         """
         if self.next_refID == -1:
-            rnext = '*'
+            rnext = "*"
         elif self.next_refID == self.refID:
-            rnext = '='
+            rnext = "="
         else:
             rnext = self._io._header.refs[self.next_refID]
-        SAM_repr = [self.read_name,
-                    '{}'.format(self.flag),
-                    '{}'.format(self.reference_name, self.tid),
-                    '{}'.format(self.pos + 1),
-                    '{}'.format(self.mapq),
-                    self.cigarstring if self.cigarstring is not None else '*',
-                    '{}'.format(rnext),
-                    '{}'.format(self.next_pos + 1),
-                    '{}'.format(self.tlen),
-                    '{}'.format(self.seq),
-                    '{}'.format(self.qual)]
-        tags = ['{}:{}:{}'.format(tag, value[0], value[1]) for tag, value in sorted(self.tags.items())]
+        SAM_repr = [
+            self.read_name,
+            "{}".format(self.flag),
+            "{}".format(self.reference_name, self.tid),
+            "{}".format(self.pos + 1),
+            "{}".format(self.mapq),
+            self.cigarstring if self.cigarstring is not None else "*",
+            "{}".format(rnext),
+            "{}".format(self.next_pos + 1),
+            "{}".format(self.tlen),
+            "{}".format(self.seq),
+            "{}".format(self.qual),
+        ]
+        tags = [
+            "{}:{}:{}".format(tag, value[0], value[1])
+            for tag, value in sorted(self.tags.items())
+        ]
         SAM_repr.extend(tags)
-        return '\t'.join(SAM_repr)
+        return "\t".join(SAM_repr)
 
     def __str__(self):
         return self.__repr__()
@@ -501,8 +511,19 @@ class AlignedSegment(object):
         Returns:
             dictionary of the tag, value types, and values
         """
-        types = {"A": 'c', "i": 'l', "f": 'f', "Z": 's', "H": 's', "c": 'b',
-                 "C": 'B', "s": 'h', "S": 'H', "i": 'i', "I": 'I'}
+        types = {
+            "A": "c",
+            "i": "l",
+            "f": "f",
+            "Z": "s",
+            "H": "s",
+            "c": "b",
+            "C": "B",
+            "s": "h",
+            "S": "H",
+            "i": "i",
+            "I": "I",
+        }
 
         tag, val_type = _unpack_tag_val(self._range_popper(3))
         tag = tag.decode()
@@ -511,18 +532,22 @@ class AlignedSegment(object):
         # Capture byte array of a given size
         if val_type == "B":
             arr_type, arr_size = _unpack_array(self._range_popper(5))
-            arr = unpack('<{}{}'.format(arr_size, types[arr_type.decode()]),
-                         self._range_popper(arr_size * struct.calcsize(types[arr_type.decode()])))
+            arr = unpack(
+                "<{}{}".format(arr_size, types[arr_type.decode()]),
+                self._range_popper(
+                    arr_size * struct.calcsize(types[arr_type.decode()])
+                ),
+            )
             return {tag: (val_type, arr)}
 
         # Capture given length string or hex array
         elif val_type == "Z" or val_type == "H":
             val = _unpack_string(self._range_popper(1))[0]
             if _PY_VERSION[0] == 2:
-                while val[-1] != '\x00':
+                while val[-1] != "\x00":
                     val += _unpack_string(self._range_popper(1))[0]
             else:
-                while chr(val[-1]) != '\x00':
+                while chr(val[-1]) != "\x00":
                     val += _unpack_string(self._range_popper(1))[0]
             if val_type == "Z":
                 return {tag: (val_type, val.decode(encoding="latin_1")[:-1])}
