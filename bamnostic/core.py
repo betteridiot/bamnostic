@@ -557,9 +557,9 @@ class AlignedSegment(object):
         # Everything else
         else:
             val_size = struct.calcsize(types[val_type])
-            val = unpack('<' + types[val_type], self._range_popper(val_size))
+            val = unpack("<" + types[val_type], self._range_popper(val_size))
             if val_type == "A":
-                val = val.decode(encoding='latin_1')
+                val = val.decode(encoding="latin_1")
             return {tag: (val_type, val)}
 
     def _reference_attrs(self):
