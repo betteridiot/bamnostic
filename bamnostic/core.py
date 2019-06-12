@@ -268,9 +268,14 @@ class AlignedSegment(object):
 
         self.flag = self._flag_nc >> 16
         self._n_cigar_op = self._flag_nc & 0xFFFF
-        self.l_seq, self.next_refID, self.next_pos, self.tlen = _unpack_lseq_nrid_npos_tlen(self._range_popper(16))
+        self.l_seq, self.next_refID, self.next_pos, self.tlen = _unpack_lseq_nrid_npos_tlen(
+            self._range_popper(16)
+        )
 
-        self.read_name = unpack('<{}s'.format(self._l_read_name), self._range_popper(self._l_read_name)).decode()[:-1]
+        self.read_name = unpack(
+            "<{}s".format(self._l_read_name),
+            self._range_popper(self._l_read_name),
+        ).decode()[:-1]
 
         self.tid = self.reference_id = self.refID
         try:
@@ -283,7 +288,10 @@ class AlignedSegment(object):
         """Just unpacks the cigar data to be processed later. Ensures the cursor
         stays in the right place."""
         if self._n_cigar_op != 0:
-            self._cigar = struct.unpack('<{}I'.format(self._n_cigar_op), self._range_popper(4 * self._n_cigar_op))
+            self._cigar = struct.unpack(
+                "<{}I".format(self._n_cigar_op),
+                self._range_popper(4 * self._n_cigar_op),
+            )
 
     def _decode_cigar(self):
         """Process the CIGAR into helpful tuples and plain text CIGAR string
@@ -301,12 +309,25 @@ class AlignedSegment(object):
         """
         # can't use bamnostic.utils.unpack because self._cigar needs to be tuples for decoding
         if self._n_cigar_op != 0:
-            if 'CG' in self.tags and self._cigar[0] == self.l_seq << 4 | 4:
-               self._cigar = self.tags.pop('CG')[1]
-               self._n_cigar_op = len(self._cigar)
-            decoded_cigar = [(cigar_op >> 4, _CIGAR_KEY[cigar_op & 0xF]) for cigar_op in self._cigar]
-            self.cigarstring = "".join(['{}{}'.format(c[0], c[1]) for c in decoded_cigar])
-            self._cigartuples = [Cigar(bamnostic.utils._CIGAR_OPS[op[1]][1], op[0], op[1], bamnostic.utils._CIGAR_OPS[op[1]][0]) for op in decoded_cigar]
+            if "CG" in self.tags and self._cigar[0] == self.l_seq << 4 | 4:
+                self._cigar = self.tags.pop("CG")[1]
+                self._n_cigar_op = len(self._cigar)
+            decoded_cigar = [
+                (cigar_op >> 4, _CIGAR_KEY[cigar_op & 0xF])
+                for cigar_op in self._cigar
+            ]
+            self.cigarstring = "".join(
+                ["{}{}".format(c[0], c[1]) for c in decoded_cigar]
+            )
+            self._cigartuples = [
+                Cigar(
+                    bamnostic.utils._CIGAR_OPS[op[1]][1],
+                    op[0],
+                    op[1],
+                    bamnostic.utils._CIGAR_OPS[op[1]][0],
+                )
+                for op in decoded_cigar
+            ]
             self.cigartuples = [(op[0], op[1]) for op in self._cigartuples]
             self.cigar = self.cigartuples[:]
         else:
@@ -323,50 +344,73 @@ class AlignedSegment(object):
         Attributes:
             seq (str): alignment sequence in string format
         """
-        self._byte_seq = unpack('<{}B'.format((self.l_seq + 1) // 2), self._range_popper(1 * ((self.l_seq + 1) // 2)))
-        self.seq = "".join([
-            '{}{}'.format(
-                _SEQ_KEY[self._byte_seq[s] >> 4],
-                _SEQ_KEY[self._byte_seq[s] & 0x0F])
-            for s in range(len(self._byte_seq))])[:self.l_seq]
+        byte_data = self._range_popper(1 * ((self.l_seq + 1) // 2))
+        if byte_data is None:
+            self.seq = "*"
+        else:
+            self._byte_seq = unpack(
+                "<{}B".format((self.l_seq + 1) // 2), byte_data
+            )
+            self.seq = "".join(
+                [
+                    "{}{}".format(
+                        _SEQ_KEY[self._byte_seq[s] >> 4],
+                        _SEQ_KEY[self._byte_seq[s] & 0x0F],
+                    )
+                    for s in range(len(self._byte_seq))
+                ]
+            )[: self.l_seq]
 
     def _qual_builder(self):
         """Pulls out the quality information for the given read
 
         Attributes:
             query_qualities (:py:obj:`array.array`): Array of Phred quality scores for each base
-                              
+
                               of the aligned sequence. No offset required.
             qual (str): ASCII-encoded quality string
         """
-        self._raw_qual = unpack('<{}s'.format(self.l_seq), self._range_popper(self.l_seq))
+        if self.seq != "*":
+            self._raw_qual = unpack(
+                "<{}s".format(self.l_seq), self._range_popper(self.l_seq)
+            )
 
-        self.query_qualities = array('B')
-        
-        # Should account for all versions of Python
-        if type(self._raw_qual) == str:
-            self.query_qualities.fromstring(self._raw_qual)
-        elif type(self._raw_qual) == bytes:
-            self.query_qualities.frombytes(self._raw_qual)
+            self.query_qualities = array("B")
+
+            # Should account for all versions of Python
+            if type(self._raw_qual) == str:
+                self.query_qualities.fromstring(self._raw_qual)
+            elif type(self._raw_qual) == bytes:
+                self.query_qualities.frombytes(self._raw_qual)
+            else:
+                raise TypeError(
+                    "Raw quality score is neither string nor bytes object"
+                )
+            """Phred Quality scores for each base of the alignment
+            ***without*** an ASCII offset."""
+
+            self.qual = "".join(offset_qual(self._raw_qual))
+            """Phred Quality scores for each base of the alignment
+            in ASCII offsetted string format."""
         else:
-            raise TypeError('Raw quality score is neither string nor bytes object')
-        """Phred Quality scores for each base of the alignment
-        ***without*** an ASCII offset."""
-
-        self.qual = ''.join(offset_qual(self._raw_qual))
-        """Phred Quality scores for each base of the alignment
-        in ASCII offsetted string format."""
+            self._raw_qual = self.qual = "*"
 
     def __hash_key(self):
         return (self.reference_name, self.pos, self.read_name)
 
     def __hash__(self):
-        return (hash(self.reference_name) ^ hash(self.pos) ^ hash(self.read_name) ^
-                hash(self.__hash_key()))
+        return (
+            hash(self.reference_name) ^
+            hash(self.pos) ^
+            hash(self.read_name) ^
+            hash(self.__hash_key())
+        )
 
     def __eq__(self, other):
-        return (self.__class__ == other.__class__ and
-                self.__hash_key() == other.__hash_key())
+        return (
+            self.__class__ == other.__class__ and
+            self.__hash_key() == other.__hash_key()
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -391,25 +435,30 @@ class AlignedSegment(object):
 
         """
         if self.next_refID == -1:
-            rnext = '*'
+            rnext = "*"
         elif self.next_refID == self.refID:
-            rnext = '='
+            rnext = "="
         else:
             rnext = self._io._header.refs[self.next_refID]
-        SAM_repr = [self.read_name,
-                    '{}'.format(self.flag),
-                    '{}'.format(self.reference_name, self.tid),
-                    '{}'.format(self.pos + 1),
-                    '{}'.format(self.mapq),
-                    self.cigarstring if self.cigarstring is not None else '*',
-                    '{}'.format(rnext),
-                    '{}'.format(self.next_pos + 1),
-                    '{}'.format(self.tlen),
-                    '{}'.format(self.seq),
-                    '{}'.format(self.qual)]
-        tags = ['{}:{}:{}'.format(tag, value[0], value[1]) for tag, value in sorted(self.tags.items())]
+        SAM_repr = [
+            self.read_name,
+            "{}".format(self.flag),
+            "{}".format(self.reference_name, self.tid),
+            "{}".format(self.pos + 1),
+            "{}".format(self.mapq),
+            self.cigarstring if self.cigarstring is not None else "*",
+            "{}".format(rnext),
+            "{}".format(self.next_pos + 1),
+            "{}".format(self.tlen),
+            "{}".format(self.seq),
+            "{}".format(self.qual),
+        ]
+        tags = [
+            "{}:{}:{}".format(tag, value[0], value[1])
+            for tag, value in sorted(self.tags.items())
+        ]
         SAM_repr.extend(tags)
-        return '\t'.join(SAM_repr)
+        return "\t".join(SAM_repr)
 
     def __str__(self):
         return self.__repr__()
@@ -431,14 +480,17 @@ class AlignedSegment(object):
 
         """
         if interval_stop is None:
-            if front:
-                popped = self._byte_stream[:interval_start]
-                del self._byte_stream[:interval_start]
-                return popped
+            if interval_start:
+                if front:
+                    popped = self._byte_stream[:interval_start]
+                    del self._byte_stream[:interval_start]
+                    return popped
+                else:
+                    popped = self._byte_stream[interval_start:]
+                    del self._byte_stream[interval_start:]
+                    return popped
             else:
-                popped = self._byte_stream[interval_start:]
-                del self._byte_stream[interval_start:]
-                return popped
+                return None
         else:
             popped = self._byte_stream[interval_start:interval_stop]
             del self._byte_stream[interval_start:interval_stop]
@@ -459,8 +511,19 @@ class AlignedSegment(object):
         Returns:
             dictionary of the tag, value types, and values
         """
-        types = {"A": 'c', "i": 'l', "f": 'f', "Z": 's', "H": 's', "c": 'b',
-                 "C": 'B', "s": 'h', "S": 'H', "i": 'i', "I": 'I'}
+        types = {
+            "A": "c",
+            "i": "l",
+            "f": "f",
+            "Z": "s",
+            "H": "s",
+            "c": "b",
+            "C": "B",
+            "s": "h",
+            "S": "H",
+            "i": "i",
+            "I": "I",
+        }
 
         tag, val_type = _unpack_tag_val(self._range_popper(3))
         tag = tag.decode()
@@ -469,18 +532,22 @@ class AlignedSegment(object):
         # Capture byte array of a given size
         if val_type == "B":
             arr_type, arr_size = _unpack_array(self._range_popper(5))
-            arr = unpack('<{}{}'.format(arr_size, types[arr_type.decode()]),
-                         self._range_popper(arr_size * struct.calcsize(types[arr_type.decode()])))
+            arr = unpack(
+                "<{}{}".format(arr_size, types[arr_type.decode()]),
+                self._range_popper(
+                    arr_size * struct.calcsize(types[arr_type.decode()])
+                ),
+            )
             return {tag: (val_type, arr)}
 
         # Capture given length string or hex array
         elif val_type == "Z" or val_type == "H":
             val = _unpack_string(self._range_popper(1))[0]
             if _PY_VERSION[0] == 2:
-                while val[-1] != '\x00':
+                while val[-1] != "\x00":
                     val += _unpack_string(self._range_popper(1))[0]
             else:
-                while chr(val[-1]) != '\x00':
+                while chr(val[-1]) != "\x00":
                     val += _unpack_string(self._range_popper(1))[0]
             if val_type == "Z":
                 return {tag: (val_type, val.decode(encoding="latin_1")[:-1])}
@@ -490,9 +557,9 @@ class AlignedSegment(object):
         # Everything else
         else:
             val_size = struct.calcsize(types[val_type])
-            val = unpack('<' + types[val_type], self._range_popper(val_size))
+            val = unpack("<" + types[val_type], self._range_popper(val_size))
             if val_type == "A":
-                val = val.decode(encoding='latin_1')
+                val = val.decode(encoding="latin_1")
             return {tag: (val_type, val)}
 
     def _reference_attrs(self):
@@ -502,14 +569,18 @@ class AlignedSegment(object):
         the reference, and therefore excludes insertions and clipping.
         """
         count = 0
-        if self.cigarstring is not None:
-            cigar_align = cigar_alignment(self.seq, self.cigar, self.pos, self.query_qualities)
+        if self.cigarstring is not None and self.seq != "*":
+            cigar_align = cigar_alignment(
+                self.seq, self.cigar, self.pos, self.query_qualities
+            )
             first_ref = next(cigar_align)
             for base, index in cigar_align:
                 count += 1
             self.__reference_start = self.pos
             self.__reference_end = index + 1
-            self.__reference_length = self.__reference_end - self.__reference_start
+            self.__reference_length = (
+                self.__reference_end - self.__reference_start
+            )
         else:
             self.__reference_start = self.pos
             self.__reference_end = None
@@ -522,8 +593,14 @@ class AlignedSegment(object):
         and therefore excludes clipping, but includes insertions
         """
         count = 0
-        if self.cigarstring is not None:
-            cigar_align = cigar_alignment(self.seq, self.cigar, self.pos, self.query_qualities, query=True)
+        if self.cigarstring is not None and self.seq != "*":
+            cigar_align = cigar_alignment(
+                self.seq,
+                self.cigar,
+                self.pos,
+                self.query_qualities,
+                query=True,
+            )
             self.__qa_seq = ""
             first_ref = next(cigar_align)
             self.__qa_seq += first_ref[0]
