@@ -323,13 +323,17 @@ class AlignedSegment(object):
         Attributes:
             seq (str): alignment sequence in string format
         """
-        self._byte_seq = unpack('<{}B'.format((self.l_seq + 1) // 2), self._range_popper(1 * ((self.l_seq + 1) // 2)))
-        self.seq = "".join([
-            '{}{}'.format(
-                _SEQ_KEY[self._byte_seq[s] >> 4],
-                _SEQ_KEY[self._byte_seq[s] & 0x0F])
-            for s in range(len(self._byte_seq))])[:self.l_seq]
-
+        byte_data = self._range_popper(1 * ((self.l_seq + 1) // 2))
+        if byte_data is None:
+            self.seq = '*'
+        else:
+            self._byte_seq = unpack('<{}B'.format((self.l_seq + 1) // 2), byte_data)
+            self.seq = "".join([
+                '{}{}'.format(
+                    _SEQ_KEY[self._byte_seq[s] >> 4],
+                    _SEQ_KEY[self._byte_seq[s] & 0x0F])
+                for s in range(len(self._byte_seq))])[:self.l_seq]
+    
     def _qual_builder(self):
         """Pulls out the quality information for the given read
 
@@ -339,23 +343,26 @@ class AlignedSegment(object):
                               of the aligned sequence. No offset required.
             qual (str): ASCII-encoded quality string
         """
-        self._raw_qual = unpack('<{}s'.format(self.l_seq), self._range_popper(self.l_seq))
+        if self.seq != '*':
+            self._raw_qual = unpack('<{}s'.format(self.l_seq), self._range_popper(self.l_seq))
 
-        self.query_qualities = array('B')
-        
-        # Should account for all versions of Python
-        if type(self._raw_qual) == str:
-            self.query_qualities.fromstring(self._raw_qual)
-        elif type(self._raw_qual) == bytes:
-            self.query_qualities.frombytes(self._raw_qual)
+            self.query_qualities = array('B')
+            
+            # Should account for all versions of Python
+            if type(self._raw_qual) == str:
+                self.query_qualities.fromstring(self._raw_qual)
+            elif type(self._raw_qual) == bytes:
+                self.query_qualities.frombytes(self._raw_qual)
+            else:
+                raise TypeError('Raw quality score is neither string nor bytes object')
+            """Phred Quality scores for each base of the alignment
+            ***without*** an ASCII offset."""
+
+            self.qual = ''.join(offset_qual(self._raw_qual))
+            """Phred Quality scores for each base of the alignment
+            in ASCII offsetted string format."""
         else:
-            raise TypeError('Raw quality score is neither string nor bytes object')
-        """Phred Quality scores for each base of the alignment
-        ***without*** an ASCII offset."""
-
-        self.qual = ''.join(offset_qual(self._raw_qual))
-        """Phred Quality scores for each base of the alignment
-        in ASCII offsetted string format."""
+            self._raw_qual = self.qual = '*'
 
     def __hash_key(self):
         return (self.reference_name, self.pos, self.read_name)
@@ -431,14 +438,17 @@ class AlignedSegment(object):
 
         """
         if interval_stop is None:
-            if front:
-                popped = self._byte_stream[:interval_start]
-                del self._byte_stream[:interval_start]
-                return popped
+            if interval_start:
+                if front:
+                    popped = self._byte_stream[:interval_start]
+                    del self._byte_stream[:interval_start]
+                    return popped
+                else:
+                    popped = self._byte_stream[interval_start:]
+                    del self._byte_stream[interval_start:]
+                    return popped
             else:
-                popped = self._byte_stream[interval_start:]
-                del self._byte_stream[interval_start:]
-                return popped
+                return None
         else:
             popped = self._byte_stream[interval_start:interval_stop]
             del self._byte_stream[interval_start:interval_stop]
@@ -502,7 +512,7 @@ class AlignedSegment(object):
         the reference, and therefore excludes insertions and clipping.
         """
         count = 0
-        if self.cigarstring is not None:
+        if self.cigarstring is not None and self.seq != '*':
             cigar_align = cigar_alignment(self.seq, self.cigar, self.pos, self.query_qualities)
             first_ref = next(cigar_align)
             for base, index in cigar_align:
@@ -522,7 +532,7 @@ class AlignedSegment(object):
         and therefore excludes clipping, but includes insertions
         """
         count = 0
-        if self.cigarstring is not None:
+        if self.cigarstring is not None and self.seq != '*':
             cigar_align = cigar_alignment(self.seq, self.cigar, self.pos, self.query_qualities, query=True)
             self.__qa_seq = ""
             first_ref = next(cigar_align)
