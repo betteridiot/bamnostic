@@ -24,11 +24,4 @@ install:
 script:
 - pytest --doctest-modules bamnostic/
 - pytest
-deploy:
-  provider: pypi
-  user: mdsherman
-  password:
-    secure: LzPX/LLiAgR9JIyDyFjIqtCwvYVOcuQRC/Avpgv4wcElQM7A45fto1Q+X8wDWdLt+8RGTFFG6dvZFseUPeu/k1C+ydtFG62tsRp9UQgF3beaR7VXZVjrg1tc3dFtrGVbNPSrCZCFjUoO/pC5xvF+W5FA76n7E9CGZowpClyuE76TW61ggQYLiLxZnQSvztTTVVLOdZyMOVufrpG8fU4KgvEDbPehUdUMFNOvkStr4KYwSV1crrPJungh/pS9TxlXfilEKimWqNHzn0N8vQmI8zFzvZKOURaGZm6HL0gc4cIDLS5mHFdMAAnBkzhBIj3o1GIVvP5TeEiq3hBIBmvU098NWqXfTt0DRCJ2gpcuBC7bh5XMNg0Prhs6lmXh3lx5LljH8DthsecjohoJgNqySQXRsiBeSJ6LP/1fMsfkjAsuwR7IBlkRScUGlkcreo9qsq22RS2GQX0ucEFvNjimdGjSoIZnYkQTbaqKUr2XkbWImol6gD3vwB3yDGUd/bSO5mctv1qJpfNgdXWd0vdGYliSJ98nBiRM0GFr8VuZ+JeUvYowhSc7oQ7Nq8/x3kgQ4LqfGj7kWeqcC/heyBJ3do8hbPMmC2Nl/IemlPtqGa4a70s3PVudD/y0YoKCYHhU0E+zcgr2NxewOq3EHOPXkYB76hD5bQCO68xl+nZ/px8=
-  on:
-    brach: master
-  distributions: "sdist"
+
