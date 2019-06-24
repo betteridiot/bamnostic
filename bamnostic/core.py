@@ -621,7 +621,7 @@ class AlignedSegment(object):
         `query_alignment_*` all refer to the portion of the read that was aligned,
         and therefore exclude clipping, but include insertions.
         """
-        return self.self.__qa_end
+        return self.__qa_end
 
     @property
     def query_alignment_start(self):
