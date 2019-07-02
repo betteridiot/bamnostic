@@ -597,7 +597,11 @@ class AlignedSegment(object):
             cigar_align = cigar_alignment(
                 self.seq,
                 self.cigar,
-                self.pos,
+                # one would think that self.pos should go here. However, bamnostic
+                # is meant to replicate pysam, and pysam details this to be
+                # with respect to the read itself, not genomic position. Therefore,
+                # this is set to zero.
+                0,
                 self.query_qualities,
                 query=True,
             )

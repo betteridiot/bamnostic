@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic package &mdash; bamnostic 1.0.12
+  <title>bamnostic package &mdash; bamnostic 1.1.0
  documentation</title>
   
 
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.0.12
+                1.1.0
 
               </div>
             
@@ -1752,7 +1752,7 @@ the reference genome. Example reads, MD tags, and CIGAR strings taken from
 
 <dl class="function">
 <dt id="bamnostic.utils.cigar_alignment">
-<code class="descclassname">bamnostic.utils.</code><code class="descname">cigar_alignment</code><span class="sig-paren">(</span><em>seq=None</em>, <em>cigar=None</em>, <em>start_pos=None</em>, <em>qualities=None</em>, <em>base_qual_thresh=0</em>, <em>query=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#cigar_alignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.cigar_alignment" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bamnostic.utils.</code><code class="descname">cigar_alignment</code><span class="sig-paren">(</span><em>seq=None</em>, <em>cigar=None</em>, <em>start_pos=0</em>, <em>qualities=None</em>, <em>base_qual_thresh=0</em>, <em>query=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#cigar_alignment"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.utils.cigar_alignment" title="Permalink to this definition">¶</a></dt>
 <dd><p>Use the CIGAR to filter out all unaligned data bases</p>
 <p>Any clipping results in the removal of those bases. If an insertion is seen in
 the CIGAR, those bases are removed from the sequence. If a deletion is seen in

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.utils &mdash; bamnostic 1.0.12
+  <title>bamnostic.utils &mdash; bamnostic 1.1.0
  documentation</title>
   
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.0.12
+                1.1.0
 
               </div>
             
@@ -909,7 +909,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">md_changes</span><span class="p">(</span><span class="n">cigar_changes</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">cigar_string</span><span class="p">),</span> <span class="n">md_tag</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="cigar_alignment"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.cigar_alignment">[docs]</a><span class="k">def</span> <span class="nf">cigar_alignment</span><span class="p">(</span><span class="n">seq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cigar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_pos</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">qualities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_qual_thresh</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<div class="viewcode-block" id="cigar_alignment"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.utils.cigar_alignment">[docs]</a><span class="k">def</span> <span class="nf">cigar_alignment</span><span class="p">(</span><span class="n">seq</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cigar</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">start_pos</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">qualities</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">base_qual_thresh</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Use the CIGAR to filter out all unaligned data bases</span>
 
 <span class="sd">    Any clipping results in the removal of those bases. If an insertion is seen in</span>

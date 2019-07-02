@@ -753,7 +753,7 @@ def ref_gen(seq, cigar_string, md_tag):
     """
     return md_changes(cigar_changes(seq, cigar_string), md_tag)
 
-def cigar_alignment(seq=None, cigar=None, start_pos=None, qualities=None, base_qual_thresh=0, query=False):
+def cigar_alignment(seq=None, cigar=None, start_pos = 0, qualities=None, base_qual_thresh=0, query=False):
     """Use the CIGAR to filter out all unaligned data bases
 
     Any clipping results in the removal of those bases. If an insertion is seen in

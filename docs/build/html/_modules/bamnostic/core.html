@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.core &mdash; bamnostic 1.0.12
+  <title>bamnostic.core &mdash; bamnostic 1.1.0
  documentation</title>
   
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.0.12
+                1.1.0
 
               </div>
             
@@ -424,9 +424,14 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_nc</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_nc</span> <span class="o">&amp;</span> <span class="mh">0xFFFF</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlen</span> <span class="o">=</span> <span class="n">_unpack_lseq_nrid_npos_tlen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlen</span> <span class="o">=</span> <span class="n">_unpack_lseq_nrid_npos_tlen</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
+        <span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">read_name</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l_read_name</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l_read_name</span><span class="p">))</span><span class="o">.</span><span class="n">decode</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_name</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span>
+            <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l_read_name</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l_read_name</span><span class="p">),</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">refID</span>
         <span class="k">try</span><span class="p">:</span>
@@ -439,7 +444,10 @@
         <span class="sd">&quot;&quot;&quot;Just unpacks the cigar data to be processed later. Ensures the cursor</span>
 <span class="sd">        stays in the right place.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">I&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span>
+                <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2">I&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span><span class="p">),</span>
+            <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">_decode_cigar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Process the CIGAR into helpful tuples and plain text CIGAR string</span>
@@ -457,12 +465,25 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># can&#39;t use bamnostic.utils.unpack because self._cigar needs to be tuples for decoding</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">if</span> <span class="s1">&#39;CG&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">4</span><span class="p">:</span>
-               <span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;CG&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-               <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span><span class="p">)</span>
-            <span class="n">decoded_cigar</span> <span class="o">=</span> <span class="p">[(</span><span class="n">cigar_op</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="n">_CIGAR_KEY</span><span class="p">[</span><span class="n">cigar_op</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">])</span> <span class="k">for</span> <span class="n">cigar_op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span><span class="p">]</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">cigarstring</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">decoded_cigar</span><span class="p">])</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_cigartuples</span> <span class="o">=</span> <span class="p">[</span><span class="n">Cigar</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">_CIGAR_OPS</span><span class="p">[</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">],</span> <span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">_CIGAR_OPS</span><span class="p">[</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">decoded_cigar</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;CG&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span> <span class="o">|</span> <span class="mi">4</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;CG&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span><span class="p">)</span>
+            <span class="n">decoded_cigar</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">(</span><span class="n">cigar_op</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">,</span> <span class="n">_CIGAR_KEY</span><span class="p">[</span><span class="n">cigar_op</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">])</span>
+                <span class="k">for</span> <span class="n">cigar_op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span>
+            <span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cigarstring</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span><span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">c</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">decoded_cigar</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_cigartuples</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">Cigar</span><span class="p">(</span>
+                    <span class="n">bamnostic</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">_CIGAR_OPS</span><span class="p">[</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                    <span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                    <span class="n">bamnostic</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">_CIGAR_OPS</span><span class="p">[</span><span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">]][</span><span class="mi">0</span><span class="p">],</span>
+                <span class="p">)</span>
+                <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="n">decoded_cigar</span>
+            <span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cigartuples</span> <span class="o">=</span> <span class="p">[(</span><span class="n">op</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">op</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">op</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cigartuples</span><span class="p">]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigartuples</span><span class="p">[:]</span>
         <span class="k">else</span><span class="p">:</span>
@@ -481,55 +502,71 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">byte_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">1</span> <span class="o">*</span> <span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">byte_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_byte_seq</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">B&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">byte_data</span><span class="p">)</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span>
-                <span class="s1">&#39;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                    <span class="n">_SEQ_KEY</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_byte_seq</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">],</span>
-                    <span class="n">_SEQ_KEY</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_byte_seq</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x0F</span><span class="p">])</span>
-                <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_byte_seq</span><span class="p">))])[:</span><span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">]</span>
-    
+            <span class="bp">self</span><span class="o">.</span><span class="n">_byte_seq</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span>
+                <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2">B&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">byte_data</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="p">[</span>
+                    <span class="s2">&quot;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">_SEQ_KEY</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_byte_seq</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span><span class="p">],</span>
+                        <span class="n">_SEQ_KEY</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_byte_seq</span><span class="p">[</span><span class="n">s</span><span class="p">]</span> <span class="o">&amp;</span> <span class="mh">0x0F</span><span class="p">],</span>
+                    <span class="p">)</span>
+                    <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_byte_seq</span><span class="p">))</span>
+                <span class="p">]</span>
+            <span class="p">)[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">]</span>
+
     <span class="k">def</span> <span class="nf">_qual_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Pulls out the quality information for the given read</span>
 
 <span class="sd">        Attributes:</span>
 <span class="sd">            query_qualities (:py:obj:`array.array`): Array of Phred quality scores for each base</span>
-<span class="sd">                              </span>
+
 <span class="sd">                              of the aligned sequence. No offset required.</span>
 <span class="sd">            qual (str): ASCII-encoded quality string</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;</span><span class="si">{}</span><span class="s1">s&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">))</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">!=</span> <span class="s2">&quot;*&quot;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span>
+                <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">)</span>
+            <span class="p">)</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">query_qualities</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s1">&#39;B&#39;</span><span class="p">)</span>
-            
+            <span class="bp">self</span><span class="o">.</span><span class="n">query_qualities</span> <span class="o">=</span> <span class="n">array</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">)</span>
+
             <span class="c1"># Should account for all versions of Python</span>
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">query_qualities</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span><span class="p">)</span>
             <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span><span class="p">)</span> <span class="o">==</span> <span class="nb">bytes</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">query_qualities</span><span class="o">.</span><span class="n">frombytes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Raw quality score is neither string nor bytes object&#39;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s2">&quot;Raw quality score is neither string nor bytes object&quot;</span>
+                <span class="p">)</span>
             <span class="sd">&quot;&quot;&quot;Phred Quality scores for each base of the alignment</span>
 <span class="sd">            ***without*** an ASCII offset.&quot;&quot;&quot;</span>
 
-            <span class="bp">self</span><span class="o">.</span><span class="n">qual</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">offset_qual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">qual</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">offset_qual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span><span class="p">))</span>
             <span class="sd">&quot;&quot;&quot;Phred Quality scores for each base of the alignment</span>
 <span class="sd">            in ASCII offsetted string format.&quot;&quot;&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qual</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qual</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
 
     <span class="k">def</span> <span class="nf">__hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_name</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_name</span><span class="p">)</span> <span class="o">^</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span> <span class="o">^</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_name</span><span class="p">)</span> <span class="o">^</span>
-                <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__hash_key</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_name</span><span class="p">)</span> <span class="o">^</span>
+            <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span> <span class="o">^</span>
+            <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">read_name</span><span class="p">)</span> <span class="o">^</span>
+            <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__hash_key</span><span class="p">())</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
-        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">and</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">__hash_key</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">__hash_key</span><span class="p">())</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">and</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__hash_key</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">__hash_key</span><span class="p">()</span>
+        <span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
@@ -554,25 +591,30 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
-            <span class="n">rnext</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span>
+            <span class="n">rnext</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
         <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">refID</span><span class="p">:</span>
-            <span class="n">rnext</span> <span class="o">=</span> <span class="s1">&#39;=&#39;</span>
+            <span class="n">rnext</span> <span class="o">=</span> <span class="s2">&quot;=&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">rnext</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span><span class="p">]</span>
-        <span class="n">SAM_repr</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">read_name</span><span class="p">,</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">),</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tid</span><span class="p">),</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapq</span><span class="p">),</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">cigarstring</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigarstring</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s1">&#39;*&#39;</span><span class="p">,</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rnext</span><span class="p">),</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">next_pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tlen</span><span class="p">),</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span>
-                    <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qual</span><span class="p">)]</span>
-        <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">items</span><span class="p">())]</span>
+        <span class="n">SAM_repr</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_name</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">flag</span><span class="p">),</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tid</span><span class="p">),</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mapq</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cigarstring</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigarstring</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">rnext</span><span class="p">),</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">next_pos</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tlen</span><span class="p">),</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">),</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qual</span><span class="p">),</span>
+        <span class="p">]</span>
+        <span class="n">tags</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">:</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">value</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">tag</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">items</span><span class="p">())</span>
+        <span class="p">]</span>
         <span class="n">SAM_repr</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
-        <span class="k">return</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SAM_repr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SAM_repr</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
@@ -625,8 +667,19 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            dictionary of the tag, value types, and values</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">types</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">:</span> <span class="s1">&#39;l&#39;</span><span class="p">,</span> <span class="s2">&quot;f&quot;</span><span class="p">:</span> <span class="s1">&#39;f&#39;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">:</span> <span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="s1">&#39;b&#39;</span><span class="p">,</span>
-                 <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="s1">&#39;B&#39;</span><span class="p">,</span> <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">:</span> <span class="s1">&#39;H&#39;</span><span class="p">,</span> <span class="s2">&quot;i&quot;</span><span class="p">:</span> <span class="s1">&#39;i&#39;</span><span class="p">,</span> <span class="s2">&quot;I&quot;</span><span class="p">:</span> <span class="s1">&#39;I&#39;</span><span class="p">}</span>
+        <span class="n">types</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;A&quot;</span><span class="p">:</span> <span class="s2">&quot;c&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;i&quot;</span><span class="p">:</span> <span class="s2">&quot;l&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;f&quot;</span><span class="p">:</span> <span class="s2">&quot;f&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Z&quot;</span><span class="p">:</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;H&quot;</span><span class="p">:</span> <span class="s2">&quot;s&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;c&quot;</span><span class="p">:</span> <span class="s2">&quot;b&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;C&quot;</span><span class="p">:</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;s&quot;</span><span class="p">:</span> <span class="s2">&quot;h&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;S&quot;</span><span class="p">:</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;i&quot;</span><span class="p">:</span> <span class="s2">&quot;i&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;I&quot;</span><span class="p">:</span> <span class="s2">&quot;I&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
 
         <span class="n">tag</span><span class="p">,</span> <span class="n">val_type</span> <span class="o">=</span> <span class="n">_unpack_tag_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
         <span class="n">tag</span> <span class="o">=</span> <span class="n">tag</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span>
@@ -635,18 +688,22 @@
         <span class="c1"># Capture byte array of a given size</span>
         <span class="k">if</span> <span class="n">val_type</span> <span class="o">==</span> <span class="s2">&quot;B&quot;</span><span class="p">:</span>
             <span class="n">arr_type</span><span class="p">,</span> <span class="n">arr_size</span> <span class="o">=</span> <span class="n">_unpack_array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
-            <span class="n">arr</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;</span><span class="si">{}{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arr_size</span><span class="p">,</span> <span class="n">types</span><span class="p">[</span><span class="n">arr_type</span><span class="o">.</span><span class="n">decode</span><span class="p">()]),</span>
-                         <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="n">arr_size</span> <span class="o">*</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="n">types</span><span class="p">[</span><span class="n">arr_type</span><span class="o">.</span><span class="n">decode</span><span class="p">()])))</span>
+            <span class="n">arr</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span>
+                <span class="s2">&quot;&lt;</span><span class="si">{}{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arr_size</span><span class="p">,</span> <span class="n">types</span><span class="p">[</span><span class="n">arr_type</span><span class="o">.</span><span class="n">decode</span><span class="p">()]),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span>
+                    <span class="n">arr_size</span> <span class="o">*</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="n">types</span><span class="p">[</span><span class="n">arr_type</span><span class="o">.</span><span class="n">decode</span><span class="p">()])</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">tag</span><span class="p">:</span> <span class="p">(</span><span class="n">val_type</span><span class="p">,</span> <span class="n">arr</span><span class="p">)}</span>
 
         <span class="c1"># Capture given length string or hex array</span>
         <span class="k">elif</span> <span class="n">val_type</span> <span class="o">==</span> <span class="s2">&quot;Z&quot;</span> <span class="ow">or</span> <span class="n">val_type</span> <span class="o">==</span> <span class="s2">&quot;H&quot;</span><span class="p">:</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">_unpack_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">_PY_VERSION</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-                <span class="k">while</span> <span class="n">val</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">:</span>
+                <span class="k">while</span> <span class="n">val</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span><span class="p">:</span>
                     <span class="n">val</span> <span class="o">+=</span> <span class="n">_unpack_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">while</span> <span class="nb">chr</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="s1">&#39;</span><span class="se">\x00</span><span class="s1">&#39;</span><span class="p">:</span>
+                <span class="k">while</span> <span class="nb">chr</span><span class="p">(</span><span class="n">val</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">!=</span> <span class="s2">&quot;</span><span class="se">\x00</span><span class="s2">&quot;</span><span class="p">:</span>
                     <span class="n">val</span> <span class="o">+=</span> <span class="n">_unpack_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">1</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">val_type</span> <span class="o">==</span> <span class="s2">&quot;Z&quot;</span><span class="p">:</span>
                 <span class="k">return</span> <span class="p">{</span><span class="n">tag</span><span class="p">:</span> <span class="p">(</span><span class="n">val_type</span><span class="p">,</span> <span class="n">val</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;latin_1&quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])}</span>
@@ -656,9 +713,9 @@
         <span class="c1"># Everything else</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">val_size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="n">types</span><span class="p">[</span><span class="n">val_type</span><span class="p">])</span>
-            <span class="n">val</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;&#39;</span> <span class="o">+</span> <span class="n">types</span><span class="p">[</span><span class="n">val_type</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="n">val_size</span><span class="p">))</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s2">&quot;&lt;&quot;</span> <span class="o">+</span> <span class="n">types</span><span class="p">[</span><span class="n">val_type</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="n">val_size</span><span class="p">))</span>
             <span class="k">if</span> <span class="n">val_type</span> <span class="o">==</span> <span class="s2">&quot;A&quot;</span><span class="p">:</span>
-                <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin_1&#39;</span><span class="p">)</span>
+                <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;latin_1&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">tag</span><span class="p">:</span> <span class="p">(</span><span class="n">val_type</span><span class="p">,</span> <span class="n">val</span><span class="p">)}</span>
 
     <span class="k">def</span> <span class="nf">_reference_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -668,14 +725,18 @@
 <span class="sd">        the reference, and therefore excludes insertions and clipping.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigarstring</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
-            <span class="n">cigar_align</span> <span class="o">=</span> <span class="n">cigar_alignment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_qualities</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigarstring</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">!=</span> <span class="s2">&quot;*&quot;</span><span class="p">:</span>
+            <span class="n">cigar_align</span> <span class="o">=</span> <span class="n">cigar_alignment</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_qualities</span>
+            <span class="p">)</span>
             <span class="n">first_ref</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">cigar_align</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">base</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">cigar_align</span><span class="p">:</span>
                 <span class="n">count</span> <span class="o">+=</span> <span class="mi">1</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__reference_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__reference_end</span> <span class="o">=</span> <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__reference_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reference_end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reference_start</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__reference_length</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">__reference_end</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reference_start</span>
+            <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__reference_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__reference_end</span> <span class="o">=</span> <span class="kc">None</span>
@@ -688,8 +749,18 @@
 <span class="sd">        and therefore excludes clipping, but includes insertions</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">count</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigarstring</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">!=</span> <span class="s1">&#39;*&#39;</span><span class="p">:</span>
-            <span class="n">cigar_align</span> <span class="o">=</span> <span class="n">cigar_alignment</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">query_qualities</span><span class="p">,</span> <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigarstring</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">!=</span> <span class="s2">&quot;*&quot;</span><span class="p">:</span>
+            <span class="n">cigar_align</span> <span class="o">=</span> <span class="n">cigar_alignment</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span><span class="p">,</span>
+                <span class="c1"># one would think that self.pos should go here. However, bamnostic</span>
+                <span class="c1"># is meant to replicate pysam, and pysam details this to be</span>
+                <span class="c1"># with respect to the read itself, not genomic position. Therefore,</span>
+                <span class="c1"># this is set to zero.</span>
+                <span class="mi">0</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">query_qualities</span><span class="p">,</span>
+                <span class="n">query</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__qa_seq</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="n">first_ref</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">cigar_align</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__qa_seq</span> <span class="o">+=</span> <span class="n">first_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
