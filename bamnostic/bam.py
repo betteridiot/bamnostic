@@ -486,7 +486,7 @@ class BamReader(bgzf.BgzfReader):
     def fetch(self, contig=None, start=None, stop=None, region=None,
               tid=None, until_eof=False, multiple_iterators=False,
               reference=None, end=None):
-        r"""Creates a generator that returns all reads within the given region. (inclusive, exclusive)
+        """Creates a generator that returns all reads within the given region. (inclusive, exclusive)
 
         Args:
             contig (str): name of reference/contig
@@ -507,16 +507,18 @@ class BamReader(bgzf.BgzfReader):
             ValueError: if the genomic coordinates are out of range or invalid
             KeyError: Reference is not found in header
 
-        Notes:
+        Note:
             SAM region formatted strings take on the following form:
             'chr1:100000-200000'
 
         Usage:
-            AlignmentFile.fetch(contig='chr1', start=1, stop= 1000)
-            AlignmentFile.fetch('chr1', 1, 1000)
-            AlignmentFile.fetch('chr1:1-1000')
-            AlignmentFile.fetch('chr1', 1)
-            AlignmentFile.fetch('chr1')
+            .. code-block:: python
+            
+                AlignmentFile.fetch(contig='chr1', start=1, stop= 1000)
+                AlignmentFile.fetch('chr1', 1, 1000)
+                AlignmentFile.fetch('chr1:1-1000')
+                AlignmentFile.fetch('chr1', 1)
+                AlignmentFile.fetch('chr1')
 
         Examples:
             >>> bam = bamnostic.AlignmentFile(bamnostic.example_bam, 'rb')

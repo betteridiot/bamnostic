@@ -20,10 +20,18 @@ Binary Alignment Map (BAM) file handlers (``bamnostic.bgzf``)
     :members:
     :show-inheritance:
 
+.. automodule:: bamnostic.bam
+    :members:
+    :show-inheritance:
+
 BAM Index (BAI) file handler (``bamnostic.bai``)
 ------------------------------------------------
 
 .. automodule:: bamnostic.bai
+    :members:
+    :show-inheritance:
+
+.. automodule:: bamnostic.csi
     :members:
     :show-inheritance:
 
