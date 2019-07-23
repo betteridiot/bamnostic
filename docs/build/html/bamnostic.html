@@ -93,8 +93,10 @@
 <li class="toctree-l1"><a class="reference internal" href="quickstart.html">Getting Started</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Module documentation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#module-bamnostic.core">Core Module (<code class="docutils literal notranslate"><span class="pre">bamnostic.core</span></code>)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#module-bamnostic.bgzf">Binary Alignment Map (BAM) file handlers (<code class="docutils literal notranslate"><span class="pre">bamnostic.bgzf</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamnostic.bgzf">Bgzip BAM Format (BGZF) file handlers (<code class="docutils literal notranslate"><span class="pre">bamnostic.bgzf</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamnostic.bam">Binary Alignment Map (BAM) file handlers (<code class="docutils literal notranslate"><span class="pre">bamnostic.bam</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-bamnostic.bai">BAM Index (BAI) file handler (<code class="docutils literal notranslate"><span class="pre">bamnostic.bai</span></code>)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-bamnostic.csi">Coordinate-Sorted Index (CSI) file handler (<code class="docutils literal notranslate"><span class="pre">bamnostic.csi</span></code>)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#module-bamnostic.utils">BAMnostic Utilities (<code class="docutils literal notranslate"><span class="pre">bamnostic.utils</span></code>)</a></li>
 </ul>
 </li>
@@ -572,7 +574,7 @@ help(struct) for more on format strings.</p>
 
 </div>
 <div class="section" id="module-bamnostic.bgzf">
-<span id="binary-alignment-map-bam-file-handlers-bamnostic-bgzf"></span><h2>Binary Alignment Map (BAM) file handlers (<code class="docutils literal notranslate"><span class="pre">bamnostic.bgzf</span></code>)<a class="headerlink" href="#module-bamnostic.bgzf" title="Permalink to this headline">¶</a></h2>
+<span id="bgzip-bam-format-bgzf-file-handlers-bamnostic-bgzf"></span><h2>Bgzip BAM Format (BGZF) file handlers (<code class="docutils literal notranslate"><span class="pre">bamnostic.bgzf</span></code>)<a class="headerlink" href="#module-bamnostic.bgzf" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="bamnostic.bgzf.unpack_gzip_header">
 <code class="descclassname">bamnostic.bgzf.</code><code class="descname">unpack_gzip_header</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_gzip_header" title="Permalink to this definition">¶</a></dt>
@@ -830,7 +832,10 @@ string S.format.  The buffer’s size in bytes must be S.size.  See
 help(struct) for more on format strings.</p>
 </dd></dl>
 
-<span class="target" id="module-bamnostic.bam"></span><dl class="class">
+</div>
+<div class="section" id="module-bamnostic.bam">
+<span id="binary-alignment-map-bam-file-handlers-bamnostic-bam"></span><h2>Binary Alignment Map (BAM) file handlers (<code class="docutils literal notranslate"><span class="pre">bamnostic.bam</span></code>)<a class="headerlink" href="#module-bamnostic.bam" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
 <dt id="bamnostic.bam.BAMheader">
 <em class="property">class </em><code class="descclassname">bamnostic.bam.</code><code class="descname">BAMheader</code><span class="sig-paren">(</span><em>_io</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bam.html#BAMheader"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#bamnostic.bam.BAMheader" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -2109,7 +2114,10 @@ string S.format.  The buffer’s size in bytes must be S.size.  See
 help(struct) for more on format strings.</p>
 </dd></dl>
 
-<span class="target" id="module-bamnostic.csi"></span><p>CSI file parser</p>
+</div>
+<div class="section" id="module-bamnostic.csi">
+<span id="coordinate-sorted-index-csi-file-handler-bamnostic-csi"></span><h2>Coordinate-Sorted Index (CSI) file handler (<code class="docutils literal notranslate"><span class="pre">bamnostic.csi</span></code>)<a class="headerlink" href="#module-bamnostic.csi" title="Permalink to this headline">¶</a></h2>
+<p>CSI file parser</p>
 <p>Copyright © 2018, Marcus D. Sherman</p>
 <p>This code is part of the bamnostic distribution and governed by its
 license.  Please see the LICENSE file that should have been included

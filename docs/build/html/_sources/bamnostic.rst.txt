@@ -13,12 +13,15 @@ Core Module (``bamnostic.core``)
     :members:
     :show-inheritance:
 
-Binary Alignment Map (BAM) file handlers (``bamnostic.bgzf``)
--------------------------------------------------------------
+Bgzip BAM Format (BGZF) file handlers (``bamnostic.bgzf``)
+----------------------------------------------------------
 
 .. automodule:: bamnostic.bgzf
     :members:
     :show-inheritance:
+
+Binary Alignment Map (BAM) file handlers (``bamnostic.bam``)
+------------------------------------------------------------
 
 .. automodule:: bamnostic.bam
     :members:
@@ -30,6 +33,9 @@ BAM Index (BAI) file handler (``bamnostic.bai``)
 .. automodule:: bamnostic.bai
     :members:
     :show-inheritance:
+
+Coordinate-Sorted Index (CSI) file handler (``bamnostic.csi``)
+--------------------------------------------------------------
 
 .. automodule:: bamnostic.csi
     :members:

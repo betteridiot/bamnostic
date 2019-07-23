@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """BAI file parser
 
-.. include:: <isonum.txt>
+.. |copy|   unicode:: U+000A9 .. COPYRIGHT SIGN
 
 Copyright |copy| 2018, Marcus D. Sherman
 
