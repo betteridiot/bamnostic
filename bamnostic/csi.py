@@ -2,8 +2,6 @@
 # -*- coding: utf-8 -*-
 """CSI file parser
 
-.. include:: <isonum.txt>
-
 Copyright |copy| 2018, Marcus D. Sherman
 
 This code is part of the bamnostic distribution and governed by its
