@@ -315,7 +315,7 @@ def parse_region(contig=None, start=None, stop=None, region=None,
             Roi(contig: chr1, start: 10, stop: 100)
 
             # Tab-delimited region string
-            >>> parse_region('chr1\\t10\\t100')
+            >>> parse_region('chr1\t10\t100')
             Roi(contig: chr1, start: 10, stop: 100)
 
             # Contradictory synonyms
