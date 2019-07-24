@@ -150,7 +150,6 @@ def flag_decode(flag_code):
     ====  =====  ==================================================================
     Int   Bit    Description
     ====  =====  ==================================================================
-
     1     0x1    Template having multiple segments in sequencing
     2     0x2    Each segment properly aligned according to the aligner
     4     0x4    Segment unmapped
@@ -252,7 +251,7 @@ def _handle_split_region(split_roi, until_eof=False):
 
 def parse_region(contig=None, start=None, stop=None, region=None,
                  tid=None, reference=None, end=None, until_eof=False):
-    """ Parses region information from all user set parameters.
+    r""" Parses region information from all user set parameters.
 
     The main goal of this function is to handle the many different ways a user
     can put in genomic region data. One way is through keyword arguments. This
@@ -293,35 +292,37 @@ def parse_region(contig=None, start=None, stop=None, region=None,
         ValueError: if two synonym keywords are set, but contradict each other
 
     Examples:
-        # Keyword-based
-        >>> parse_region(contig = 'chr1', start = 10, stop = 100)
-        Roi(contig: chr1, start: 10, stop: 100)
+        .. code-block:: python
+        
+            # Keyword-based
+            >>> parse_region(contig = 'chr1', start = 10, stop = 100)
+            Roi(contig: chr1, start: 10, stop: 100)
 
-        # Using `tid` instead of `contig`
-        >>> parse_region(tid = 0, start = 10, stop = 100)
-        Roi(tid: 0, start: 10, stop: 100)
+            # Using `tid` instead of `contig`
+            >>> parse_region(tid = 0, start = 10, stop = 100)
+            Roi(tid: 0, start: 10, stop: 100)
 
-        # Positional arguments
-        >>> parse_region('chr1', 10, 100)
-        Roi(contig: chr1, start: 10, stop: 100)
+            # Positional arguments
+            >>> parse_region('chr1', 10, 100)
+            Roi(contig: chr1, start: 10, stop: 100)
 
-        # SAM-formatted string (keyword)
-        >>> parse_region(region = 'chr1:10-100')
-        Roi(contig: chr1, start: 10, stop: 100)
+            # SAM-formatted string (keyword)
+            >>> parse_region(region = 'chr1:10-100')
+            Roi(contig: chr1, start: 10, stop: 100)
 
-        # SAM-formatted string (positional)
-        >>> parse_region('chr1:10-100')
-        Roi(contig: chr1, start: 10, stop: 100)
+            # SAM-formatted string (positional)
+            >>> parse_region('chr1:10-100')
+            Roi(contig: chr1, start: 10, stop: 100)
 
-        # Tab-delimited region string
-        >>> parse_region('chr1\\t10\\t100')
-        Roi(contig: chr1, start: 10, stop: 100)
+            # Tab-delimited region string
+            >>> parse_region('chr1\\t10\\t100')
+            Roi(contig: chr1, start: 10, stop: 100)
 
-        # Contradictory synonyms
-        >>> parse_region(reference='chr1', contig='chr10', start=10, stop = 100)
-        Traceback (most recent call last):
-        ...
-        ValueError: either contig or reference must be set, not both
+            # Contradictory synonyms
+            >>> parse_region(reference='chr1', contig='chr10', start=10, stop = 100)
+            Traceback (most recent call last):
+            ...
+            ValueError: either contig or reference must be set, not both
 
     """
 

@@ -2542,26 +2542,63 @@ Additionally, they can be found <a class="reference external" href="https://samt
 <col style="width: 7%" />
 <col style="width: 88%" />
 </colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Int</p></th>
+<th class="head"><p>Bit</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
 <tbody>
-<tr class="row-odd"><td><p>Int</p></td>
-<td><p>Bit</p></td>
-<td><p>Description</p></td>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>0x1</p></td>
+<td><p>Template having multiple segments in sequencing</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>0x2</p></td>
+<td><p>Each segment properly aligned according to the aligner</p></td>
+</tr>
+<tr class="row-even"><td><p>4</p></td>
+<td><p>0x4</p></td>
+<td><p>Segment unmapped</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>0x8</p></td>
+<td><p>Next segment in the template unmapped</p></td>
+</tr>
+<tr class="row-even"><td><p>16</p></td>
+<td><p>0x10</p></td>
+<td><p>SEQ being reverse complemented</p></td>
+</tr>
+<tr class="row-odd"><td><p>32</p></td>
+<td><p>0x20</p></td>
+<td><p>SEQ of the next segment in the template being reverse complemented</p></td>
+</tr>
+<tr class="row-even"><td><p>64</p></td>
+<td><p>0x40</p></td>
+<td><p>The first segment in the template</p></td>
+</tr>
+<tr class="row-odd"><td><p>128</p></td>
+<td><p>0x80</p></td>
+<td><p>The last segment in the template</p></td>
+</tr>
+<tr class="row-even"><td><p>256</p></td>
+<td><p>0x100</p></td>
+<td><p>Secondary alignment</p></td>
+</tr>
+<tr class="row-odd"><td><p>512</p></td>
+<td><p>0x200</p></td>
+<td><p>Not passing filters, such as platform/vendor quality controls</p></td>
+</tr>
+<tr class="row-even"><td><p>1024</p></td>
+<td><p>0x400</p></td>
+<td><p>PCR or optical duplicate</p></td>
+</tr>
+<tr class="row-odd"><td><p>2048</p></td>
+<td><p>0x800</p></td>
+<td><p>Supplementary alignment</p></td>
 </tr>
 </tbody>
 </table>
-<p>1     0x1    Template having multiple segments in sequencing
-2     0x2    Each segment properly aligned according to the aligner
-4     0x4    Segment unmapped
-8     0x8    Next segment in the template unmapped
-16    0x10   SEQ being reverse complemented
-32    0x20   SEQ of the next segment in the template being reverse complemented
-64    0x40   The first segment in the template
-128   0x80   The last segment in the template
-256   0x100  Secondary alignment
-512   0x200  Not passing filters, such as platform/vendor quality controls
-1024  0x400  PCR or optical duplicate
-2048  0x800  Supplementary alignment
-====  =====  ==================================================================</p>
 </dd></dl>
 
 <dl class="function">
@@ -2590,7 +2627,7 @@ the 5th argument of the function signature.</p>
 <p>The third form a submission can take is through using a SAM-formatted string. An
 example SAM-formatted string looks like ‘chr1:10-100’. As many users also copy &amp;
 paste directly from tab-delimited files, such as BED files, a SAM-formatted string
-can take the form of ‘chr1t10t100’ where ‘t’ indicates a tab space.</p>
+can take the form of ‘chr1\t10\t100’ where ‘\t’ indicates a tab space.</p>
 <p>Lastly, the <cite>until_eof</cite> switch allows users to take all items from their desired
 start position (be it the whole reference or a specific spot on the reference). Setting
 this to <cite>True</cite> (default: <cite>False</cite>) will pull all reads to the end of the reference or file,
@@ -2617,29 +2654,37 @@ whichever is first.</p>
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<p># Keyword-based
-&gt;&gt;&gt; parse_region(contig = ‘chr1’, start = 10, stop = 100)
-Roi(contig: chr1, start: 10, stop: 100)</p>
-<p># Using <cite>tid</cite> instead of <cite>contig</cite>
-&gt;&gt;&gt; parse_region(tid = 0, start = 10, stop = 100)
-Roi(tid: 0, start: 10, stop: 100)</p>
-<p># Positional arguments
-&gt;&gt;&gt; parse_region(‘chr1’, 10, 100)
-Roi(contig: chr1, start: 10, stop: 100)</p>
-<p># SAM-formatted string (keyword)
-&gt;&gt;&gt; parse_region(region = ‘chr1:10-100’)
-Roi(contig: chr1, start: 10, stop: 100)</p>
-<p># SAM-formatted string (positional)
-&gt;&gt;&gt; parse_region(‘chr1:10-100’)
-Roi(contig: chr1, start: 10, stop: 100)</p>
-<p># Tab-delimited region string
-&gt;&gt;&gt; parse_region(‘chr1t10t100’)
-Roi(contig: chr1, start: 10, stop: 100)</p>
-<p># Contradictory synonyms
-&gt;&gt;&gt; parse_region(reference=’chr1’, contig=’chr10’, start=10, stop = 100)
-Traceback (most recent call last):
-…
-ValueError: either contig or reference must be set, not both</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Keyword-based</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parse_region</span><span class="p">(</span><span class="n">contig</span> <span class="o">=</span> <span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">stop</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">Roi</span><span class="p">(</span><span class="n">contig</span><span class="p">:</span> <span class="n">chr1</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Using `tid` instead of `contig`</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parse_region</span><span class="p">(</span><span class="n">tid</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">start</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span> <span class="n">stop</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">Roi</span><span class="p">(</span><span class="n">tid</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Positional arguments</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parse_region</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">Roi</span><span class="p">(</span><span class="n">contig</span><span class="p">:</span> <span class="n">chr1</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># SAM-formatted string (keyword)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parse_region</span><span class="p">(</span><span class="n">region</span> <span class="o">=</span> <span class="s1">&#39;chr1:10-100&#39;</span><span class="p">)</span>
+<span class="n">Roi</span><span class="p">(</span><span class="n">contig</span><span class="p">:</span> <span class="n">chr1</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># SAM-formatted string (positional)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parse_region</span><span class="p">(</span><span class="s1">&#39;chr1:10-100&#39;</span><span class="p">)</span>
+<span class="n">Roi</span><span class="p">(</span><span class="n">contig</span><span class="p">:</span> <span class="n">chr1</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Tab-delimited region string</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parse_region</span><span class="p">(</span><span class="s1">&#39;chr1</span><span class="se">\\</span><span class="s1">t10</span><span class="se">\\</span><span class="s1">t100&#39;</span><span class="p">)</span>
+<span class="n">Roi</span><span class="p">(</span><span class="n">contig</span><span class="p">:</span> <span class="n">chr1</span><span class="p">,</span> <span class="n">start</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="n">stop</span><span class="p">:</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># Contradictory synonyms</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">parse_region</span><span class="p">(</span><span class="n">reference</span><span class="o">=</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="n">contig</span><span class="o">=</span><span class="s1">&#39;chr10&#39;</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">stop</span> <span class="o">=</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+<span class="o">...</span>
+<span class="ne">ValueError</span><span class="p">:</span> <span class="n">either</span> <span class="n">contig</span> <span class="ow">or</span> <span class="n">reference</span> <span class="n">must</span> <span class="n">be</span> <span class="nb">set</span><span class="p">,</span> <span class="ow">not</span> <span class="n">both</span>
+</pre></div>
+</div>
 </dd></dl>
 
 <dl class="function">
