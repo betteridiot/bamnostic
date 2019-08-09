@@ -334,8 +334,8 @@ class BamReader(bgzf.BgzfReader):
                 self._index = bai.Bai(self._index_path)
 
             self.__nocoordinate = self._index.n_no_coor
-            self.__mapped = sum(self._index.unmapped[mapped].n_mapped for mapped in self._index.unmapped) + self.nocoordinate
-            self.__unmapped = sum(self._index.unmapped[unmapped].n_unmapped for unmapped in self._index.unmapped) + self.nocoordinate
+            self.__mapped = sum(self._index.unmapped[mapped].n_mapped for mapped in self._index.unmapped) + (self.nocoordinate if self.nocoordinate is not None else 0)
+            self.__unmapped = sum(self._index.unmapped[unmapped].n_unmapped for unmapped in self._index.unmapped) + (self.nocoordinate if self.nocoordinate is not None else 0)
 
     @property
     def nocoordinate(self):
