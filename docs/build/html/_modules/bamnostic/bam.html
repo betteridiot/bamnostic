@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.bam &mdash; bamnostic 1.1.0
+  <title>bamnostic.bam &mdash; bamnostic 1.1.2
  documentation</title>
   
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.1.0
+                1.1.2
 
               </div>
             
@@ -483,15 +483,21 @@
         <span class="sd">&quot;&quot;&quot;Initialize the index file (BAI)&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_idx</span><span class="p">:</span>
-            <span class="c1">#self._index = bamnostic.bai.Bai(self._index_path)</span>
-            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_ext</span> <span class="o">==</span> <span class="s1">&#39;csi&#39;</span><span class="p">:</span>
+            <span class="c1"># self._index = bamnostic.bai.Bai(self._index_path)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_ext</span> <span class="o">==</span> <span class="s2">&quot;csi&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">csi</span><span class="o">.</span><span class="n">Csi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_path</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_ext</span> <span class="o">==</span> <span class="s1">&#39;bai&#39;</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index_ext</span> <span class="o">==</span> <span class="s2">&quot;bai&quot;</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_index</span> <span class="o">=</span> <span class="n">bai</span><span class="o">.</span><span class="n">Bai</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index_path</span><span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">__nocoordinate</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">n_no_coor</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__mapped</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">[</span><span class="n">mapped</span><span class="p">]</span><span class="o">.</span><span class="n">n_mapped</span> <span class="k">for</span> <span class="n">mapped</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nocoordinate</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">__unmapped</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">[</span><span class="n">unmapped</span><span class="p">]</span><span class="o">.</span><span class="n">n_unmapped</span> <span class="k">for</span> <span class="n">unmapped</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">)</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nocoordinate</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__mapped</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">[</span><span class="n">mapped</span><span class="p">]</span><span class="o">.</span><span class="n">n_mapped</span>
+                <span class="k">for</span> <span class="n">mapped</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span>
+            <span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__nocoordinate</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nocoordinate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__unmapped</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span><span class="p">[</span><span class="n">unmapped</span><span class="p">]</span><span class="o">.</span><span class="n">n_unmapped</span>
+                <span class="k">for</span> <span class="n">unmapped</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_index</span><span class="o">.</span><span class="n">unmapped</span>
+            <span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__nocoordinate</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nocoordinate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span><span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span> <span class="nf">nocoordinate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -519,7 +525,7 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            (int): sum of unmapped reads and reads without coordinates</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__unmapped</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">nocoordinate</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__unmapped</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nocoordinate</span>
 
     <span class="k">def</span> <span class="nf">_check_sq</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Inspect BAM file for @SQ entries within the header</span>

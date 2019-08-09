@@ -337,11 +337,11 @@ class BamReader(bgzf.BgzfReader):
             self.__mapped = sum(
                 self._index.unmapped[mapped].n_mapped
                 for mapped in self._index.unmapped
-            ) + (self.nocoordinate if self.nocoordinate is not None else 0)
+            ) + (self.__nocoordinate if self.__nocoordinate is not None else 0)
             self.__unmapped = sum(
                 self._index.unmapped[unmapped].n_unmapped
                 for unmapped in self._index.unmapped
-            ) + (self.nocoordinate if self.nocoordinate is not None else 0)
+            ) + (self.__nocoordinate if self.__nocoordinate is not None else 0)
 
     @property
     def nocoordinate(self):
@@ -369,7 +369,7 @@ class BamReader(bgzf.BgzfReader):
         Returns:
             (int): sum of unmapped reads and reads without coordinates
         """
-        return self.__unmapped + self.nocoordinate
+        return self.__unmapped + self.__nocoordinate
 
     def _check_sq(self):
         """ Inspect BAM file for @SQ entries within the header
