@@ -550,7 +550,7 @@ class BamReader(bgzf.BgzfReader):
         # Inclusive, exclusive. This means if start and stop are
         # the same, then the user is *essentially* looking at nothing
         # e.g. a = "abc"; print(a[1:1]) -> ''
-        if start == stop:
+        if start is not None and start == stop:
             return
 
         if not self._random_access:
@@ -576,6 +576,8 @@ class BamReader(bgzf.BgzfReader):
                 raise KeyError('{} was not found in the file header'.format(query.contig))
 
         try:
+            if query.start is None:
+                query.start = 0
             if query.start > self._header.refs[query.tid][1]:
                 raise ValueError('Genomic region out of bounds.')
             if query.stop is None:
