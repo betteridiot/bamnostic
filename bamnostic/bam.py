@@ -823,7 +823,7 @@ class BamReader(bgzf.BgzfReader):
                             elif base == 'G':
                                 guanine[index - start if index-start > 0 else 0] += 1
                             elif base == 'C':
-                                guanine[index - start if index-start > 0 else 0] += 1
+                                cytosine[index - start if index-start > 0 else 0] += 1
                             elif base == 'T':
                                 thymine[index - start if index-start > 0 else 0] += 1
                             else:
