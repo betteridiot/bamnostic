@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic package &mdash; bamnostic 1.1.2
+  <title>bamnostic package &mdash; bamnostic 1.1.4
  documentation</title>
   
 
@@ -62,7 +62,7 @@
             
             
               <div class="version">
-                1.1.2
+                1.1.4
 
               </div>
             
@@ -1370,16 +1370,16 @@ AlignmentFile.count_coverage(‘chr1’)</p>
 <span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">bam</span><span class="o">.</span><span class="n">count_coverage</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">):</span> <span class="c1"># doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;array(&#39;</span><span class="si">{}</span><span class="s2">&#39;, </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">typecode</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">arr</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))))</span>
 <span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])</span>
-<span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])</span>
-<span class="go">array(&#39;L&#39;, [1, 1, 2, 2, ..., 15, 0, 14, 0, 14])</span>
+<span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 15, 0, 14, 0, 0])</span>
+<span class="go">array(&#39;L&#39;, [1, 1, 2, 2, ..., 0, 0, 0, 0, 14])</span>
 <span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 15, 0, 14, 0])</span>
 </pre></div>
 </div>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">bam</span><span class="o">.</span><span class="n">count_coverage</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">quality_threshold</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">base_quality_threshold</span><span class="o">=</span><span class="mi">25</span><span class="p">):</span> <span class="c1"># doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE</span>
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;array(&#39;</span><span class="si">{}</span><span class="s2">&#39;, </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">typecode</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">arr</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))))</span>
 <span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])</span>
-<span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])</span>
-<span class="go">array(&#39;L&#39;, [1, 1, 2, 2, ..., 13, 0, 14, 0, 13])</span>
+<span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 13, 0, 14, 0, 0])</span>
+<span class="go">array(&#39;L&#39;, [1, 1, 2, 2, ..., 0, 0, 0, 0, 13])</span>
 <span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 14, 0, 13, 0])</span>
 </pre></div>
 </div>

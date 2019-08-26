@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.bam &mdash; bamnostic 1.1.2
+  <title>bamnostic.bam &mdash; bamnostic 1.1.4
  documentation</title>
   
 
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.1.2
+                1.1.4
 
               </div>
             
@@ -706,7 +706,7 @@
         <span class="c1"># Inclusive, exclusive. This means if start and stop are</span>
         <span class="c1"># the same, then the user is *essentially* looking at nothing</span>
         <span class="c1"># e.g. a = &quot;abc&quot;; print(a[1:1]) -&gt; &#39;&#39;</span>
-        <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="n">stop</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">start</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">start</span> <span class="o">==</span> <span class="n">stop</span><span class="p">:</span>
             <span class="k">return</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_random_access</span><span class="p">:</span>
@@ -732,6 +732,8 @@
                 <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> was not found in the file header&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">query</span><span class="o">.</span><span class="n">contig</span><span class="p">))</span>
 
         <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">start</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">query</span><span class="o">.</span><span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">start</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="n">query</span><span class="o">.</span><span class="n">tid</span><span class="p">][</span><span class="mi">1</span><span class="p">]:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Genomic region out of bounds.&#39;</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">query</span><span class="o">.</span><span class="n">stop</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -943,15 +945,15 @@
 <span class="sd">            &gt;&gt;&gt; for arr in bam.count_coverage(&#39;chr1&#39;, 100, 150): # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE</span>
 <span class="sd">            ...     print(&quot;array(&#39;{}&#39;, {})&quot;.format(arr.typecode, list(map(int, arr.tolist()))))</span>
 <span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])</span>
-<span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])</span>
-<span class="sd">            array(&#39;L&#39;, [1, 1, 2, 2, ..., 15, 0, 14, 0, 14])</span>
+<span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 15, 0, 14, 0, 0])</span>
+<span class="sd">            array(&#39;L&#39;, [1, 1, 2, 2, ..., 0, 0, 0, 0, 14])</span>
 <span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 15, 0, 14, 0])</span>
 
 <span class="sd">            &gt;&gt;&gt; for arr in bam.count_coverage(&#39;chr1&#39;, 100, 150, quality_threshold=20, base_quality_threshold=25): # doctest: +ELLIPSIS, +NORMALIZE_WHITESPACE</span>
 <span class="sd">            ...     print(&quot;array(&#39;{}&#39;, {})&quot;.format(arr.typecode, list(map(int, arr.tolist()))))</span>
 <span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])</span>
-<span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])</span>
-<span class="sd">            array(&#39;L&#39;, [1, 1, 2, 2, ..., 13, 0, 14, 0, 13])</span>
+<span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 13, 0, 14, 0, 0])</span>
+<span class="sd">            array(&#39;L&#39;, [1, 1, 2, 2, ..., 0, 0, 0, 0, 13])</span>
 <span class="sd">            array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 14, 0, 13, 0])</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -977,7 +979,7 @@
                             <span class="k">elif</span> <span class="n">base</span> <span class="o">==</span> <span class="s1">&#39;G&#39;</span><span class="p">:</span>
                                 <span class="n">guanine</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="n">start</span> <span class="k">if</span> <span class="n">index</span><span class="o">-</span><span class="n">start</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                             <span class="k">elif</span> <span class="n">base</span> <span class="o">==</span> <span class="s1">&#39;C&#39;</span><span class="p">:</span>
-                                <span class="n">guanine</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="n">start</span> <span class="k">if</span> <span class="n">index</span><span class="o">-</span><span class="n">start</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="n">cytosine</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="n">start</span> <span class="k">if</span> <span class="n">index</span><span class="o">-</span><span class="n">start</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                             <span class="k">elif</span> <span class="n">base</span> <span class="o">==</span> <span class="s1">&#39;T&#39;</span><span class="p">:</span>
                                 <span class="n">thymine</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="n">start</span> <span class="k">if</span> <span class="n">index</span><span class="o">-</span><span class="n">start</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
                             <span class="k">else</span><span class="p">:</span>
