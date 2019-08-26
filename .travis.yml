@@ -13,8 +13,6 @@ matrix:
   - python: 3.7
     dist: xenial
     sudo: true
-before_install:
-- chmod +x .travis/push.sh
 install:
 # - git clone https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
 # - cd $TRAVIS_REPO_SLUG
