@@ -6,13 +6,11 @@ python:
 - '3.4'
 - '3.5'
 - '3.6'
+- '3.7'
+- '3.8'
+- '3.9'
 - pypy
 - pypy3.5
-matrix:
-  include:
-  - python: 3.7
-    dist: xenial
-    sudo: true
 install:
 # - git clone https://github.com/$TRAVIS_REPO_SLUG.git $TRAVIS_REPO_SLUG
 # - cd $TRAVIS_REPO_SLUG
