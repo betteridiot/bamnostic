@@ -293,7 +293,7 @@ def parse_region(contig=None, start=None, stop=None, region=None,
 
     Examples:
         .. code-block:: python
-        
+
             # Keyword-based
             >>> parse_region(contig = 'chr1', start = 10, stop = 100)
             Roi(contig: chr1, start: 10, stop: 100)
@@ -358,7 +358,7 @@ def parse_region(contig=None, start=None, stop=None, region=None,
 
     return query
 
-def unpack(fmt, _io):
+def unpack(fmt, _io, is_sequence=False):
     """Utility function for unpacking binary data from file object or byte
     stream.
 
@@ -382,7 +382,7 @@ def unpack(fmt, _io):
     except:
         # if it is a file object
         out = struct.unpack(fmt, _io.read(size))
-    if len(out) > 1:
+    if len(out) > 1 or is_sequence:
         return out
     else:
         return out[0]
@@ -446,7 +446,7 @@ class LruDict(OrderedDict):
     def __init__(self, *args, **kwargs):
         """ Initialize the dictionary based on collections.OrderedDict. This
         is built of the basic `OrderedDict`. The major difference in instantiation
-        is the usage of the `max_cache` argument. This sets the dictionary size 
+        is the usage of the `max_cache` argument. This sets the dictionary size
         to be used.
 
         Args:
@@ -512,7 +512,7 @@ class LruDict(OrderedDict):
             link[0] = root
             link[1] = first
             first[0] = soft_link
-            root[1] = link 
+            root[1] = link
 
     def update(self, others):
         """ Same as a regular `dict.update`, however, since pypy's `dict.update`

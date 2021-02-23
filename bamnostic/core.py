@@ -142,12 +142,12 @@ class AlignmentFile(bam.BamReader, bam.BamWriter):
         kwargs.pop('self')
 
         assert 'b' in mode.lower(), 'BAM files must be used in binary mode'
-        
+
         write_modes = ['w', 'a', 'x', 'r+']
 
         # Check if user wants to write a BAM file
         if any([wm in mode.lower() for wm in write_modes]):
-            write_args = ('filepath_or_object', 'mode', 'compresslevel', 
+            write_args = ('filepath_or_object', 'mode', 'compresslevel',
                         'ignore_overwrite', 'copy_header', 'header',
                         'reference_names', 'reference_lengths')
             wargs = {}
@@ -189,8 +189,8 @@ class AlignedSegment(object):
         bsize_buffer = self._io.read(4)
         try:
             block_size = unpack_int32(bsize_buffer)[0]
-        
-        # Check for EOF: If the cursor is at the end of file, read() will return 
+
+        # Check for EOF: If the cursor is at the end of file, read() will return
         # an empty byte string.
         except struct.error:
             if all([not bsize_buffer, not self._io._handle.read()]):
@@ -223,7 +223,7 @@ class AlignedSegment(object):
 
         # Iteratively pull out the tags for the given aligned segment
         self._tag_builder()
-        
+
         # Process the CIGAR: accounts for CIGAR strings > 65535 operations
         self._decode_cigar()
 
@@ -349,7 +349,7 @@ class AlignedSegment(object):
             self.seq = "*"
         else:
             self._byte_seq = unpack(
-                "<{}B".format((self.l_seq + 1) // 2), byte_data
+                "<{}B".format((self.l_seq + 1) // 2), byte_data, is_sequence=True
             )
             self.seq = "".join(
                 [
@@ -372,7 +372,7 @@ class AlignedSegment(object):
         """
         if self.seq != "*":
             self._raw_qual = unpack(
-                "<{}s".format(self.l_seq), self._range_popper(self.l_seq)
+                "<{}s".format(self.l_seq), self._range_popper(self.l_seq), is_sequence=True
             )
 
             self.query_qualities = array("B")
