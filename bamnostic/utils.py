@@ -818,3 +818,5 @@ def cigar_alignment(seq=None, cigar=None, start_pos = 0, qualities=None, base_qu
             last_cigar_pos += n_ops
         else:
             raise ValueError('Invalid CIGAR string: {}'.format(op))
+
+            
