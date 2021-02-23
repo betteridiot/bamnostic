@@ -129,27 +129,48 @@ class AlignmentFile(bam.BamReader, bam.BamWriter):
 
     """
 
-    def __init__(self, filepath_or_object, mode="rb", max_cache=128, index_filename=None,
-                 filename=None, check_header=False, check_sq=True, reference_filename=None,
-                 filepath_index=None, require_index=False, duplicate_filehandle=None,
-                 ignore_truncation=False, compresslevel = 6, ignore_overwrite = False,
-                copy_header = None, header = b'', reference_names = None, reference_lengths = None):
-        """Initialize the class.
-
-        """
+    def __init__(
+        self,
+        filepath_or_object,
+        mode="rb",
+        max_cache=128,
+        index_filename=None,
+        filename=None,
+        check_header=False,
+        check_sq=True,
+        reference_filename=None,
+        filepath_index=None,
+        require_index=False,
+        duplicate_filehandle=None,
+        ignore_truncation=False,
+        compresslevel=6,
+        ignore_overwrite=False,
+        copy_header=None,
+        header=b"",
+        reference_names=None,
+        reference_lengths=None,
+    ):
+        """Initialize the class."""
 
         kwargs = locals()
-        kwargs.pop('self')
+        kwargs.pop("self")
 
-        assert 'b' in mode.lower(), 'BAM files must be used in binary mode'
-        
-        write_modes = ['w', 'a', 'x', 'r+']
+        assert "b" in mode.lower(), "BAM files must be used in binary mode"
+
+        write_modes = ["w", "a", "x", "r+"]
 
         # Check if user wants to write a BAM file
         if any([wm in mode.lower() for wm in write_modes]):
-            write_args = ('filepath_or_object', 'mode', 'compresslevel', 
-                        'ignore_overwrite', 'copy_header', 'header',
-                        'reference_names', 'reference_lengths')
+            write_args = (
+                "filepath_or_object",
+                "mode",
+                "compresslevel",
+                "ignore_overwrite",
+                "copy_header",
+                "header",
+                "reference_names",
+                "reference_lengths",
+            )
             wargs = {}
             for key in write_args:
                 try:
@@ -159,10 +180,20 @@ class AlignmentFile(bam.BamReader, bam.BamWriter):
             bam.BamWriter.__init__(self, **wargs)
 
         else:
-            read_args = ('filepath_or_object', 'mode', 'max_cache', 'index_filename',
-                'filename', 'check_header', 'check_sq', 'reference_filename',
-                'filepath_index', 'require_index', 'duplicate_filehandle',
-                'ignore_truncation')
+            read_args = (
+                "filepath_or_object",
+                "mode",
+                "max_cache",
+                "index_filename",
+                "filename",
+                "check_header",
+                "check_sq",
+                "reference_filename",
+                "filepath_index",
+                "require_index",
+                "duplicate_filehandle",
+                "ignore_truncation",
+            )
             rargs = {}
             for key in read_args:
                 try:
@@ -189,8 +220,8 @@ class AlignedSegment(object):
         bsize_buffer = self._io.read(4)
         try:
             block_size = unpack_int32(bsize_buffer)[0]
-        
-        # Check for EOF: If the cursor is at the end of file, read() will return 
+
+        # Check for EOF: If the cursor is at the end of file, read() will return
         # an empty byte string.
         except struct.error:
             if all([not bsize_buffer, not self._io._handle.read()]):
@@ -223,7 +254,7 @@ class AlignedSegment(object):
 
         # Iteratively pull out the tags for the given aligned segment
         self._tag_builder()
-        
+
         # Process the CIGAR: accounts for CIGAR strings > 65535 operations
         self._decode_cigar()
 
@@ -349,7 +380,7 @@ class AlignedSegment(object):
             self.seq = "*"
         else:
             self._byte_seq = unpack(
-                "<{}B".format((self.l_seq + 1) // 2), byte_data
+                "<{}B".format((self.l_seq + 1) // 2), byte_data, is_array=True
             )
             self.seq = "".join(
                 [
