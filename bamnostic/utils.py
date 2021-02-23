@@ -358,7 +358,7 @@ def parse_region(contig=None, start=None, stop=None, region=None,
 
     return query
 
-def unpack(fmt, _io, is_sequence=False):
+def unpack(fmt, _io, is_array=False):
     """Utility function for unpacking binary data from file object or byte
     stream.
 
@@ -382,7 +382,7 @@ def unpack(fmt, _io, is_sequence=False):
     except:
         # if it is a file object
         out = struct.unpack(fmt, _io.read(size))
-    if len(out) > 1 or is_sequence:
+    if len(out) > 1 or is_array:
         return out
     else:
         return out[0]

@@ -349,7 +349,7 @@ class AlignedSegment(object):
             self.seq = "*"
         else:
             self._byte_seq = unpack(
-                "<{}B".format((self.l_seq + 1) // 2), byte_data, is_sequence=True
+                "<{}B".format((self.l_seq + 1) // 2), byte_data, is_array=True
             )
             self.seq = "".join(
                 [
