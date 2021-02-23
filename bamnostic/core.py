@@ -372,7 +372,7 @@ class AlignedSegment(object):
         """
         if self.seq != "*":
             self._raw_qual = unpack(
-                "<{}s".format(self.l_seq), self._range_popper(self.l_seq), is_sequence=True
+                "<{}s".format(self.l_seq), self._range_popper(self.l_seq)
             )
 
             self.query_qualities = array("B")
