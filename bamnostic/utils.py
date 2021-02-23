@@ -60,6 +60,7 @@ import numbers
 import warnings
 import re
 
+
 def format_warnings(message, category, filename, lineno, file=None, line=None):
     r"""Sets STDOUT warnings
 
@@ -79,6 +80,7 @@ warnings.formatwarning = format_warnings
 # pre-compiled structures to reduce iterative unpacking
 unpack_int32 = struct.Struct('<i').unpack
 unpack_int32L = struct.Struct('<l').unpack
+
 
 # Helper class for performant named indexing of region of interests
 class Roi(object):
@@ -122,6 +124,7 @@ class Roi(object):
 
     def __str__(self):
         return self.__repr__()
+
 
 def flag_decode(flag_code):
     r"""Simple read alignment flag decoder
@@ -180,6 +183,7 @@ def flag_decode(flag_code):
         raise ValueError('Provided flag is not a valid entry')
     return sorted([(key, flags[key]) for key in flags if key & code])
 
+
 def yes_no(message):
     """ Simple prompt parser"""
     yes = set(['yes', 'ye', 'y', ''])
@@ -193,6 +197,7 @@ def yes_no(message):
             return False
         else:
             print('Please answer "Yes" or "No"')
+
 
 def filter_read(read, read_callback='all'):
 
@@ -210,6 +215,7 @@ def filter_read(read, read_callback='all'):
     else:
         raise RuntimeError('read_callback should be "all", "nofilter", or a custom function that returns a boolean')
 
+
 def _parse_sam_region(region):
     """ Splits and casts SAM-formatted regions"""
     sam_region = ':'.join(region.split()).replace('-', ':').split(':')
@@ -218,6 +224,7 @@ def _parse_sam_region(region):
     for i, arg in enumerate(sam_region[1:]):
         sam_region[i + 1] = int(arg)
     return sam_region
+
 
 def _handle_split_region(split_roi, until_eof=False):
     """ Checks format against `until_eof` and creates the Roi object
@@ -248,6 +255,7 @@ def _handle_split_region(split_roi, until_eof=False):
         return Roi(*split_roi)
     else:
         raise ValueError('improper region format')
+
 
 def parse_region(contig=None, start=None, stop=None, region=None,
                  tid=None, reference=None, end=None, until_eof=False):
@@ -358,6 +366,7 @@ def parse_region(contig=None, start=None, stop=None, region=None,
 
     return query
 
+
 def unpack(fmt, _io, is_array=False):
     """Utility function for unpacking binary data from file object or byte
     stream.
@@ -386,6 +395,7 @@ def unpack(fmt, _io, is_array=False):
         return out
     else:
         return out[0]
+
 
 def make_virtual_offset(block_start_offset, within_block_offset):
     """Compute a BGZF virtual offset from block start and within block offsets.
@@ -422,6 +432,7 @@ def make_virtual_offset(block_start_offset, within_block_offset):
         raise ValueError("Require 0 <= block_start_offset < 2**48, got %i" %
                          block_start_offset)
     return (block_start_offset << 16) | within_block_offset
+
 
 def split_virtual_offset(virtual_offset):
     """Divides a 64-bit BGZF virtual offset into block start & within block offsets.
@@ -570,6 +581,7 @@ _CIGAR_OPS = {'M': ('BAM_CMATCH', 0),
               'X': ('BAM_CDIFF', 8),
               'B': ('BAM_CBACK', 9)}
 
+
 def parse_cigar(cigar_str):
     """Parses a CIGAR string and turns it into a list of tuples
 
@@ -597,6 +609,7 @@ def parse_cigar(cigar_str):
         cigar_array.append((op, n_ops))
     return cigar_array
 
+
 def check_cigar_arg(cigar):
     """ Checks to make sure CIGAR arugment is valid.
 
@@ -616,6 +629,7 @@ def check_cigar_arg(cigar):
     else:
         raise ValueError('CIGAR must be string or list of tuples of cigar operations (by ID) and number of operations')
     return cigar
+
 
 def cigar_changes(seq, cigar):
     """Recreates the reference sequence to the extent that the CIGAR string can
@@ -661,6 +675,7 @@ def cigar_changes(seq, cigar):
             raise ValueError('Invalid CIGAR string: {}'.format(op))
     return cigar_formatted_ref
 
+
 def md_changes(seq, md_tag):
     """Recreates the reference sequence of a given alignment to the extent that the
     MD tag can represent.
@@ -705,6 +720,7 @@ def md_changes(seq, md_tag):
         else:
             pass
     return ref_seq
+
 
 def ref_gen(seq, cigar_string, md_tag):
     """Recreates the reference sequence associated with the given segment.
@@ -753,6 +769,7 @@ def ref_gen(seq, cigar_string, md_tag):
 
     """
     return md_changes(cigar_changes(seq, cigar_string), md_tag)
+
 
 def cigar_alignment(seq=None, cigar=None, start_pos = 0, qualities=None, base_qual_thresh=0, query=False):
     """Use the CIGAR to filter out all unaligned data bases
@@ -818,5 +835,3 @@ def cigar_alignment(seq=None, cigar=None, start_pos = 0, qualities=None, base_qu
             last_cigar_pos += n_ops
         else:
             raise ValueError('Invalid CIGAR string: {}'.format(op))
-
-            
