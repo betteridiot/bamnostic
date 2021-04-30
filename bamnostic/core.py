@@ -299,9 +299,12 @@ class AlignedSegment(object):
 
         self.flag = self._flag_nc >> 16
         self._n_cigar_op = self._flag_nc & 0xFFFF
-        self.l_seq, self.next_refID, self.next_pos, self.tlen = _unpack_lseq_nrid_npos_tlen(
-            self._range_popper(16)
-        )
+        (
+            self.l_seq,
+            self.next_refID,
+            self.next_pos,
+            self.tlen,
+        ) = _unpack_lseq_nrid_npos_tlen(self._range_popper(16))
 
         self.read_name = unpack(
             "<{}s".format(self._l_read_name),
@@ -309,6 +312,7 @@ class AlignedSegment(object):
         ).decode()[:-1]
 
         self.tid = self.reference_id = self.refID
+        self.reference_name = "*"
         try:
             self.reference_name = self._io._header.refs[self.refID][0]
         except KeyError:
