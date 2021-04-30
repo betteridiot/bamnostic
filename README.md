@@ -215,3 +215,12 @@ If you use bamnostic in your analyses, please consider citing [Li et al (2009)](
 ***
 ## Community Guidelines:
 Eagerly accepting PRs for improvements, optimizations, or features. For any questions or issues, please feel free to make a post to bamnostic's [Issue tracker](https://github.com/betteridiot/bamnostic/issues) on github or read over our [CONTRIBUTING](https://github.com/betteridiot/bamnostic/blob/master/CONTRIBUTING.md) documentation.
+
+***
+## Commmunity Contributors:
+Below you will find a list of contributors and it acts as a small token of my gratitude to the community that has helped support this project.
+1. [@GeekLogan](https://github.com/GeekLogan)
+2. [@giesselmann](https://github.com/giesselmann)
+3. [@olgabot](https://github.com/olgabot)
+4. [@OliverVoogd](https://github.com/OliverVoogd)
+5. [@gmat](https://github.com/gmat)
