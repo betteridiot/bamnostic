@@ -309,6 +309,7 @@ class AlignedSegment(object):
         ).decode()[:-1]
 
         self.tid = self.reference_id = self.refID
+        self.reference_name = "*"
         try:
             self.reference_name = self._io._header.refs[self.refID][0]
         except KeyError:
