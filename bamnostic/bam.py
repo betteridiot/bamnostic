@@ -298,7 +298,7 @@ class BamReader(bgzf.BgzfReader):
 
         if index_filename is None:
             for ext in ('csi', 'bai'):
-                possible_index_path = r'./{}.{}'.format(os.path.relpath(self._handle.name), ext)
+                possible_index_path = r'{}.{}'.format(os.path.abspath(self._handle.name), ext)
                 if os.path.isfile(possible_index_path):
                     self._index_path = possible_index_path
                     self._random_access = True
