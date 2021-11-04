@@ -1,0 +1,10 @@
+name: docs
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - sphinx
+  - nbsphinx
+  - docutils<0.18
+  - pip:
+    - sphinx_rtd_theme
