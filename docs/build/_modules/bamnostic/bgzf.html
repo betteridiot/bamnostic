@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bamnostic.bgzf &mdash; bamnostic 1.1.8
+ documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> bamnostic
+          </a>
+              <div class="version">
+                1.1.8
+
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../bamnostic.html">Module documentation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../support.html">Citation and Support</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">bamnostic</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>bamnostic.bgzf</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for bamnostic.bgzf</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">zlib</span>
+<span class="kn">import</span> <span class="nn">struct</span>
+<span class="kn">import</span> <span class="nn">io</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">array</span>
+<span class="kn">import</span> <span class="nn">re</span>
+
+<span class="kn">import</span> <span class="nn">bamnostic</span>
+<span class="kn">from</span> <span class="nn">bamnostic.utils</span> <span class="kn">import</span> <span class="o">*</span>
+
+<span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span>
+
+<span class="k">if</span> <span class="n">_PY_VERSION</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="nb">open</span>
+
+
+<span class="k">def</span> <span class="nf">_format_warnings</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Warning formatter</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        message: warning message</span>
+<span class="sd">        category (str): level of warning</span>
+<span class="sd">        filename (str): path for warning output</span>
+<span class="sd">        lineno (int): Where the warning originates</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Formatted warning for logging purposes</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s1">&#39; </span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">message</span><span class="p">)</span>
+
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span> <span class="o">=</span> <span class="n">_format_warnings</span>
+
+<span class="c1"># Constants used in BGZF format</span>
+<span class="n">_bgzf_magic</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x1f\x8b\x08\x04</span><span class="s2">&quot;</span>  <span class="c1"># First 4 bytes of BAM file</span>
+<span class="n">_bgzf_header</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00\x42\x43\x02\x00</span><span class="s2">&quot;</span>  <span class="c1"># Ideal GZIP header</span>
+<span class="n">_bgzf_eof</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;</span><span class="se">\x1f\x8b\x08\x04\x00\x00\x00\x00\x00\xff\x06\x00</span><span class="s2">BC</span><span class="se">\x02\x00\x1b\x00\x03\x00\x00\x00\x00\x00\x00\x00\x00\x00</span><span class="s2">&quot;</span>  <span class="c1"># 28 null byte signature at the end of a non-truncated BAM file</span>
+<span class="n">_bytes_BC</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;BC&quot;</span>  <span class="c1"># &quot;Payload&quot; or Subfield Identifiers 1 &amp; 2 of GZIP header</span>
+
+
+<span class="k">def</span> <span class="nf">_as_bytes</span><span class="p">(</span><span class="n">s</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Used to ensure string is treated as bytes</span>
+
+<span class="sd">    The output</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        s (str): string to convert to bytes</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        byte-encoded string</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; str(_as_bytes(&#39;Hello, World&#39;).decode()) # Duck typing to check for byte-type object</span>
+<span class="sd">        &#39;Hello, World&#39;</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">s</span>
+    <span class="k">return</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;latin_1&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># Helper compiled structures</span>
+<span class="n">unpack_gzip_header</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;4BI2BH&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
+<span class="n">_gzip_header_size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="s1">&#39;&lt;4BI2BH&#39;</span><span class="p">)</span>
+
+<span class="n">unpack_subfields</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;2s2H&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
+<span class="n">_subfield_size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="s1">&#39;&lt;2s2H&#39;</span><span class="p">)</span>
+
+<span class="n">unpack_gzip_integrity</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;2I&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
+<span class="n">_integrity_size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="s1">&#39;&lt;2I&#39;</span><span class="p">)</span>
+
+<span class="n">unpack_bgzf_metaheader</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;4BI2BH2BH&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
+<span class="n">_metaheader_size</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">calcsize</span><span class="p">(</span><span class="s1">&#39;&lt;4BI2BH2BH&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_bgzf_metaheader</span><span class="p">(</span><span class="n">handle</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Pull out the metadata header for a BGZF block</span>
+
+<span class="sd">    BAM files essentially concatenated GZIP blocks put together into a cohesive file</span>
+<span class="sd">    format. The caveat to this is that the GZIP blocks are specially formatted to contain</span>
+<span class="sd">    metadata that indicates them as being part of a larger BAM file. Due to these specifications,</span>
+<span class="sd">    these blocks are identified as BGZF blocks. Listed below are those specifications. These</span>
+<span class="sd">    specifications can be found `here &lt;https://samtools.github.io/hts-specs/SAMv1.pdf&gt;`_.</span>
+
+<span class="sd">    The following GZIP fields are to have these expected values:</span>
+
+<span class="sd">    ==================== ===========  ===========</span>
+<span class="sd">    Field:               Label:       Exp.Value:</span>
+<span class="sd">    ==================== ===========  ===========</span>
+<span class="sd">    Identifier1          **ID1**      31</span>
+<span class="sd">    Identifier2          **ID2**      139</span>
+<span class="sd">    Compression Method   **CM**       8</span>
+<span class="sd">    Flags                **FLG**      4</span>
+<span class="sd">    Subfield Identifier1 **SI1**      66</span>
+<span class="sd">    Subfield Identifier2 **SI2**      67</span>
+<span class="sd">    Subfield Length      **SLEN**     2</span>
+<span class="sd">    ==================== ===========  ===========</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handle (:py:obj:`file`): Open BAM file object</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        :py:obj:`tuple` of (:py:obj:`tuple`, :py:obj:`bytes`): the unpacked metadata and its raw bytestring</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if the header does not match expected values</span>
+
+<span class="sd">    .. _here: https://samtools.github.io/hts-specs/SAMv1.pdf</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">meta_raw</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">_metaheader_size</span><span class="p">)</span>
+    <span class="n">meta</span> <span class="o">=</span> <span class="n">unpack_bgzf_metaheader</span><span class="p">(</span><span class="n">meta_raw</span><span class="p">)</span>
+    <span class="n">ID1</span><span class="p">,</span> <span class="n">ID2</span><span class="p">,</span> <span class="n">CM</span><span class="p">,</span> <span class="n">FLG</span><span class="p">,</span> <span class="n">MTIME</span><span class="p">,</span> <span class="n">XFL</span><span class="p">,</span> <span class="n">OS</span><span class="p">,</span> <span class="n">XLEN</span><span class="p">,</span> <span class="n">SI1</span><span class="p">,</span> <span class="n">SI2</span><span class="p">,</span> <span class="n">SLEN</span> <span class="o">=</span> <span class="n">meta</span>
+
+    <span class="c1"># check the header integrity</span>
+    <span class="n">checks</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">ID1</span> <span class="o">==</span> <span class="mi">31</span><span class="p">,</span>
+        <span class="n">ID2</span> <span class="o">==</span> <span class="mi">139</span><span class="p">,</span>
+        <span class="n">CM</span> <span class="o">==</span> <span class="mi">8</span><span class="p">,</span>
+        <span class="n">FLG</span> <span class="o">==</span> <span class="mi">4</span> <span class="p">,</span>
+        <span class="n">SI1</span> <span class="o">==</span> <span class="mi">66</span><span class="p">,</span>
+        <span class="n">SI2</span> <span class="o">==</span> <span class="mi">67</span><span class="p">,</span>
+        <span class="n">SLEN</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">checks</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Malformed BGZF block&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">meta</span><span class="p">,</span> <span class="n">meta_raw</span>
+
+
+<div class="viewcode-block" id="get_block"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.get_block">[docs]</a><span class="k">def</span> <span class="nf">get_block</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Pulls out entire GZIP block</span>
+
+<span class="sd">    Used primarily for copying the header block of a BAM file. However,</span>
+<span class="sd">    it can be used to copy any BGZF block within a BAM file that starts at</span>
+<span class="sd">    the given offset.</span>
+
+<span class="sd">    Note:</span>
+<span class="sd">        Does not progress file cursor position.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handle (:py:obj:`file`): open BAM file</span>
+<span class="sd">        offset (int): offset of BGZF block (default: 0)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Complete BGZF block</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if the BGZF block header is malformed</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; bam_header = get_block(bamnostic.example_bam)</span>
+<span class="sd">        &gt;&gt;&gt; try:</span>
+<span class="sd">        ...     bam_header.startswith(b&#39;\x1f\x8b\x08\x04&#39;)</span>
+<span class="sd">        ... except SyntaxError:</span>
+<span class="sd">        ...     bam_header.startswith(&#39;\x1f\x8b\x08\x04&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">):</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">name</span> <span class="c1"># get the raw file object, not wrapper</span>
+    <span class="k">elif</span> <span class="nb">type</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span> <span class="o">==</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="n">handle</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">header_handle</span><span class="p">:</span>
+        <span class="n">header_handle</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>  <span class="c1"># get to the start of the BGZF block</span>
+
+        <span class="c1"># Capture raw bytes of metadata header</span>
+        <span class="n">_</span><span class="p">,</span> <span class="n">meta_raw</span> <span class="o">=</span> <span class="n">_bgzf_metaheader</span><span class="p">(</span><span class="n">header_handle</span><span class="p">)</span>
+
+        <span class="n">BSIZE_raw</span> <span class="o">=</span> <span class="n">header_handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">BSIZE</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">,</span> <span class="n">BSIZE_raw</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># capture the CRC32 and ISIZE fields in addition to compressed data</span>
+        <span class="c1"># 6 = XLEN, 19 = spec offset, 8 = CRC32 &amp; ISIZE -&gt; -5</span>
+        <span class="n">block_tail</span> <span class="o">=</span> <span class="n">header_handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">BSIZE</span> <span class="o">-</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">meta_raw</span> <span class="o">+</span> <span class="n">BSIZE_raw</span> <span class="o">+</span> <span class="n">block_tail</span></div>
+
+
+<span class="k">def</span> <span class="nf">_load_bgzf_block</span><span class="p">(</span><span class="n">handle</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Load the next BGZF block of compressed data (PRIVATE).</span>
+
+<span class="sd">    BAM files essentially concatenated GZIP blocks put together into a cohesive file</span>
+<span class="sd">    format. The caveat to this is that the GZIP blocks are specially formatted to contain</span>
+<span class="sd">    metadata that indicates them as being part of a larger BAM file. Due to these specifications,</span>
+<span class="sd">    these blocks are identified as BGZF blocks.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        handle (:py:obj:`file`): open BAM file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        deflated GZIP data</span>
+
+<span class="sd">    Raises:</span>
+<span class="sd">        ValueError: if CRC32 or ISIZE do not match deflated data</span>
+
+<span class="sd">    Example:</span>
+<span class="sd">        &gt;&gt;&gt; with open(bamnostic.example_bam,&#39;rb&#39;) as bam:</span>
+<span class="sd">        ...     block = _load_bgzf_block(bam)</span>
+<span class="sd">        ...     try:</span>
+<span class="sd">        ...         block[0] == 53 and block[1].startswith(b&#39;BAM\x01&#39;)</span>
+<span class="sd">        ...     except TypeError:</span>
+<span class="sd">        ...         block[0] == 53 and block[1].startswith(&#39;BAM\x01&#39;)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Pull in the BGZF block header information</span>
+    <span class="n">header</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">_bgzf_metaheader</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+    <span class="n">XLEN</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">BSIZE</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span><span class="s1">&#39;&lt;H&#39;</span><span class="p">,</span> <span class="n">handle</span><span class="p">)</span>
+
+    <span class="c1"># Expose the compressed data</span>
+    <span class="n">d_size</span> <span class="o">=</span> <span class="n">BSIZE</span> <span class="o">-</span> <span class="n">XLEN</span> <span class="o">-</span> <span class="mi">19</span>
+    <span class="n">d_obj</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">decompressobj</span><span class="p">(</span><span class="o">-</span><span class="mi">15</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">d_obj</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">d_size</span><span class="p">))</span> <span class="o">+</span> <span class="n">d_obj</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+
+    <span class="c1"># Checking data integrity</span>
+    <span class="n">CRC32</span><span class="p">,</span> <span class="n">ISIZE</span> <span class="o">=</span> <span class="n">unpack_gzip_integrity</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">_integrity_size</span><span class="p">))</span>
+    <span class="n">deflated_crc</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">deflated_crc</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">deflated_crc</span> <span class="o">=</span> <span class="n">deflated_crc</span> <span class="o">%</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">CRC32</span> <span class="o">!=</span> <span class="n">deflated_crc</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;CRCs are not equal: is </span><span class="si">{}</span><span class="s1">, not </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">CRC32</span><span class="p">,</span> <span class="n">deflated_crc</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">ISIZE</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;unequal uncompressed data size&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">BSIZE</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">data</span>
+
+
+<div class="viewcode-block" id="BgzfReader"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader">[docs]</a><span class="k">class</span> <span class="nc">BgzfReader</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; The BAM reader. Heavily modified from Peter Cock&#39;s BgzfReader.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">,</span> <span class="n">max_cache</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> 
+                <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">duplicate_filehandle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ignore_truncation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the class.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file</span>
+<span class="sd">            mode (str): Mode for reading. BAM files are binary by nature (default: &#39;rb&#39;).</span>
+<span class="sd">            max_cache (int): number of desired LRU cache size, preferably a multiple of 2 (default: 128).</span>
+<span class="sd">            filename (str | :py:obj:`file`): synonym for `filepath_or_object`</span>
+<span class="sd">            duplicate_filehandle (bool): Not implemented. Raises warning if True.</span>
+<span class="sd">            ignore_truncation (bool): Whether or not to allow trucated file processing (default: False).</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Set up the LRU buffer dictionary</span>
+        <span class="k">if</span> <span class="n">max_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">elif</span> <span class="n">max_cache</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Use max_cache with a minimum of 1&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span> <span class="o">=</span> <span class="n">LruDict</span><span class="p">(</span><span class="n">max_cache</span><span class="o">=</span><span class="n">max_cache</span><span class="p">)</span>
+
+        <span class="c1"># handle contradictory arguments caused by synonyms</span>
+        <span class="k">if</span> <span class="n">filepath_or_object</span> <span class="ow">and</span> <span class="n">filename</span> <span class="ow">and</span> <span class="n">filename</span> <span class="o">!=</span> <span class="n">filepath_or_object</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;filepath_or_object and filename parameters do not match. Try using only one&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">filepath_or_object</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">filename</span><span class="p">:</span>
+                <span class="n">filepath_or_object</span> <span class="o">=</span> <span class="n">filename</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;either filepath_or_object or filename must be set&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Check to see if file object or path was passed</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">):</span>
+            <span class="n">handle</span> <span class="o">=</span> <span class="n">filepath_or_object</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath_or_object</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="s2">&quot;b&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mode</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;b&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mode</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;BGZF file format requires binary mode (&quot;rb&quot;)&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Connect to the BAM file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span> <span class="o">=</span> <span class="n">handle</span>
+
+        <span class="c1"># Load the first block into the buffer and initialize cursor attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_block_raw_length</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_load_block</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">tell</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_load_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start_offset</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;(PRIVATE) Used to load next BGZF block into the buffer, and orients the cursor position.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            start_offset (int): byte offset of BGZF block (default: None)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">start_offset</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># If the file is being read sequentially, then _handle.tell()</span>
+            <span class="c1"># should be pointing at the start of the next block.</span>
+            <span class="c1"># However, if seek has been used, we can&#39;t assume that.</span>
+            <span class="n">start_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_raw_length</span>
+        <span class="k">if</span> <span class="n">start_offset</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">return</span>
+        <span class="k">elif</span> <span class="n">start_offset</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">:</span>
+            <span class="c1"># Already in cache</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_raw_length</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">start_offset</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span> <span class="o">=</span> <span class="n">start_offset</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Now load the block</span>
+        <span class="n">handle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span>
+        <span class="k">if</span> <span class="n">start_offset</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">handle</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">start_offset</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span> <span class="o">=</span> <span class="n">handle</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">block_size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="n">_load_bgzf_block</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">StopIteration</span><span class="p">:</span>
+            <span class="c1"># EOF</span>
+            <span class="n">block_size</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_block_raw_length</span> <span class="o">=</span> <span class="n">block_size</span>
+
+        <span class="c1"># Finally save the block in our cache,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">,</span> <span class="n">block_size</span>
+
+<div class="viewcode-block" id="BgzfReader.tell"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a 64-bit unsigned BGZF virtual offset.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">make_virtual_offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BgzfReader.seek"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">virtual_offset</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Seek to a 64-bit unsigned BGZF virtual offset.</span>
+
+<span class="sd">        A virtual offset is a composite number made up of the compressed</span>
+<span class="sd">        offset (`coffset`) position of the start position of the BGZF block that</span>
+<span class="sd">        the position originates within, and the uncompressed offset (`uoffset`)</span>
+<span class="sd">        within the deflated BGZF block where the position starts. The virtual offset</span>
+<span class="sd">        is defined as</span>
+
+<span class="sd">        `virtual_offset = coffset &lt;&lt; 16 | uoffset`</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            virtual_offset (int): 64-bit unsigned composite byte offset</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            virtual_offset (int): an echo of the new position</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            ValueError: if within block offset is more than block size</span>
+<span class="sd">            AssertionError: if the start position is not the block start position</span>
+
+<span class="sd">        Example:</span>
+<span class="sd">            &gt;&gt;&gt; bam = bamnostic.AlignmentFile(bamnostic.example_bam, &#39;rb&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; bam.seek(10)</span>
+<span class="sd">            10</span>
+
+<span class="sd">            &gt;&gt;&gt; bam.seek(bamnostic.utils.make_virtual_offset(0, 42))</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">                ...</span>
+<span class="sd">            ValueError: Within offset 42 but block size only 38</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Do this inline to avoid a function call,</span>
+        <span class="c1"># start_offset, within_block = split_virtual_offset(virtual_offset)</span>
+        <span class="n">start_offset</span> <span class="o">=</span> <span class="n">virtual_offset</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span>
+        <span class="n">within_block</span> <span class="o">=</span> <span class="n">virtual_offset</span> <span class="o">^</span> <span class="p">(</span><span class="n">start_offset</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">start_offset</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span><span class="p">:</span>
+            <span class="c1"># Don&#39;t need to load the block if already there</span>
+            <span class="c1"># (this avoids a function call since _load_block would do nothing)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_load_block</span><span class="p">(</span><span class="n">start_offset</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">start_offset</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span>
+        <span class="k">if</span> <span class="n">within_block</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">within_block</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Within offset </span><span class="si">{}</span><span class="s2"> but block size only </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">within_block</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">=</span> <span class="n">within_block</span>
+        <span class="k">return</span> <span class="n">virtual_offset</span></div>
+
+<div class="viewcode-block" id="BgzfReader.read"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read method for the BGZF module.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            size (int): the number of bytes to read from file. Advances the cursor.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            data (:py:obj:`bytes`): byte string of length `size`</span>
+
+<span class="sd">        Raises:</span>
+<span class="sd">            NotImplementedError: if the user tries to read the whole file</span>
+<span class="sd">            AssertionError: if read does not return any data</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Don&#39;t be greedy, that could be massive!&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+
+        <span class="c1"># If size is a real positive integer</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_text</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+
+            <span class="c1"># Avoids recursion, but will still effectively get all the data</span>
+            <span class="c1"># for both long and short reads. It doesn&#39;t matter if it overflows</span>
+            <span class="c1"># to multiple blocks, or fully contained within one.</span>
+            <span class="k">while</span> <span class="n">size</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">+</span> <span class="n">size</span> <span class="o">&lt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">):</span>
+                    <span class="c1"># This may leave us right at the end of a block</span>
+                    <span class="c1"># (lazy loading, don&#39;t load the next block unless we have too)</span>
+                    <span class="n">data</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">+</span> <span class="n">size</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span> <span class="o">+=</span> <span class="n">size</span>
+                    <span class="k">assert</span> <span class="n">data</span>  <span class="c1"># Must be at least 1 byte</span>
+                    <span class="k">return</span> <span class="n">data</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># if read data overflows to next block</span>
+                    <span class="c1"># pull in rest of data in current block</span>
+                    <span class="n">sub_data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_within_block_offset</span><span class="p">:]</span>
+                    <span class="n">data</span> <span class="o">+=</span> <span class="n">sub_data</span>
+                    <span class="c1"># decrement size so that we only pull the rest of the data</span>
+                    <span class="c1"># from next block</span>
+                    <span class="n">size</span> <span class="o">-=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub_data</span><span class="p">)</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_load_block</span><span class="p">()</span>  <span class="c1"># will reset offsets</span>
+
+                    <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">data</span>  <span class="c1"># EOF</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Only needed the end of the last block</span>
+                <span class="k">return</span> <span class="n">data</span></div>
+
+<div class="viewcode-block" id="BgzfReader.readline"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.readline">[docs]</a>    <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Read a single line for the BGZF file.</span>
+
+<span class="sd">        Binary operations do not support `readline()`. Code is commented</span>
+<span class="sd">        out for posterity sake</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Readline does not work on byte data&quot;</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Iterate over the lines in the BGZF file.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="BgzfReader.close"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close BGZF file.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_block_start_offset</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffers</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="BgzfReader.seekable"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.seekable">[docs]</a>    <span class="k">def</span> <span class="nf">seekable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True indicating the BGZF supports random access.</span>
+
+<span class="sd">        Note:</span>
+<span class="sd">            Modified from original Bio.BgzfReader: checks to see if BAM</span>
+<span class="sd">            file has associated index file (BAI)</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_check_idx</span></div>
+
+<div class="viewcode-block" id="BgzfReader.isatty"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.isatty">[docs]</a>    <span class="k">def</span> <span class="nf">isatty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if connected to a TTY device.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="BgzfReader.fileno"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfReader.fileno">[docs]</a>    <span class="k">def</span> <span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return integer file descriptor.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Open a file operable with WITH statement.&quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close a file with WITH statement.&quot;&quot;&quot;</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="BgzfWriter"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfWriter">[docs]</a><span class="k">class</span> <span class="nc">BgzfWriter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Define a BGZFWriter object.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;wb&quot;</span><span class="p">,</span> <span class="n">compresslevel</span><span class="o">=</span><span class="mi">6</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">io</span><span class="o">.</span><span class="n">IOBase</span><span class="p">):</span>
+            <span class="n">handle</span> <span class="o">=</span> <span class="n">filepath_or_object</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">handle</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="n">mode</span><span class="p">)</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        if fileobj:</span>
+<span class="sd">            assert filename is None</span>
+<span class="sd">            handle = fileobj</span>
+<span class="sd">        else:</span>
+<span class="sd">            if &quot;w&quot; not in mode.lower() and &quot;a&quot; not in mode.lower():</span>
+<span class="sd">                raise ValueError(&quot;Must use write or append mode, not %r&quot; % mode)</span>
+<span class="sd">            if &quot;a&quot; in mode.lower():</span>
+<span class="sd">                handle = open(filename, &quot;ab&quot;)</span>
+<span class="sd">            else:</span>
+<span class="sd">                handle = open(filename, &quot;wb&quot;)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_text</span> <span class="o">=</span> <span class="s2">&quot;b&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">mode</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span> <span class="o">=</span> <span class="n">handle</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">compresslevel</span> <span class="o">=</span> <span class="n">compresslevel</span>
+
+    <span class="k">def</span> <span class="nf">_write_block</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">block</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write provided data to file as a single BGZF compressed block (PRIVATE).&quot;&quot;&quot;</span>
+        <span class="c1"># print(&quot;Saving %i bytes&quot; % len(block))</span>
+        <span class="n">start_offset</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">65536</span>
+        <span class="c1"># Giving a negative window bits means no gzip/zlib headers,</span>
+        <span class="c1"># -15 used in samtools</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">compressobj</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">compresslevel</span><span class="p">,</span>
+                             <span class="n">zlib</span><span class="o">.</span><span class="n">DEFLATED</span><span class="p">,</span>
+                             <span class="o">-</span><span class="mi">15</span><span class="p">,</span>
+                             <span class="n">zlib</span><span class="o">.</span><span class="n">DEF_MEM_LEVEL</span><span class="p">,</span>
+                             <span class="mi">0</span><span class="p">)</span>
+        <span class="n">compressed</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="k">del</span> <span class="n">c</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">compressed</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">65536</span><span class="p">,</span> \
+            <span class="s2">&quot;TODO - Didn&#39;t compress enough, try less data in this block&quot;</span>
+        <span class="n">crc</span> <span class="o">=</span> <span class="n">zlib</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="c1"># Should cope with a mix of Python platforms...</span>
+        <span class="k">if</span> <span class="n">crc</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">crc</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&lt;i&quot;</span><span class="p">,</span> <span class="n">crc</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">crc</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&lt;I&quot;</span><span class="p">,</span> <span class="n">crc</span><span class="p">)</span>
+        <span class="n">bsize</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&lt;H&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">compressed</span><span class="p">)</span> <span class="o">+</span> <span class="mi">25</span><span class="p">)</span>  <span class="c1"># includes -1</span>
+        <span class="n">crc</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&lt;I&quot;</span><span class="p">,</span> <span class="n">zlib</span><span class="o">.</span><span class="n">crc32</span><span class="p">(</span><span class="n">block</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xffffffff</span><span class="p">)</span>
+        <span class="n">uncompressed_length</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">pack</span><span class="p">(</span><span class="s2">&quot;&lt;I&quot;</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">block</span><span class="p">))</span>
+        <span class="c1"># Fixed 16 bytes,</span>
+        <span class="c1"># gzip magic bytes (4) mod time (4),</span>
+        <span class="c1"># gzip flag (1), os (1), extra length which is six (2),</span>
+        <span class="c1"># sub field which is BC (2), sub field length of two (2),</span>
+        <span class="c1"># Variable data,</span>
+        <span class="c1"># 2 bytes: block length as BC sub field (2)</span>
+        <span class="c1"># X bytes: the data</span>
+        <span class="c1"># 8 bytes: crc (4), uncompressed data length (4)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">_bgzf_header</span> <span class="o">+</span> <span class="n">bsize</span> <span class="o">+</span> <span class="n">compressed</span> <span class="o">+</span> <span class="n">crc</span> <span class="o">+</span> <span class="n">uncompressed_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BgzfWriter.write"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfWriter.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Write method for the class.&quot;&quot;&quot;</span>
+
+        <span class="c1"># TODO - Check bytes vs unicode</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">_as_bytes</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="c1"># block_size = 2**16 = 65536</span>
+        <span class="n">data_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)</span> <span class="o">+</span> <span class="n">data_len</span> <span class="o">&lt;</span> <span class="mi">65536</span><span class="p">:</span>
+            <span class="c1"># print(&quot;Cached %r&quot; % data)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">+=</span> <span class="n">data</span>
+            <span class="k">return</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># print(&quot;Got %r, writing out some data...&quot; % data)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">+=</span> <span class="n">data</span>
+            <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">65536</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[:</span><span class="mi">65536</span><span class="p">])</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="mi">65536</span><span class="p">:]</span></div>
+
+<div class="viewcode-block" id="BgzfWriter.flush"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfWriter.flush">[docs]</a>    <span class="k">def</span> <span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Flush data explicitly.&quot;&quot;&quot;</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">65536</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_write_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[:</span><span class="mi">65535</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">[</span><span class="mi">65535</span><span class="p">:]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_write_block</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span> <span class="o">=</span> <span class="sa">b</span><span class="s2">&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BgzfWriter.close"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfWriter.close">[docs]</a>    <span class="k">def</span> <span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Flush data, write 28 bytes BGZF EOF marker, and close BGZF file.</span>
+
+<span class="sd">        samtools will look for a magic EOF marker, just a 28 byte empty BGZF</span>
+<span class="sd">        block, and if it is missing warns the BAM file may be truncated. In</span>
+<span class="sd">        addition to samtools writing this block, so too does bgzip - so this</span>
+<span class="sd">        implementation does too.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_bgzf_eof</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">flush</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="BgzfWriter.tell"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfWriter.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return a BGZF 64-bit virtual offset.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">make_virtual_offset</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">tell</span><span class="p">(),</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_buffer</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="BgzfWriter.seekable"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfWriter.seekable">[docs]</a>    <span class="k">def</span> <span class="nf">seekable</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True indicating the BGZF supports random access.&quot;&quot;&quot;</span>
+        <span class="c1"># Not seekable, but we do support tell...</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="BgzfWriter.isatty"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfWriter.isatty">[docs]</a>    <span class="k">def</span> <span class="nf">isatty</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return True if connected to a TTY device.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+<div class="viewcode-block" id="BgzfWriter.fileno"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bgzf.BgzfWriter.fileno">[docs]</a>    <span class="k">def</span> <span class="nf">fileno</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Return integer file descriptor.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">fileno</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Open a file operable with WITH statement.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">traceback</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close a file with WITH statement.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2018, Marcus D. Sherman.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
