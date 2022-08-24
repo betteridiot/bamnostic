@@ -163,7 +163,7 @@ Serial Access
 
 .. code:: python
 
-    >>> bam = bs.AlignmentFile(bs.example_path, 'rb')
+    >>> bam = bs.AlignmentFile(bs.example_bam, 'rb')
     >>> for i, read in enumerate(bam):
     ...    if i >= 3:
     ...        break
@@ -178,7 +178,7 @@ Random Access
 
 .. code:: python
 
-    >>> bam = bs.AlignmentFile(bs.example_path, 'rb')
+    >>> bam = bs.AlignmentFile(bs.example_bam, 'rb')
     >>> for i, read in enumerate(bam.fetch('chr2', 1, 100)):
     ...    if i >= 3:
     ...        break
