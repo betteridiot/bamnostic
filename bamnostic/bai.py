@@ -135,6 +135,7 @@ def reg2bins(rbeg, rend):
     # https://samtools.github.io/hts-specs/SAMv1.pdf
 
     # Bin calculation constants.
+    rend -= 1
     BIN_ID_STARTS = (0, 1, 9, 73, 585, 4681)
 
     # Maximum range supported by specifications.

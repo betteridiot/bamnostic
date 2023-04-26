@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bamnostic.bai &mdash; bamnostic 1.1.4
+  <title>bamnostic.bai &mdash; bamnostic 1.1.9
  documentation</title>
   
 
@@ -22,11 +22,9 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
     
     <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
@@ -35,6 +33,8 @@
   
   <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
@@ -60,7 +60,7 @@
             
             
               <div class="version">
-                1.1.4
+                1.1.9
 
               </div>
             
@@ -85,7 +85,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Getting Started</a></li>
@@ -180,25 +180,25 @@
 
 <span class="sd">&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">division</span>
 
 <span class="kn">import</span> <span class="nn">struct</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
-<span class="kn">from</span> <span class="nn">array</span> <span class="k">import</span> <span class="n">array</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">array</span> <span class="kn">import</span> <span class="n">array</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
 
 <span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span>
 
 <span class="k">if</span> <span class="n">_PY_VERSION</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="nb">open</span>
+    <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="nb">open</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">functools</span> <span class="k">import</span> <span class="n">lru_cache</span>
+    <span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
 
-<span class="kn">from</span> <span class="nn">bamnostic.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">bamnostic.utils</span> <span class="kn">import</span> <span class="o">*</span>
 
 
 <span class="n">warnings</span><span class="o">.</span><span class="n">formatwarning</span> <span class="o">=</span> <span class="n">format_warnings</span>
@@ -211,11 +211,11 @@
 
 
 <span class="k">class</span> <span class="nc">conditional_decorator</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dec</span><span class="p">,</span> <span class="n">condition</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">decorator</span> <span class="o">=</span> <span class="n">dec</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">condition</span> <span class="o">=</span> <span class="n">condition</span>
 
-    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">condition</span><span class="p">:</span>
             <span class="c1"># Return the function unchanged, not decorated.</span>
             <span class="k">return</span> <span class="n">func</span>
@@ -229,26 +229,26 @@
 <span class="k">class</span> <span class="nc">Chunk</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;voffset_beg&#39;</span><span class="p">,</span> <span class="s1">&#39;voffset_end&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">voffset_beg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">voffset_end</span> <span class="o">=</span> <span class="n">unpack_chunk</span><span class="p">(</span><span class="n">handle</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="s1">&#39;Chunk(voffset_beg=</span><span class="si">{}</span><span class="s1">, voffset_end=</span><span class="si">{}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">voffset_beg</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">voffset_end</span><span class="p">)</span>
 
 <span class="k">class</span> <span class="nc">Ref</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;bins&#39;</span><span class="p">,</span> <span class="s1">&#39;intervals&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_id&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">intervals</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ref_id</span> <span class="o">=</span> <span class="n">args</span>
 
-    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">bins</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
 
 
 <span class="k">class</span> <span class="nc">Unmapped</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
     <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;unmapped_beg&#39;</span><span class="p">,</span> <span class="s1">&#39;unmapped_end&#39;</span><span class="p">,</span> <span class="s1">&#39;n_mapped&#39;</span><span class="p">,</span> <span class="s1">&#39;n_unmapped&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ubeg</span><span class="p">,</span> <span class="n">uend</span><span class="p">,</span> <span class="n">nmap</span><span class="p">,</span> <span class="n">numap</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ubeg</span><span class="p">,</span> <span class="n">uend</span><span class="p">,</span> <span class="n">nmap</span><span class="p">,</span> <span class="n">numap</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unmapped_beg</span> <span class="o">=</span> <span class="n">ubeg</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">unmapped_end</span> <span class="o">=</span> <span class="n">uend</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">n_mapped</span> <span class="o">=</span> <span class="n">nmap</span>
@@ -256,7 +256,7 @@
 
 
 <div class="viewcode-block" id="reg2bin"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.reg2bin">[docs]</a><span class="k">def</span> <span class="nf">reg2bin</span><span class="p">(</span><span class="n">rbeg</span><span class="p">,</span> <span class="n">rend</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Finds the largest superset bin of region. Numeric values taken from hts-specs</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds the largest superset bin of region. Numeric values taken from hts-specs</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        rbeg (int): inclusive beginning position of region</span>
@@ -275,7 +275,7 @@
 
 
 <div class="viewcode-block" id="reg2bins"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.reg2bins">[docs]</a><span class="k">def</span> <span class="nf">reg2bins</span><span class="p">(</span><span class="n">rbeg</span><span class="p">,</span> <span class="n">rend</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generates bin ids which overlap the specified region.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates bin ids which overlap the specified region.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        rbeg (int): inclusive beginning position of region</span>
@@ -291,6 +291,7 @@
     <span class="c1"># https://samtools.github.io/hts-specs/SAMv1.pdf</span>
 
     <span class="c1"># Bin calculation constants.</span>
+    <span class="n">rend</span> <span class="o">-=</span> <span class="mi">1</span>
     <span class="n">BIN_ID_STARTS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">585</span><span class="p">,</span> <span class="mi">4681</span><span class="p">)</span>
 
     <span class="c1"># Maximum range supported by specifications.</span>
@@ -307,7 +308,7 @@
 
 
 <div class="viewcode-block" id="Bai"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai">[docs]</a><span class="k">class</span> <span class="nc">Bai</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; This class defines the bam index file object and its interface.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; This class defines the bam index file object and its interface.</span>
 
 <span class="sd">    The purpose of this class is the binary parsing of the bam index file (BAI) associated with</span>
 <span class="sd">    a given bam file. When queried, the Bai object identifies the bins of data that overlap the</span>
@@ -336,8 +337,8 @@
                  <span class="s1">&#39;magic&#39;</span><span class="p">,</span> <span class="s1">&#39;n_refs&#39;</span><span class="p">,</span> <span class="s1">&#39;unmapped&#39;</span><span class="p">,</span> <span class="s1">&#39;current_ref&#39;</span><span class="p">,</span> <span class="s1">&#39;ref_indices&#39;</span><span class="p">,</span>
                  <span class="s1">&#39;n_no_coor&#39;</span><span class="p">,</span> <span class="s1">&#39;_last_pos&#39;</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialization method</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filename</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialization method</span>
 
 <span class="sd">        Generates an &quot;index&quot; of the index. This gives us the byte positions of each chromosome</span>
 <span class="sd">        within the index file. Now, when a user queries over a specific chromosome, it pulls</span>
@@ -376,7 +377,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_last_pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
 
 <div class="viewcode-block" id="Bai.get_chunks"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_chunks">[docs]</a>    <span class="k">def</span> <span class="nf">get_chunks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_chunks</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Simple generator for unpacking chunk data</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simple generator for unpacking chunk data</span>
 
 <span class="sd">        Chunks are defined as groupings of reads within a BAM file</span>
 <span class="sd">        that share the same bin. A `Chunk` object in the context of</span>
@@ -399,7 +400,7 @@
 
     <span class="c1"># TODO: Add a check for long reads and allow for skipping the linear index on queries</span>
 <div class="viewcode-block" id="Bai.get_ints"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_ints">[docs]</a>    <span class="k">def</span> <span class="nf">get_ints</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_int</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Unpacks `n_int` number of interval virtual offsets from stream</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unpacks `n_int` number of interval virtual offsets from stream</span>
 
 <span class="sd">        A linear interval is defined as a 16384 bp window along a given reference. The</span>
 <span class="sd">        value stored in the BAI is the virtual offset of the first read within</span>
@@ -421,7 +422,7 @@
         <span class="k">return</span> <span class="n">intervals</span> <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">intervals</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">int</span> <span class="k">else</span> <span class="p">[</span><span class="n">intervals</span><span class="p">]</span></div>
 
 <div class="viewcode-block" id="Bai.get_bins"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_bins">[docs]</a>    <span class="k">def</span> <span class="nf">get_bins</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_bins</span><span class="p">,</span> <span class="n">ref_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Simple function that iteratively unpacks the data of a number (`n_bin`)</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simple function that iteratively unpacks the data of a number (`n_bin`)</span>
 <span class="sd">        of bins.</span>
 
 <span class="sd">        As the function discovers the number of chunks needed for a given</span>
@@ -475,7 +476,7 @@
     <span class="c1"># @lru_cache(6)</span>
 <div class="viewcode-block" id="Bai.get_ref"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.get_ref">[docs]</a>    <span class="nd">@conditional_decorator</span><span class="p">(</span><span class="k">lambda</span> <span class="n">func</span><span class="p">:</span> <span class="n">lru_cache</span><span class="p">(</span><span class="n">maxsize</span><span class="o">=</span><span class="mi">6</span><span class="p">)(</span><span class="n">func</span><span class="p">),</span> <span class="n">_PY_VERSION</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">get_ref</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">idx</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Interatively unpacks all the bins, linear intervals, and chunks for a given reference</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Interatively unpacks all the bins, linear intervals, and chunks for a given reference</span>
 
 <span class="sd">        A reference is comprised of 2 things: 1) a series of bins that reference chunks of aligned</span>
 <span class="sd">        reads that are grouped within that bin. 2) a series of virtual offsets of the first read of a</span>
@@ -530,7 +531,7 @@
             <span class="k">return</span> <span class="n">Ref</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">ints</span><span class="p">,</span> <span class="n">ref_id</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Bai.query"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ref_id</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Main query function for determining seek offset to BAM section that</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Main query function for determining seek offset to BAM section that</span>
 <span class="sd">        AlignedRead objects from specified region start</span>
 
 <span class="sd">        Args:</span>
@@ -570,7 +571,7 @@
                     <span class="k">return</span> <span class="n">chunk</span><span class="o">.</span><span class="n">voffset_beg</span></div>
 
 <div class="viewcode-block" id="Bai.seek"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.seek">[docs]</a>    <span class="k">def</span> <span class="nf">seek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">whence</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Simple seek function for binary files</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simple seek function for binary files</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            offset (None|int): byte offset from whence to move the file head to.</span>
@@ -592,7 +593,7 @@
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;offset must be an integer or None&#39;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Bai.read"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.read">[docs]</a>    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">size</span><span class="o">=-</span><span class="mi">1</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Simple read function for binary files</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simple read function for binary files</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            size (int): number of bytes to read in (default: -1 --whole file)</span>
@@ -606,7 +607,7 @@
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">size</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="Bai.tell"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.bai.Bai.tell">[docs]</a>    <span class="k">def</span> <span class="nf">tell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Simple tell function for reporting byte position of file head</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simple tell function for reporting byte position of file head</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            (int): byte position of file head</span>

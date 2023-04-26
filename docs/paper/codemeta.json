@@ -37,7 +37,7 @@
   "description": "BAMnostic: an OS-agnostic toolkit for genomic sequence analysis",
   "keywords": "BAM, pysam, genomics, genetics, htslib, samtools",
   "license": "https://github.com/betteridiot/bamnostic/blob/master/LICENSE",
-  "softwareVersion": "v1.1.0",
+  "softwareVersion": "v1.1.9",
   "version": "v1.1.0",
   "readme": "https://github.com/betteridiot/bamnostic/blob/master/README.md",
   "buildInstructions": "https://github.com/betteridiot/bamnostic/blob/master/README.md",
