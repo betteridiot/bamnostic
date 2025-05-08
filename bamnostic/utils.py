@@ -384,6 +384,12 @@ def unpack(fmt, _io, is_array=False):
     Returns:
         unpacked contents from _io based on fmt string
     """
+    # Unpack binary data safely. Returns None or empty tuple if _io is None
+    if _io is None:
+        if is_array:
+            return tuple()
+        return None
+
     size = struct.calcsize(fmt)
     try:
         # if it is byte object
