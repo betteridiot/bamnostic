@@ -3,6 +3,12 @@ import os
 import sys
 
 
+def get_version():
+    here = os.path.abspath(os.path.dirname(__file__))
+    with open(os.path.join(here, 'bamnostic', 'version')) as version_file:
+        return version_file.read().strip()
+
+
 def readme():
     path = os.path.dirname(__file__) or "."
     with open(os.path.join(path, "README.rst")) as rst:
@@ -11,7 +17,7 @@ def readme():
 
 setup(
     name="bamnostic",
-    version=open("version").read().strip(),
+    version=get_version(),
     description="Pure Python, OS-agnostic Binary Alignment Map (BAM) random access and parsing tool",
     long_description=readme(),
     url="https://github.com/betteridiot/bamnostic/",
@@ -24,10 +30,7 @@ setup(
     package_data={
         "bamnostic": [
             "data/*",
-            "LICENSE",
-            "CONTRIBUTING.md",
-            "CODE_OF_CONDUCT.md",
-            "version",
+            "version"
         ]
     },
     classifiers=[

@@ -39,5 +39,13 @@ as part of this package.
 from bamnostic.core import AlignmentFile, AlignedSegment
 
 import os
-__version__ = open(os.path.join(os.path.dirname(__file__), 'version')).read().strip()
-example_bam = os.path.join(os.path.dirname(__file__), 'data', 'example.bam')
+
+def _get_package_data():
+    here = os.path.abspath(os.path.dirname(__file__))
+    version_path = os.path.join(here, 'version')
+    example_bam = os.path.join(here, 'data', 'example.bam')
+    with open(version_path) as version_file:
+        return version_file.read().strip(), example_bam
+
+__version__, example_bam = _get_package_data()
+del _get_package_data

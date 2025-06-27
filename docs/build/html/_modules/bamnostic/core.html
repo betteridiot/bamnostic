@@ -1,91 +1,44 @@
 
 
 <!DOCTYPE html>
-<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<html class="writer-html5" lang="en" data-content_root="../../">
 <head>
-  <meta charset="utf-8">
-  
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
-  <title>bamnostic.core &mdash; bamnostic 1.1.4
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>bamnostic.core &mdash; bamnostic 1.2
  documentation</title>
-  
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=e59714d7" />
 
   
-  
-  
-  
-
-  
-  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
-  
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
-        <script type="text/javascript" src="../../_static/jquery.js"></script>
-        <script type="text/javascript" src="../../_static/underscore.js"></script>
-        <script type="text/javascript" src="../../_static/doctools.js"></script>
-        <script type="text/javascript" src="../../_static/language_data.js"></script>
-        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-
-    
-
-  
-  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <script src="../../_static/documentation_options.js?v=61243dd2"></script>
+      <script src="../../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../genindex.html" />
     <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
 
           
-            <a href="../../index.html" class="icon icon-home"> bamnostic
           
-
-          
+          <a href="../../index.html" class="icon icon-home">
+            bamnostic
           </a>
-
-          
-            
-            
-              <div class="version">
-                1.1.4
-
-              </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../quickstart.html">Getting Started</a></li>
@@ -93,70 +46,34 @@
 <li class="toctree-l1"><a class="reference internal" href="../../support.html">Citation and Support</a></li>
 </ul>
 
-            
-          
         </div>
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="../../index.html">bamnostic</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="../../index.html">Docs</a> &raquo;</li>
-        
-          <li><a href="../index.html">Module code</a> &raquo;</li>
-        
-      <li>bamnostic.core</li>
-    
-    
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">bamnostic.core</li>
       <li class="wy-breadcrumbs-aside">
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
+             
   <h1>Source code for bamnostic.core</h1><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">print_function</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
-<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">division</span>
+<span></span><span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">absolute_import</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">division</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">Copyright (c) 2018, Marcus D. Sherman</span>
@@ -170,15 +87,15 @@
 <span class="sd">@email: &quot;mdsherman&lt;at&gt;betteridiot&lt;dot&gt;tech&quot;</span>
 
 <span class="sd">&quot;&quot;&quot;</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">struct</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">from</span> <span class="nn">array</span> <span class="k">import</span> <span class="n">array</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">struct</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">array</span><span class="w"> </span><span class="kn">import</span> <span class="n">array</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">namedtuple</span>
 
-<span class="kn">import</span> <span class="nn">bamnostic</span>
-<span class="kn">from</span> <span class="nn">bamnostic</span> <span class="k">import</span> <span class="n">bgzf</span><span class="p">,</span> <span class="n">bai</span><span class="p">,</span> <span class="n">bam</span>
-<span class="kn">from</span> <span class="nn">bamnostic.utils</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bamnostic</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bamnostic</span><span class="w"> </span><span class="kn">import</span> <span class="n">bgzf</span><span class="p">,</span> <span class="n">bai</span><span class="p">,</span> <span class="n">bam</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bamnostic.utils</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
 
 <span class="n">_PY_VERSION</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">version_info</span>
 
@@ -214,8 +131,10 @@
 <span class="n">_SEQ_KEY</span> <span class="o">=</span> <span class="s1">&#39;=ACMGRSVTWYHKDBN&#39;</span>
 
 
-<div class="viewcode-block" id="offset_qual"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.offset_qual">[docs]</a><span class="k">def</span> <span class="nf">offset_qual</span><span class="p">(</span><span class="n">qual_string</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot; Offsets the ASCII-encoded quality string to represent PHRED score.</span>
+<div class="viewcode-block" id="offset_qual">
+<a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.offset_qual">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">offset_qual</span><span class="p">(</span><span class="n">qual_string</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot; Offsets the ASCII-encoded quality string to represent PHRED score.</span>
 
 <span class="sd">    Every base that is in the alignment is assigned a Phred score. A Phred</span>
 <span class="sd">    score (:math:`Q`) is defined as :math:`Q=-10\log_{10}P`, where :math:`P`</span>
@@ -235,8 +154,8 @@
 <span class="sd">        &#39;&lt;&lt;&lt;7&lt;&lt;&lt;;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;8;;&lt;7;4&lt;;&lt;;;;;;94&lt;;&#39;</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="n">base_qual</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Offsets the given byte code by 33 and returns the ASCII</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">offset</span><span class="p">(</span><span class="n">base_qual</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Offsets the given byte code by 33 and returns the ASCII</span>
 <span class="sd">        representation of it.</span>
 
 <span class="sd">        Args:</span>
@@ -257,6 +176,7 @@
     <span class="k">return</span> <span class="nb">map</span><span class="p">(</span><span class="n">offset</span><span class="p">,</span> <span class="n">qual_string</span><span class="p">)</span></div>
 
 
+
 <span class="c1"># compiled/performant struct objects</span>
 <span class="n">_unpack_refId_pos</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;2i&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
 <span class="n">_unpack_bmq_flag</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;2I&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
@@ -266,8 +186,10 @@
 <span class="n">_unpack_array</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">Struct</span><span class="p">(</span><span class="s1">&#39;&lt;si&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">unpack</span>
 
 
-<div class="viewcode-block" id="AlignmentFile"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignmentFile">[docs]</a><span class="k">class</span> <span class="nc">AlignmentFile</span><span class="p">(</span><span class="n">bam</span><span class="o">.</span><span class="n">BamReader</span><span class="p">,</span> <span class="n">bam</span><span class="o">.</span><span class="n">BamWriter</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Wrapper to allow drop in replacement for BAM functionality in a ``pysam``-like API.</span>
+<div class="viewcode-block" id="AlignmentFile">
+<a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignmentFile">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AlignmentFile</span><span class="p">(</span><span class="n">bam</span><span class="o">.</span><span class="n">BamReader</span><span class="p">,</span> <span class="n">bam</span><span class="o">.</span><span class="n">BamWriter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrapper to allow drop in replacement for BAM functionality in a ``pysam``-like API.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        filepath_or_object (str | :py:obj:`file`): the path or file object of the BAM file</span>
@@ -285,27 +207,48 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath_or_object</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">,</span> <span class="n">max_cache</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span> <span class="n">index_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">check_header</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">check_sq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reference_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">filepath_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">require_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">duplicate_filehandle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-                 <span class="n">ignore_truncation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">compresslevel</span> <span class="o">=</span> <span class="mi">6</span><span class="p">,</span> <span class="n">ignore_overwrite</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-                <span class="n">copy_header</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">header</span> <span class="o">=</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">reference_names</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">reference_lengths</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Initialize the class.</span>
-
-<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">filepath_or_object</span><span class="p">,</span>
+        <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;rb&quot;</span><span class="p">,</span>
+        <span class="n">max_cache</span><span class="o">=</span><span class="mi">128</span><span class="p">,</span>
+        <span class="n">index_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">check_header</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">check_sq</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">reference_filename</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">filepath_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">require_index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">duplicate_filehandle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">ignore_truncation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">compresslevel</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+        <span class="n">ignore_overwrite</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">copy_header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">header</span><span class="o">=</span><span class="sa">b</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+        <span class="n">reference_names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">reference_lengths</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the class.&quot;&quot;&quot;</span>
 
         <span class="n">kwargs</span> <span class="o">=</span> <span class="nb">locals</span><span class="p">()</span>
-        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;self&#39;</span><span class="p">)</span>
+        <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;self&quot;</span><span class="p">)</span>
 
-        <span class="k">assert</span> <span class="s1">&#39;b&#39;</span> <span class="ow">in</span> <span class="n">mode</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="s1">&#39;BAM files must be used in binary mode&#39;</span>
-        
-        <span class="n">write_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="s1">&#39;r+&#39;</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="s2">&quot;b&quot;</span> <span class="ow">in</span> <span class="n">mode</span><span class="o">.</span><span class="n">lower</span><span class="p">(),</span> <span class="s2">&quot;BAM files must be used in binary mode&quot;</span>
+
+        <span class="n">write_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="s2">&quot;a&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;r+&quot;</span><span class="p">]</span>
 
         <span class="c1"># Check if user wants to write a BAM file</span>
         <span class="k">if</span> <span class="nb">any</span><span class="p">([</span><span class="n">wm</span> <span class="ow">in</span> <span class="n">mode</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="k">for</span> <span class="n">wm</span> <span class="ow">in</span> <span class="n">write_modes</span><span class="p">]):</span>
-            <span class="n">write_args</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;filepath_or_object&#39;</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;compresslevel&#39;</span><span class="p">,</span> 
-                        <span class="s1">&#39;ignore_overwrite&#39;</span><span class="p">,</span> <span class="s1">&#39;copy_header&#39;</span><span class="p">,</span> <span class="s1">&#39;header&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;reference_names&#39;</span><span class="p">,</span> <span class="s1">&#39;reference_lengths&#39;</span><span class="p">)</span>
+            <span class="n">write_args</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;filepath_or_object&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;mode&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;compresslevel&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ignore_overwrite&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;copy_header&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;header&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;reference_names&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;reference_lengths&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">wargs</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">write_args</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -315,10 +258,20 @@
             <span class="n">bam</span><span class="o">.</span><span class="n">BamWriter</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">wargs</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">read_args</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;filepath_or_object&#39;</span><span class="p">,</span> <span class="s1">&#39;mode&#39;</span><span class="p">,</span> <span class="s1">&#39;max_cache&#39;</span><span class="p">,</span> <span class="s1">&#39;index_filename&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;filename&#39;</span><span class="p">,</span> <span class="s1">&#39;check_header&#39;</span><span class="p">,</span> <span class="s1">&#39;check_sq&#39;</span><span class="p">,</span> <span class="s1">&#39;reference_filename&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;filepath_index&#39;</span><span class="p">,</span> <span class="s1">&#39;require_index&#39;</span><span class="p">,</span> <span class="s1">&#39;duplicate_filehandle&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;ignore_truncation&#39;</span><span class="p">)</span>
+            <span class="n">read_args</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;filepath_or_object&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;mode&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;max_cache&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;index_filename&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;filename&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;check_header&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;check_sq&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;reference_filename&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;filepath_index&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;require_index&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;duplicate_filehandle&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;ignore_truncation&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
             <span class="n">rargs</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">read_args</span><span class="p">:</span>
                 <span class="k">try</span><span class="p">:</span>
@@ -328,11 +281,14 @@
             <span class="n">bam</span><span class="o">.</span><span class="n">BamReader</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">rargs</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="AlignedSegment"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment">[docs]</a><span class="k">class</span> <span class="nc">AlignedSegment</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Main class for handling reads within the BAM&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_io</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Instantiating the read parser just needs access to the BGZF io.object</span>
+<div class="viewcode-block" id="AlignedSegment">
+<a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AlignedSegment</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main class for handling reads within the BAM&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_io</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Instantiating the read parser just needs access to the BGZF io.object</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            io (BgzfReader): parser for processing BGZF files</span>
@@ -345,8 +301,8 @@
         <span class="n">bsize_buffer</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">block_size</span> <span class="o">=</span> <span class="n">unpack_int32</span><span class="p">(</span><span class="n">bsize_buffer</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-        
-        <span class="c1"># Check for EOF: If the cursor is at the end of file, read() will return </span>
+
+        <span class="c1"># Check for EOF: If the cursor is at the end of file, read() will return</span>
         <span class="c1"># an empty byte string.</span>
         <span class="k">except</span> <span class="n">struct</span><span class="o">.</span><span class="n">error</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">all</span><span class="p">([</span><span class="ow">not</span> <span class="n">bsize_buffer</span><span class="p">,</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">_handle</span><span class="o">.</span><span class="n">read</span><span class="p">()]):</span>
@@ -363,7 +319,7 @@
         <span class="c1"># Preserve the raw data for writing purposes</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raw_stream</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_byte_stream</span><span class="p">[:]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_raw_stream</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">bsize_buffer</span>
-        <span class="sd">&quot;&quot;&quot;Used to copy the entire read&#39;s byte stream for writing purposes&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Used to copy the entire read&#39;s byte stream for writing purposes&quot;&quot;&quot;</span>
 
         <span class="c1"># Unpack all the necessary data for the read from the bytestream</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_unpack_data</span><span class="p">()</span>
@@ -379,7 +335,7 @@
 
         <span class="c1"># Iteratively pull out the tags for the given aligned segment</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_tag_builder</span><span class="p">()</span>
-        
+
         <span class="c1"># Process the CIGAR: accounts for CIGAR strings &gt; 65535 operations</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_decode_cigar</span><span class="p">()</span>
 
@@ -391,8 +347,8 @@
         <span class="c1"># This excludes clipping, but includes insertions</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_query_alignment_attrs</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_unpack_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot; Unpack the data for the associated read from the BAM file</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unpack_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot; Unpack the data for the associated read from the BAM file</span>
 
 <span class="sd">        Attributes:</span>
 <span class="sd">            refID (int): numeric position of the reference as ordered in the header</span>
@@ -424,9 +380,12 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_nc</span> <span class="o">&gt;&gt;</span> <span class="mi">16</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_flag_nc</span> <span class="o">&amp;</span> <span class="mh">0xFFFF</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tlen</span> <span class="o">=</span> <span class="n">_unpack_lseq_nrid_npos_tlen</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">16</span><span class="p">)</span>
-        <span class="p">)</span>
+        <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">next_pos</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">tlen</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">_unpack_lseq_nrid_npos_tlen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">16</span><span class="p">))</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">read_name</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span>
             <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2">s&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_l_read_name</span><span class="p">),</span>
@@ -434,14 +393,15 @@
         <span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">tid</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reference_id</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">refID</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">reference_name</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reference_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">refID</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">refID</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">reference_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">_header</span><span class="o">.</span><span class="n">refs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_cigar_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Just unpacks the cigar data to be processed later. Ensures the cursor</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_cigar_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Just unpacks the cigar data to be processed later. Ensures the cursor</span>
 <span class="sd">        stays in the right place.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_cigar</span> <span class="o">=</span> <span class="n">struct</span><span class="o">.</span><span class="n">unpack</span><span class="p">(</span>
@@ -449,8 +409,8 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">_range_popper</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n_cigar_op</span><span class="p">),</span>
             <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_decode_cigar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Process the CIGAR into helpful tuples and plain text CIGAR string</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_decode_cigar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Process the CIGAR into helpful tuples and plain text CIGAR string</span>
 <span class="sd">        Uses unpacked values to properly process the CIGAR related data</span>
 
 <span class="sd">        Requires determining string size and key mapping to _CIGAR_KEY</span>
@@ -492,8 +452,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">_cigartuples</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">cigartuples</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_seq_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Uses unpacked values to build segment sequence</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_seq_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Uses unpacked values to build segment sequence</span>
 
 <span class="sd">        Requires knowing the sequence length and key mapping to _SEQ_KEY</span>
 
@@ -505,7 +465,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_byte_seq</span> <span class="o">=</span> <span class="n">unpack</span><span class="p">(</span>
-                <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2">B&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">byte_data</span>
+                <span class="s2">&quot;&lt;</span><span class="si">{}</span><span class="s2">B&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span><span class="p">),</span> <span class="n">byte_data</span><span class="p">,</span> <span class="n">is_array</span><span class="o">=</span><span class="kc">True</span>
             <span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">seq</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
                 <span class="p">[</span>
@@ -517,8 +477,8 @@
                 <span class="p">]</span>
             <span class="p">)[:</span> <span class="bp">self</span><span class="o">.</span><span class="n">l_seq</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">_qual_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Pulls out the quality information for the given read</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_qual_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pulls out the quality information for the given read</span>
 
 <span class="sd">        Attributes:</span>
 <span class="sd">            query_qualities (:py:obj:`array.array`): Array of Phred quality scores for each base</span>
@@ -542,19 +502,19 @@
                 <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
                     <span class="s2">&quot;Raw quality score is neither string nor bytes object&quot;</span>
                 <span class="p">)</span>
-            <span class="sd">&quot;&quot;&quot;Phred Quality scores for each base of the alignment</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Phred Quality scores for each base of the alignment</span>
 <span class="sd">            ***without*** an ASCII offset.&quot;&quot;&quot;</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">qual</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">offset_qual</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span><span class="p">))</span>
-            <span class="sd">&quot;&quot;&quot;Phred Quality scores for each base of the alignment</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Phred Quality scores for each base of the alignment</span>
 <span class="sd">            in ASCII offsetted string format.&quot;&quot;&quot;</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_raw_qual</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">qual</span> <span class="o">=</span> <span class="s2">&quot;*&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">__hash_key</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_name</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reference_name</span><span class="p">)</span> <span class="o">^</span>
             <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pos</span><span class="p">)</span> <span class="o">^</span>
@@ -562,17 +522,17 @@
             <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">__hash_key</span><span class="p">())</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="vm">__class__</span> <span class="ow">and</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__hash_key</span><span class="p">()</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">__hash_key</span><span class="p">()</span>
         <span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
         <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__eq__</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_tag_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Uses `self._tagger()` to collect all the read tags</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_tag_builder</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Uses `self._tagger()` to collect all the read tags</span>
 
 <span class="sd">        Attributes:</span>
 <span class="sd">            tags (:py:obj:`dict`): all tags, tag type, and tag value for associated read</span>
@@ -581,8 +541,8 @@
         <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_byte_stream</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tagger</span><span class="p">())</span>
 
-    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Represent the read when the object is called.</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Represent the read when the object is called.</span>
 
 <span class="sd">        Instead of a traditional `repr()` output, the SAM-format representation of the</span>
 <span class="sd">        read is generated. That is, if the user stores a read as `read`, and calls `read`</span>
@@ -616,11 +576,11 @@
         <span class="n">SAM_repr</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">tags</span><span class="p">)</span>
         <span class="k">return</span> <span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">SAM_repr</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">_range_popper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval_start</span><span class="p">,</span> <span class="n">interval_stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">front</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Simple pop method that accepts a range instead of a single value. Modifies the original bytearray by removing items</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_range_popper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval_start</span><span class="p">,</span> <span class="n">interval_stop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">front</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Simple pop method that accepts a range instead of a single value. Modifies the original bytearray by removing items</span>
 
 <span class="sd">        Note:</span>
 <span class="sd">            Pops from the front of the list by default. If `front` is set to `False`, it</span>
@@ -652,8 +612,8 @@
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_byte_stream</span><span class="p">[</span><span class="n">interval_start</span><span class="p">:</span><span class="n">interval_stop</span><span class="p">]</span>
             <span class="k">return</span> <span class="n">popped</span>
 
-    <span class="k">def</span> <span class="nf">_tagger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Processes the variety of tags that accompany sequencing reads</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_tagger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Processes the variety of tags that accompany sequencing reads</span>
 
 <span class="sd">        The BAM format does not store the length of string and hex-formatted byte</span>
 <span class="sd">        arrays. These are null-terminated. Due to this, when parsing the byte stream,</span>
@@ -718,8 +678,8 @@
                 <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;latin_1&quot;</span><span class="p">)</span>
             <span class="k">return</span> <span class="p">{</span><span class="n">tag</span><span class="p">:</span> <span class="p">(</span><span class="n">val_type</span><span class="p">,</span> <span class="n">val</span><span class="p">)}</span>
 
-    <span class="k">def</span> <span class="nf">_reference_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets and computes the attributes regarding reference alignment</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_reference_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets and computes the attributes regarding reference alignment</span>
 
 <span class="sd">        Reference alignment here means the alignment of the read according to</span>
 <span class="sd">        the reference, and therefore excludes insertions and clipping.</span>
@@ -742,8 +702,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__reference_end</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">__reference_length</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="k">def</span> <span class="nf">_query_alignment_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Sets and computes the attributes regarding query alignment</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_query_alignment_attrs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets and computes the attributes regarding query alignment</span>
 
 <span class="sd">        Query alignment here means the alignable portion of the read,</span>
 <span class="sd">        and therefore excludes clipping, but includes insertions</span>
@@ -775,8 +735,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">__qa_start</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pos</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">query_alignment_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;One past the final index position of the aligned portion of the read</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_alignment_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;One past the final index position of the aligned portion of the read</span>
 
 <span class="sd">        `query_alignment_*` all refer to the portion of the read that was aligned,</span>
 <span class="sd">        and therefore exclude clipping, but include insertions.</span>
@@ -784,8 +744,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__qa_end</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">query_alignment_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The starting index of the aligned portion of the read</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_alignment_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The starting index of the aligned portion of the read</span>
 
 <span class="sd">        `query_alignment_*` all refer to the portion of the read that was aligned,</span>
 <span class="sd">        and therefore exclude clipping, but include insertions.</span>
@@ -793,13 +753,13 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__qa_start</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">query_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Alias for the read name&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Alias for the read name&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_name</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">query_alignment_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The sequence of the aligned portion of the read</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_alignment_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The sequence of the aligned portion of the read</span>
 
 <span class="sd">        `query_alignment_*` all refer to the portion of the read that was aligned,</span>
 <span class="sd">        and therefore exclude clipping, but include insertions.</span>
@@ -807,8 +767,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__qa_seq</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">query_alignment_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The length of the aligned portion of the read</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_alignment_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The length of the aligned portion of the read</span>
 
 <span class="sd">        `query_alignment_*` all refer to the portion of the read that was aligned,</span>
 <span class="sd">        and therefore exclude clipping, but include insertions.</span>
@@ -816,8 +776,8 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">query_alignment_sequence</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">reference_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The starting index of the aligned portion of the read</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reference_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The starting index of the aligned portion of the read</span>
 
 <span class="sd">        `reference_` here means the portion of the read that was aligned</span>
 <span class="sd">        according to the reference. Therefore, does not include insertions</span>
@@ -826,8 +786,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reference_start</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">reference_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;One past the final index position of the aligned portion of the read</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reference_end</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;One past the final index position of the aligned portion of the read</span>
 
 <span class="sd">        `reference_` here means the portion of the read that was aligned</span>
 <span class="sd">        according to the reference. Therefore, does not include insertions</span>
@@ -836,8 +796,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reference_end</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">reference_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The length of the aligned portion of the read</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reference_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The length of the aligned portion of the read</span>
 
 <span class="sd">        `reference_` here means the portion of the read that was aligned</span>
 <span class="sd">        according to the reference. Therefore, does not include insertions</span>
@@ -846,8 +806,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__reference_length</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">query_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The sequence of the read</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The sequence of the read</span>
 
 <span class="sd">        `query_` here means the query as seen in the BAM file, and therefore</span>
 <span class="sd">        includes clipping</span>
@@ -855,8 +815,8 @@
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">seq</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">query_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The length of sequence of the read</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">query_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The length of sequence of the read</span>
 
 <span class="sd">        `query_` here means the query as seen in the BAM file, and therefore</span>
 <span class="sd">        includes clipping</span>
@@ -864,42 +824,42 @@
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">next_reference_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the reference id of mate read&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">next_reference_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the reference id of mate read&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No data available for mate or mate does not exist&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">next_reference_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the reference name of mate read&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">next_reference_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the reference name of mate read&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No data available for mate or mate does not exist&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_io</span><span class="o">.</span><span class="n">get_reference_name</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span><span class="p">)</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">next_reference_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Return the reference name of mate read&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">next_reference_start</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the reference name of mate read&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_refID</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;No data available for mate or mate does not exist&#39;</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">next_pos</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_duplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If the read is set as PCR or optical duplicate according to read flag&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_duplicate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the read is set as PCR or optical duplicate according to read flag&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x400</span> <span class="k">else</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_paired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If the read is set as paired according to read flag&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_paired</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the read is set as paired according to read flag&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x1</span> <span class="k">else</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_proper_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If each segment properly aligned according to the aligner&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_proper_pair</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If each segment properly aligned according to the aligner&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x2</span><span class="p">:</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x1</span><span class="p">,</span> <span class="s1">&#39;If 0x2 is set, then read must also have 0x1 set&#39;</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -907,13 +867,13 @@
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_qcfail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If the read is set as QC fail according to read flag&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_qcfail</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the read is set as QC fail according to read flag&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x200</span> <span class="k">else</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_read1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If the read is set as the first read of mate pair according to read flag (implies the read is mated)&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_read1</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the read is set as the first read of mate pair according to read flag (implies the read is mated)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x40</span><span class="p">:</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x1</span><span class="p">,</span> <span class="s1">&#39;If 0x40 is set, then read must also have 0x1 set&#39;</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -921,8 +881,8 @@
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_read2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If the read is set as the second read of mate pair according to read flag (implies the read is mated)&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_read2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the read is set as the second read of mate pair according to read flag (implies the read is mated)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x80</span><span class="p">:</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x1</span><span class="p">,</span> <span class="s1">&#39;If 0x40 is set, then read must also have 0x1 set&#39;</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -930,28 +890,28 @@
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If the read is set as reversed according to read flag&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the read is set as reversed according to read flag&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x10</span> <span class="k">else</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_secondary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If the read is set as secondary alignment according to read flag&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_secondary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the read is set as secondary alignment according to read flag&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x100</span> <span class="k">else</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_supplementary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If the read is set as a supplementary alignment according to read flag&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_supplementary</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the read is set as a supplementary alignment according to read flag&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x800</span> <span class="k">else</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">is_unmapped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;If the read is set as unmapped according to read flag&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_unmapped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If the read is set as unmapped according to read flag&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="kc">True</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x4</span> <span class="k">else</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mate_is_reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check the read flag to see if the mat is reverse strand (implies the read is mated)&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mate_is_reverse</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the read flag to see if the mat is reverse strand (implies the read is mated)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x20</span><span class="p">:</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x1</span><span class="p">,</span> <span class="s1">&#39;If 0x20 is set, then read must also have 0x1 set&#39;</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -959,8 +919,8 @@
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mate_is_unmapped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Check the read flag to see if mate is unmapped (implies the read is mated)&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mate_is_unmapped</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check the read flag to see if mate is unmapped (implies the read is mated)&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x8</span><span class="p">:</span>
             <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">flag</span> <span class="o">&amp;</span> <span class="mh">0x1</span><span class="p">,</span> <span class="s1">&#39;If 0x8 is set, then read must also have 0x1 set&#39;</span>
             <span class="k">return</span> <span class="kc">True</span>
@@ -968,12 +928,14 @@
             <span class="k">return</span> <span class="kc">False</span>
 
     <span class="nd">@property</span>
-    <span class="k">def</span> <span class="nf">mapping_quality</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;The mapping quality (MAPQ) of the read&quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">mapping_quality</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The mapping quality (MAPQ) of the read&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mapq</span>
 
-<div class="viewcode-block" id="AlignedSegment.get_tag"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment.get_tag">[docs]</a>    <span class="k">def</span> <span class="nf">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">with_value_type</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the value associated with a given tag key.</span>
+<div class="viewcode-block" id="AlignedSegment.get_tag">
+<a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment.get_tag">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_tag</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tag</span><span class="p">,</span> <span class="n">with_value_type</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the value associated with a given tag key.</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            tag (str): the tag of interest</span>
@@ -992,8 +954,11 @@
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s1">&#39;Read does not have the </span><span class="si">{}</span><span class="s1"> tag&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tag</span><span class="p">))</span></div>
 
-<div class="viewcode-block" id="AlignedSegment.get_tags"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment.get_tags">[docs]</a>    <span class="k">def</span> <span class="nf">get_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_value_type</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Returns all the tags for a given read</span>
+
+<div class="viewcode-block" id="AlignedSegment.get_tags">
+<a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment.get_tags">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_tags</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">with_value_type</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns all the tags for a given read</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            with_value_type (bool): return the tag value type (as defined by BAM format)</span>
@@ -1009,8 +974,11 @@
                 <span class="n">f_tags</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">tag</span><span class="p">,</span> <span class="n">val</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="k">return</span> <span class="n">f_tags</span></div>
 
-<div class="viewcode-block" id="AlignedSegment.get_cigar_stats"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment.get_cigar_stats">[docs]</a>    <span class="k">def</span> <span class="nf">get_cigar_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Gets the counts of each CIGAR operation in the read and number of</span>
+
+<div class="viewcode-block" id="AlignedSegment.get_cigar_stats">
+<a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment.get_cigar_stats">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_cigar_stats</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the counts of each CIGAR operation in the read and number of</span>
 <span class="sd">        nucleotides related to those given operations.</span>
 
 <span class="sd">        Returns:</span>
@@ -1038,8 +1006,11 @@
             <span class="n">nt_counts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">op_blocks</span><span class="p">,</span> <span class="n">nt_counts</span></div>
 
-<div class="viewcode-block" id="AlignedSegment.ref_gen"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment.ref_gen">[docs]</a>    <span class="k">def</span> <span class="nf">ref_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Recreates the reference sequence associated with the given segment.</span>
+
+<div class="viewcode-block" id="AlignedSegment.ref_gen">
+<a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment.ref_gen">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">ref_gen</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Recreates the reference sequence associated with the given segment.</span>
 
 <span class="sd">        Uses the CIGAR string and MD tag to recreate the reference sequence associated</span>
 <span class="sd">        with the aligned segment. This is done without the need for looking up</span>
@@ -1053,8 +1024,11 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">ref_gen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">seq</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cigar</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">tags</span><span class="p">[</span><span class="s1">&#39;MD&#39;</span><span class="p">])</span></div>
 
-<div class="viewcode-block" id="AlignedSegment.to_bam"><a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment.to_bam">[docs]</a>    <span class="k">def</span> <span class="nf">to_bam</span><span class="p">(</span><span class="n">bam_file</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Writes the alignment record to a BAM file</span>
+
+<div class="viewcode-block" id="AlignedSegment.to_bam">
+<a class="viewcode-back" href="../../bamnostic.html#bamnostic.core.AlignedSegment.to_bam">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">to_bam</span><span class="p">(</span><span class="n">bam_file</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Writes the alignment record to a BAM file</span>
 
 <span class="sd">        Args:</span>
 <span class="sd">            bam_file (string or :py:obj:`bamnostic.bam.BamWriter`): BAM file path or open bam file in a write mode</span>
@@ -1070,46 +1044,36 @@
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bam_file</span><span class="p">,</span> <span class="n">bgzf</span><span class="o">.</span><span class="n">BgzfWriter</span><span class="p">):</span>
             <span class="n">bam_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_raw_stream</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;BAM file must already exist, or be initilaized through bamnostic.bam.BamWriter&#39;</span><span class="p">)</span></div></div>
+            <span class="k">raise</span> <span class="ne">IOError</span><span class="p">(</span><span class="s1">&#39;BAM file must already exist, or be initilaized through bamnostic.bam.BamWriter&#39;</span><span class="p">)</span></div>
+</div>
+
 </pre></div>
 
            </div>
-           
           </div>
           <footer>
-  
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &copy; Copyright 2018, Marcus D. Sherman
-
-    </p>
+    <p>&#169; Copyright 2018, Marcus D. Sherman.</p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
-
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>

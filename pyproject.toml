@@ -1,14 +1,17 @@
 [build-system]
-requires = ["setuptools>=61.0.0", "wheel"]
-build-backend = "setuptools.build_meta"
+requires = ["setuptools"]
 
+
+[project]
+name = "bamnostic"
+dynamic = ["version"]  # Mark version as dynamic
+
+[tool.setuptools.dynamic]
+version = {attr = "bamnostic.__version__"}
 
 [tool.setuptools.package-data]
 bamnostic = [
   "data/*",
-  "LICENSE",
-  "CONTRIBUTING.md",
-  "CODE_OF_CONDUCT.md",
   "version"
 ]
 
