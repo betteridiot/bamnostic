@@ -1,38 +1,51 @@
+image: Visual Studio 2019
+
 build: off
 
-# Ignore commits that have no effect on operations
 skip_commits:
   message: /.*(docs|versioning).*/
 
 environment:
   matrix:
-    - platform: x86
-      PYTHON: "C:\\Python27"
-    - platform: x64
-      PYTHON: "C:\\Python27-x64"
-    - platform: x86
-      PYTHON: "C:\\Python34"
-    - platform: x64
-      PYTHON: "C:\\Python34-x64"
-    - platform: x86
-      PYTHON: "C:\\Python35"
-    - platform: x64
-      PYTHON: "C:\\Python35-x64"
-    - platform: x86
-      PYTHON: "C:\\Python36"
-    - platform: x64
-      PYTHON: "C:\\Python36-x64"
-    - platform: x86
-      PYTHON: "C:\\Python37"
-    - platform: x64
-      PYTHON: "C:\\Python37-x64"
-    - platform: x86
-      PYTHON: "C:\\Python38"
-    - platform: x64
-      PYTHON: "C:\\Python38-x64"
-
-install:
-  - "%PYTHON%/Scripts/pip install pytest"
+    - PYTHON_ARCH: "32"
+    - PYTHON_ARCH: "64"
 
 test_script:
-  - "%PYTHON%/python setup.py test"
+  - ps: |
+        # Discover installed Python versions in C:\
+        $pythonDirs = Get-ChildItem -Path "C:\" -Directory | 
+                       Where-Object { $_.Name -match '^Python\d+(-x64)?$' }
+
+        # Filter and process directories
+        $versions = $pythonDirs | ForEach-Object {
+            if ($_.Name -match '^Python(\d+)(-x64)?$') {
+                $verStr = $matches[1]
+                $arch = if ($matches[2]) { "64" } else { "32" }
+                
+                # Match current architecture
+                if ($arch -eq $env:PYTHON_ARCH) {
+                    if ($verStr.Length -eq 2) {
+                        [version]"$($verStr.Insert(1,'.'))"
+                    } elseif ($verStr.Length -eq 3) {
+                        [version]"$($verStr.Insert(1,'.').Insert(3,'.'))"
+                    }
+                }
+            }
+        } | Where-Object { $_ } | Sort-Object
+
+        # Test each version
+        foreach ($ver in $versions) {
+            $verStr = $ver.ToString().Replace('.', '')
+            $dirName = if ($env:PYTHON_ARCH -eq "64") { "Python${verStr}-x64" } else { "Python${verStr}" }
+            $pythonPath = "C:\$dirName"
+            
+            if (Test-Path $pythonPath) {
+                Write-Host "`n=== Testing Python $ver ($($env:PYTHON_ARCH)-bit) ==="
+                $env:PATH = "$pythonPath;$pythonPath\Scripts;$env:PATH"
+                python --version
+                pip install --upgrade pip
+                pip install .[test]
+                pytest
+            }
+        }
+
