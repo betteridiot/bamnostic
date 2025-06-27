@@ -1,3 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
+[tool.setuptools.package-data]
+bamnostic = [
+  "data/*",
+  "LICENSE",
+  "CONTRIBUTING.md",
+  "CODE_OF_CONDUCT.md",
+  "version"
+]
+
 [tool.black]
 line-length = 79
 include = '\.pyi?$'
@@ -5,8 +19,22 @@ exclude = '''
 /(
     \.git
   | \docs
-  | \.travis
   | build
   | dist
 )/
 '''
+
+[tool.pytest.ini_options]
+addopts = "--doctest-modules -Wignore"
+doctest_optionflags = "NORMALIZE_WHITESPACE ALLOW_UNICODE ELLIPSIS ALLOW_BYTES"
+testpaths = ["tests", "bamnostic"]
+
+[tool.flake8]
+ignore = ["E203", "E266", "E501", "W503", "F403", "F401", "f405"]
+max-line-length = 79
+max-complexity = 18
+select = ["B", "C", "E", "F", "W", "T4", "B9"]
+exclude = ".git,__pycache__,docs/source/conf.py,old,build,dist"
+
+[tool.pycodestyle]
+ignore = ["E501", "E402"]

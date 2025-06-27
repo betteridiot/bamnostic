@@ -1,38 +1,44 @@
-build: off
+image: Visual Studio 2019
 
-# Ignore commits that have no effect on operations
 skip_commits:
   message: /.*(docs|versioning).*/
 
 environment:
   matrix:
-    - platform: x86
-      PYTHON: "C:\\Python27"
-    - platform: x64
-      PYTHON: "C:\\Python27-x64"
-    - platform: x86
-      PYTHON: "C:\\Python34"
-    - platform: x64
-      PYTHON: "C:\\Python34-x64"
-    - platform: x86
-      PYTHON: "C:\\Python35"
-    - platform: x64
-      PYTHON: "C:\\Python35-x64"
-    - platform: x86
-      PYTHON: "C:\\Python36"
-    - platform: x64
-      PYTHON: "C:\\Python36-x64"
-    - platform: x86
-      PYTHON: "C:\\Python37"
-    - platform: x64
-      PYTHON: "C:\\Python37-x64"
-    - platform: x86
-      PYTHON: "C:\\Python38"
-    - platform: x64
-      PYTHON: "C:\\Python38-x64"
-
-install:
-  - "%PYTHON%/Scripts/pip install pytest"
+    - PYTHON_ARCH: "32"
+    - PYTHON_ARCH: "64"
 
 test_script:
-  - "%PYTHON%/python setup.py test"
+  - ps: |
+      # Discover installed Python versions
+      $versionDirs = Get-ChildItem -Path "C:\Python" -Directory | 
+                     Where-Object { $_.Name -match '^\d+$' } |
+                     Select-Object -ExpandProperty Name
+      
+      # Convert to sortable versions
+      $versions = $versionDirs | ForEach-Object {
+          if ($_.Length -eq 2) {
+              [version]"$($_.Insert(1,'.'))"
+          } elseif ($_.Length -eq 3) {
+              [version]"$($_.Insert(1,'.').Insert(3,'.'))"
+          }
+      } | Sort-Object
+      
+      # Test each version
+      foreach ($ver in $versions) {
+          $verStr = $ver.ToString().Replace('.', '')
+          $pythonPath = if ($env:PYTHON_ARCH -eq "64") { 
+              "C:\Python${verStr}-x64" 
+          } else { 
+              "C:\Python${verStr}" 
+          }
+          
+          if (Test-Path $pythonPath) {
+              Write-Host "`n=== Testing Python $ver ($($env:PYTHON_ARCH)-bit) ==="
+              $env:PATH = "$pythonPath;$pythonPath\Scripts;$env:PATH"
+              python --version
+              pip install --upgrade pip
+              pip install .[test]
+              pytest
+          }
+      }

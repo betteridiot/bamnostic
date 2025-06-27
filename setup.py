@@ -1,45 +1,24 @@
-from setuptools.command.test import test as TestCommand
 from setuptools import setup
 import os
 import sys
 
 
-class PyTest(TestCommand):
-    user_args = [("pytest-args=", "a", "Arguments to pass to py.test")]
-
-    def initialize_options(self):
-        TestCommand.initialize_options(self)
-        self.pytest_args = []
-
-    def run_tests(self):
-        import pytest
-
-        errno = pytest.main(self.pytest_args)
-        if errno:
-            sys.exit(errno)
-        else:
-            errno = pytest.main(["--doctest-modules", "-Wignore"])
-            sys.exit(errno)
-
-
 def readme():
-    path = os.path.dirname(__file__) if os.path.dirname(__file__) else "."
-    with open(path + "/README.rst") as rst:
+    path = os.path.dirname(__file__) or "."
+    with open(os.path.join(path, "README.rst")) as rst:
         return rst.read()
 
 
 setup(
     name="bamnostic",
-    version=open("version").read(),
+    version=open("version").read().strip(),
     description="Pure Python, OS-agnostic Binary Alignment Map (BAM) random access and parsing tool",
     long_description=readme(),
     url="https://github.com/betteridiot/bamnostic/",
     author="Marcus D. Sherman",
-    author_email="mdsherm@umich.edu",
+    author_email="mdsherman@betteridiot.tech",
     license="BSD 3-Clause",
-    # setup_requires=['pytest-runner'],
-    tests_require=["pytest"],
-    cmdclass={"test": PyTest},
+    extras_require={'test': ['pytest']},
     packages=["bamnostic", "tests"],
     package_dir={"bamnostic": "./bamnostic", "tests": "./tests"},
     package_data={
@@ -73,6 +52,13 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
+        "Programming Language :: Python :: 3.14",
+        "Programming Language :: Python :: 3.15",
         "Programming Language :: Python :: Implementation :: CPython",
         "Programming Language :: Python :: Implementation :: PyPy",
         "Topic :: Scientific/Engineering",

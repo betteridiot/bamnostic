@@ -38,5 +38,6 @@ as part of this package.
 
 from bamnostic.core import AlignmentFile, AlignedSegment
 
-import pkg_resources
-example_bam = pkg_resources.resource_filename('bamnostic', 'data/') + 'example.bam'
+import os
+__version__ = open(os.path.join(os.path.dirname(__file__), 'version')).read().strip()
+example_bam = os.path.join(os.path.dirname(__file__), 'data', 'example.bam')

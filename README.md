@@ -11,7 +11,6 @@
 
 |Platform | Build Status |
 |:--------|:------------:|
-|Linux    | [![Build Status TravisCI](https://travis-ci.org/betteridiot/bamnostic.svg?branch=master)](https://travis-ci.org/betteridiot/bamnostic) |
 |Windows  | [![Build status Appveyor](https://ci.appveyor.com/api/projects/status/y95q02gkv3lgmlf4/branch/master?svg=true)](https://ci.appveyor.com/project/betteridiot/bamnostic/branch/master)|
 |conda    | [![noarch](https://img.shields.io/circleci/project/github/conda-forge/bamnostic-feedstock/master.svg?label=noarch)](https://circleci.com/gh/conda-forge/bamnostic-feedstock)|
 
@@ -37,7 +36,7 @@ There are 4 methods of installation available (choose one):</br>
 conda config --add channels conda-forge
 
 # now bamnostic is available for install
-conda install bamnostic
+conda install --solver=libmamba bamnostic
 ```
 
 ### Through the Python Package Index ([PyPI](https://pypi.org/))
@@ -224,3 +223,4 @@ Below you will find a list of contributors and it acts as a small token of my gr
 3. [@olgabot](https://github.com/olgabot)
 4. [@OliverVoogd](https://github.com/OliverVoogd)
 5. [@gmat](https://github.com/gmat)
+6. [@JMencius](https://github.com/JMencius

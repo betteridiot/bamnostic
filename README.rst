@@ -5,8 +5,6 @@
 +---------------------------+------------------------------------------+
 | Platform                  | Build Status                             |
 +===========================+==========================================+
-| Linux                     | |Build Status TravisCI|                  |
-+---------------------------+------------------------------------------+
 | Windows                   | |Build status Appveyor|                  |
 +---------------------------+------------------------------------------+
 | conda                     | |noarch|                                 |
@@ -50,7 +48,7 @@ Through the ``conda`` package manager (`Anaconda Cloud <https://anaconda.org/con
    conda config --add channels conda-forge
 
    # now bamnostic is available for install
-   conda install bamnostic
+   conda install --solver=libmamba bamnostic
 
 Through the Python Package Index (`PyPI <https://pypi.org/>`__)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -359,6 +357,7 @@ of my gratitude to the community that has helped support this project.
 `@olgabot <https://github.com/olgabot>`__ 4.
 `@OliverVoogd <https://github.com/OliverVoogd>`__ 5.
 `@gmat <https://github.com/gmat>`__
+`@JMencius <https://github.com/JMencius>`__
 
 .. |Documentation Status| image:: https://readthedocs.org/projects/bamnostic/badge/?version=latest
    :target: https://bamnostic.readthedocs.io/en/latest/?badge=latest
@@ -374,8 +373,6 @@ of my gratitude to the community that has helped support this project.
    :target: https://zenodo.org/badge/latestdoi/121782433
 .. |License| image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
    :target: https://github.com/betteridiot/bamnostic/blob/master/LICENSE
-.. |Build Status TravisCI| image:: https://travis-ci.org/betteridiot/bamnostic.svg?branch=master
-   :target: https://travis-ci.org/betteridiot/bamnostic
 .. |Build status Appveyor| image:: https://ci.appveyor.com/api/projects/status/y95q02gkv3lgmlf4/branch/master?svg=true
    :target: https://ci.appveyor.com/project/betteridiot/bamnostic/branch/master
 .. |noarch| image:: https://img.shields.io/circleci/project/github/conda-forge/bamnostic-feedstock/master.svg?label=noarch
