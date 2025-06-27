@@ -12,35 +12,40 @@ environment:
 
 test_script:
   - ps: |
-      # Discover installed Python versions
-      $versionDirs = Get-ChildItem -Path "C:\Python" -Directory | 
-                     Where-Object { $_.Name -match '^\d+$' } |
-                     Select-Object -ExpandProperty Name
-      
-      # Convert to sortable versions
-      $versions = $versionDirs | ForEach-Object {
-          if ($_.Length -eq 2) {
-              [version]"$($_.Insert(1,'.'))"
-          } elseif ($_.Length -eq 3) {
-              [version]"$($_.Insert(1,'.').Insert(3,'.'))"
-          }
-      } | Sort-Object
-      
-      # Test each version
-      foreach ($ver in $versions) {
-          $verStr = $ver.ToString().Replace('.', '')
-          $pythonPath = if ($env:PYTHON_ARCH -eq "64") { 
-              "C:\Python${verStr}-x64" 
-          } else { 
-              "C:\Python${verStr}" 
-          }
-          
-          if (Test-Path $pythonPath) {
-              Write-Host "`n=== Testing Python $ver ($($env:PYTHON_ARCH)-bit) ==="
-              $env:PATH = "$pythonPath;$pythonPath\Scripts;$env:PATH"
-              python --version
-              pip install --upgrade pip
-              pip install .[test]
-              pytest
-          }
-      }
+        # Discover installed Python versions in C:\
+        $pythonDirs = Get-ChildItem -Path "C:\" -Directory | 
+                       Where-Object { $_.Name -match '^Python\d+(-x64)?$' }
+
+        # Filter and process directories
+        $versions = $pythonDirs | ForEach-Object {
+            if ($_.Name -match '^Python(\d+)(-x64)?$') {
+                $verStr = $matches[1]
+                $arch = if ($matches[2]) { "64" } else { "32" }
+                
+                # Match current architecture
+                if ($arch -eq $env:PYTHON_ARCH) {
+                    if ($verStr.Length -eq 2) {
+                        [version]"$($verStr.Insert(1,'.'))"
+                    } elseif ($verStr.Length -eq 3) {
+                        [version]"$($verStr.Insert(1,'.').Insert(3,'.'))"
+                    }
+                }
+            }
+        } | Where-Object { $_ } | Sort-Object
+
+        # Test each version
+        foreach ($ver in $versions) {
+            $verStr = $ver.ToString().Replace('.', '')
+            $dirName = if ($env:PYTHON_ARCH -eq "64") { "Python${verStr}-x64" } else { "Python${verStr}" }
+            $pythonPath = "C:\$dirName"
+            
+            if (Test-Path $pythonPath) {
+                Write-Host "`n=== Testing Python $ver ($($env:PYTHON_ARCH)-bit) ==="
+                $env:PATH = "$pythonPath;$pythonPath\Scripts;$env:PATH"
+                python --version
+                pip install --upgrade pip
+                pip install .[test]
+                pytest
+            }
+        }
+
