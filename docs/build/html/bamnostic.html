@@ -147,10 +147,10 @@
 <li class="toctree-l4"><a class="reference internal" href="#bamnostic.bam.BamReader.check_index"><code class="docutils literal notranslate"><span class="pre">BamReader.check_index()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">BamReader.nocoordinate</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#bamnostic.bam.BamReader.mapped"><code class="docutils literal notranslate"><span class="pre">BamReader.mapped</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">BamReader.unmapped</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">BamReader.references</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">BamReader.nreferences</span></code></a></li>
-<li class="toctree-l4"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">BamReader.lengths</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">BamReader.unmapped</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">BamReader.references</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">BamReader.nreferences</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">BamReader.lengths</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#bamnostic.bam.BamReader.has_index"><code class="docutils literal notranslate"><span class="pre">BamReader.has_index()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#bamnostic.bam.BamReader.fetch"><code class="docutils literal notranslate"><span class="pre">BamReader.fetch()</span></code></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#bamnostic.bam.BamReader.count"><code class="docutils literal notranslate"><span class="pre">BamReader.count()</span></code></a></li>
@@ -292,8 +292,33 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="bamnostic-package">
-<h1>bamnostic package<a class="headerlink" href="#bamnostic-package" title="Link to this heading">¶</a></h1>
+  <section id="module-bamnostic">
+<span id="bamnostic-package"></span><h1>bamnostic package<a class="headerlink" href="#module-bamnostic" title="Link to this heading">¶</a></h1>
+<p><cite>bamnostic</cite> is an OS-agnostic, Pure Python <a class="reference external" href="https://samtools.github.io/hts-specs/SAMv1.pdf">BAM</a>
+file parser.</p>
+<p>The purpose of <cite>bamnostic</cite> is to open up BAM query capabilities to all current
+OS environments. Special care was taken to allow <cite>bamnostic</cite> to run in all versions
+of Python 2.7 onward. Furthermore, <cite>bamnostic</cite> does not require any packages
+outside of the standard library. Therefore, <cite>bamnostic</cite> will run on all stable
+versions of <a class="reference external" href="https://pypy.org/">PyPy</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>SAM and CRAM support is not yet implemented</p>
+</div>
+<p>The three main classes of <cite>bamnostic</cite> are:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">bamnostic.AlignmentFile</span></code>: the BAM file handler</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bamnostic.AlignedSegment</span></code>: an aligned read object interface</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bamnostic.bai.Bai</span></code>: if the BAM file has an associated index file (preferred),     this is the file handler for it.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Within the scope of personal research, reading BAM files is the only fully
+supported IO. The skeleton for writing BAM files is present, just not connected.</p>
+</div>
+<p>This code is part of the bamnostic distribution and governed by its
+license.  Please see the LICENSE file that should have been included
+as part of this package.</p>
 <section id="module-bamnostic.core">
 <span id="core-module-bamnostic-core"></span><h2>Core Module (<code class="docutils literal notranslate"><span class="pre">bamnostic.core</span></code>)<a class="headerlink" href="#module-bamnostic.core" title="Link to this heading">¶</a></h2>
 <dl class="py class">
@@ -1167,8 +1192,8 @@ will not happen any time soon (30 May 2018).</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="id1">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unmapped</span></span><a class="headerlink" href="#id1" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id2">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unmapped</span></span><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
 <dd><p>Get the number of unmapped reads without coordiantes <strong>and</strong>
 without coordinate.</p>
 <dl class="field-list simple">
@@ -1182,8 +1207,8 @@ without coordinate.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="id2">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">references</span></span><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id3">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">references</span></span><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
 <dd><p>Get all references used in alignment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1196,8 +1221,8 @@ without coordinate.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="id3">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nreferences</span></span><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id4">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nreferences</span></span><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
 <dd><p>Get the number of references listed in alignment</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1210,8 +1235,8 @@ without coordinate.</p>
 </dd></dl>
 
 <dl class="py property">
-<dt class="sig sig-object py" id="id4">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lengths</span></span><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="id5">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lengths</span></span><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
 <dd><p>Get all reference lengths used in alignment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>

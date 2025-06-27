@@ -24,7 +24,7 @@ copyright = '2018, Marcus D. Sherman'
 author = 'Marcus D. Sherman'
 
 # The short X.Y version
-version = release = open('../../version').read()
+version = release = open('../../bamnostic/version').read()
 
 
 # -- General configuration ---------------------------------------------------
