@@ -4,7 +4,16 @@ requires = ["setuptools"]
 
 [project]
 name = "bamnostic"
-dynamic = ["version"]  # Mark version as dynamic
+dynamic = [
+    "version",
+    "description",
+    "readme",
+    "license",
+    "authors",
+    "keywords",
+    "classifiers",
+    "optional-dependencies"
+]
 
 [tool.setuptools.dynamic]
 version = {attr = "bamnostic.__version__"}
