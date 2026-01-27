@@ -1,21 +1,23 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>bamnostic package &mdash; bamnostic 1.2
+  <title>bamnostic package &mdash; bamnostic 1.3
  documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=92fd9be5" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
 
   
-      <script src="_static/documentation_options.js?v=61243dd2"></script>
-      <script src="_static/doctools.js?v=9bcbadda"></script>
-      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
-      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/documentation_options.js?v=c55cb9cb"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -34,6 +36,10 @@
           <a href="index.html" class="icon icon-home">
             bamnostic
           </a>
+              <div class="version">
+                1.3
+
+              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -323,7 +329,7 @@ as part of this package.</p>
 <span id="core-module-bamnostic-core"></span><h2>Core Module (<code class="docutils literal notranslate"><span class="pre">bamnostic.core</span></code>)<a class="headerlink" href="#module-bamnostic.core" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.core.Cigar">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.core.</span></span><span class="sig-name descname"><span class="pre">Cigar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.core.Cigar" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.core.</span></span><span class="sig-name descname"><span class="pre">Cigar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op_code</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_op</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.core.Cigar" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <p><code class="docutils literal notranslate"><span class="pre">namedtuple</span></code> for handling CIGAR data</p>
 <dl class="field-list simple">
@@ -392,7 +398,7 @@ for readability and storage.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.core.AlignmentFile">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.core.</span></span><span class="sig-name descname"><span class="pre">AlignmentFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_sq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duplicate_filehandle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_truncation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compresslevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">b''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_lengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/core.html#AlignmentFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.core.AlignmentFile" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.core.</span></span><span class="sig-name descname"><span class="pre">AlignmentFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_sq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duplicate_filehandle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_truncation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compresslevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">b''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_lengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/core.html#AlignmentFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.core.AlignmentFile" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#bamnostic.bam.BamReader" title="bamnostic.bam.BamReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">BamReader</span></code></a>, <a class="reference internal" href="#bamnostic.bam.BamWriter" title="bamnostic.bam.BamWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BamWriter</span></code></a></p>
 <p>Wrapper to allow drop in replacement for BAM functionality in a <code class="docutils literal notranslate"><span class="pre">pysam</span></code>-like API.</p>
 <dl class="field-list simple">
@@ -417,12 +423,12 @@ for readability and storage.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.core.</span></span><span class="sig-name descname"><span class="pre">AlignedSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_io</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/core.html#AlignedSegment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.core.AlignedSegment" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.core.</span></span><span class="sig-name descname"><span class="pre">AlignedSegment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_io</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/core.html#AlignedSegment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.core.AlignedSegment" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Main class for handling reads within the BAM</p>
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.query_alignment_end">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_alignment_end</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_alignment_end" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_alignment_end</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_alignment_end" title="Link to this definition">¶</a></dt>
 <dd><p>One past the final index position of the aligned portion of the read</p>
 <p><cite>query_alignment_*</cite> all refer to the portion of the read that was aligned,
 and therefore exclude clipping, but include insertions.</p>
@@ -430,7 +436,7 @@ and therefore exclude clipping, but include insertions.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.query_alignment_start">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_alignment_start</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_alignment_start" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_alignment_start</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_alignment_start" title="Link to this definition">¶</a></dt>
 <dd><p>The starting index of the aligned portion of the read</p>
 <p><cite>query_alignment_*</cite> all refer to the portion of the read that was aligned,
 and therefore exclude clipping, but include insertions.</p>
@@ -438,13 +444,13 @@ and therefore exclude clipping, but include insertions.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.query_name">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_name</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_name" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_name</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_name" title="Link to this definition">¶</a></dt>
 <dd><p>Alias for the read name</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.query_alignment_sequence">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_alignment_sequence</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_alignment_sequence" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_alignment_sequence</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_alignment_sequence" title="Link to this definition">¶</a></dt>
 <dd><p>The sequence of the aligned portion of the read</p>
 <p><cite>query_alignment_*</cite> all refer to the portion of the read that was aligned,
 and therefore exclude clipping, but include insertions.</p>
@@ -452,7 +458,7 @@ and therefore exclude clipping, but include insertions.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.query_alignment_length">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_alignment_length</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_alignment_length" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_alignment_length</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_alignment_length" title="Link to this definition">¶</a></dt>
 <dd><p>The length of the aligned portion of the read</p>
 <p><cite>query_alignment_*</cite> all refer to the portion of the read that was aligned,
 and therefore exclude clipping, but include insertions.</p>
@@ -460,7 +466,7 @@ and therefore exclude clipping, but include insertions.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.reference_start">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_start</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.reference_start" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_start</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.reference_start" title="Link to this definition">¶</a></dt>
 <dd><p>The starting index of the aligned portion of the read</p>
 <p><cite>reference_</cite> here means the portion of the read that was aligned
 according to the reference. Therefore, does not include insertions
@@ -469,7 +475,7 @@ and clipping</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.reference_end">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_end</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.reference_end" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_end</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.reference_end" title="Link to this definition">¶</a></dt>
 <dd><p>One past the final index position of the aligned portion of the read</p>
 <p><cite>reference_</cite> here means the portion of the read that was aligned
 according to the reference. Therefore, does not include insertions
@@ -478,7 +484,7 @@ and clipping</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.reference_length">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_length</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.reference_length" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reference_length</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.reference_length" title="Link to this definition">¶</a></dt>
 <dd><p>The length of the aligned portion of the read</p>
 <p><cite>reference_</cite> here means the portion of the read that was aligned
 according to the reference. Therefore, does not include insertions
@@ -487,7 +493,7 @@ and clipping</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.query_sequence">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_sequence</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_sequence" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_sequence</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_sequence" title="Link to this definition">¶</a></dt>
 <dd><p>The sequence of the read</p>
 <p><cite>query_</cite> here means the query as seen in the BAM file, and therefore
 includes clipping</p>
@@ -495,7 +501,7 @@ includes clipping</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.query_length">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_length</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_length" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">query_length</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.query_length" title="Link to this definition">¶</a></dt>
 <dd><p>The length of sequence of the read</p>
 <p><cite>query_</cite> here means the query as seen in the BAM file, and therefore
 includes clipping</p>
@@ -503,97 +509,97 @@ includes clipping</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.next_reference_id">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_reference_id</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.next_reference_id" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_reference_id</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.next_reference_id" title="Link to this definition">¶</a></dt>
 <dd><p>Return the reference id of mate read</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.next_reference_name">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_reference_name</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.next_reference_name" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_reference_name</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.next_reference_name" title="Link to this definition">¶</a></dt>
 <dd><p>Return the reference name of mate read</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.next_reference_start">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_reference_start</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.next_reference_start" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_reference_start</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.next_reference_start" title="Link to this definition">¶</a></dt>
 <dd><p>Return the reference name of mate read</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.is_duplicate">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_duplicate</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_duplicate" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_duplicate</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_duplicate" title="Link to this definition">¶</a></dt>
 <dd><p>If the read is set as PCR or optical duplicate according to read flag</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.is_paired">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_paired</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_paired" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_paired</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_paired" title="Link to this definition">¶</a></dt>
 <dd><p>If the read is set as paired according to read flag</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.is_proper_pair">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_proper_pair</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_proper_pair" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_proper_pair</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_proper_pair" title="Link to this definition">¶</a></dt>
 <dd><p>If each segment properly aligned according to the aligner</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.is_qcfail">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_qcfail</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_qcfail" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_qcfail</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_qcfail" title="Link to this definition">¶</a></dt>
 <dd><p>If the read is set as QC fail according to read flag</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.is_read1">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_read1</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_read1" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_read1</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_read1" title="Link to this definition">¶</a></dt>
 <dd><p>If the read is set as the first read of mate pair according to read flag (implies the read is mated)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.is_read2">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_read2</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_read2" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_read2</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_read2" title="Link to this definition">¶</a></dt>
 <dd><p>If the read is set as the second read of mate pair according to read flag (implies the read is mated)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.is_reverse">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_reverse</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_reverse" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_reverse</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_reverse" title="Link to this definition">¶</a></dt>
 <dd><p>If the read is set as reversed according to read flag</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.is_secondary">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_secondary</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_secondary" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_secondary</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_secondary" title="Link to this definition">¶</a></dt>
 <dd><p>If the read is set as secondary alignment according to read flag</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.is_supplementary">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_supplementary</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_supplementary" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_supplementary</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_supplementary" title="Link to this definition">¶</a></dt>
 <dd><p>If the read is set as a supplementary alignment according to read flag</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.is_unmapped">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_unmapped</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_unmapped" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_unmapped</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.is_unmapped" title="Link to this definition">¶</a></dt>
 <dd><p>If the read is set as unmapped according to read flag</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.mate_is_reverse">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mate_is_reverse</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.mate_is_reverse" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mate_is_reverse</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.mate_is_reverse" title="Link to this definition">¶</a></dt>
 <dd><p>Check the read flag to see if the mat is reverse strand (implies the read is mated)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.mate_is_unmapped">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mate_is_unmapped</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.mate_is_unmapped" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mate_is_unmapped</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.mate_is_unmapped" title="Link to this definition">¶</a></dt>
 <dd><p>Check the read flag to see if mate is unmapped (implies the read is mated)</p>
 </dd></dl>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.core.AlignedSegment.mapping_quality">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mapping_quality</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.mapping_quality" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mapping_quality</span></span><a class="headerlink" href="#bamnostic.core.AlignedSegment.mapping_quality" title="Link to this definition">¶</a></dt>
 <dd><p>The mapping quality (MAPQ) of the read</p>
 </dd></dl>
 
@@ -683,7 +689,7 @@ the reference genome.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.core.unpack_int32">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.core.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.core.unpack_int32" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.core.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.core.unpack_int32" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -692,7 +698,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.core.unpack_int32L">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.core.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.core.unpack_int32L" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.core.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.core.unpack_int32L" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -704,7 +710,7 @@ in bytes must be Struct.size.</p>
 <span id="bgzip-bam-format-bgzf-file-handlers-bamnostic-bgzf"></span><h2>Bgzip BAM Format (BGZF) file handlers (<code class="docutils literal notranslate"><span class="pre">bamnostic.bgzf</span></code>)<a class="headerlink" href="#module-bamnostic.bgzf" title="Link to this heading">¶</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bgzf.unpack_gzip_header">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_gzip_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_gzip_header" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_gzip_header</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_gzip_header" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -713,7 +719,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bgzf.unpack_subfields">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_subfields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_subfields" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_subfields</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_subfields" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -722,7 +728,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bgzf.unpack_gzip_integrity">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_gzip_integrity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_gzip_integrity" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_gzip_integrity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_gzip_integrity" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -731,7 +737,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bgzf.unpack_bgzf_metaheader">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_bgzf_metaheader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_bgzf_metaheader" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_bgzf_metaheader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_bgzf_metaheader" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -776,7 +782,7 @@ the given offset.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.bgzf.BgzfReader">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">BgzfReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duplicate_filehandle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_truncation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">BgzfReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duplicate_filehandle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_truncation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfReader" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>The BAM reader. Heavily modified from Peter Cock’s BgzfReader.</p>
 <dl class="py method">
@@ -890,7 +896,7 @@ file has associated index file (BAI)</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.bgzf.BgzfWriter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">BgzfWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compresslevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfWriter" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">BgzfWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compresslevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bgzf.html#BgzfWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bgzf.BgzfWriter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Define a BGZFWriter object.</p>
 <dl class="py method">
@@ -943,7 +949,7 @@ implementation does too.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bgzf.unpack_int32">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_int32" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_int32" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -952,7 +958,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bgzf.unpack_int32L">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_int32L" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bgzf.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bgzf.unpack_int32L" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -964,7 +970,7 @@ in bytes must be Struct.size.</p>
 <span id="binary-alignment-map-bam-file-handlers-bamnostic-bam"></span><h2>Binary Alignment Map (BAM) file handlers (<code class="docutils literal notranslate"><span class="pre">bamnostic.bam</span></code>)<a class="headerlink" href="#module-bamnostic.bam" title="Link to this heading">¶</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.bam.BAMheader">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bam.</span></span><span class="sig-name descname"><span class="pre">BAMheader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_io</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bam.html#BAMheader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bam.BAMheader" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bam.</span></span><span class="sig-name descname"><span class="pre">BAMheader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_io</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bam.html#BAMheader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bam.BAMheader" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Parse and store the BAM file header</p>
 <p>The BAM header is the plain text and byte-encoded metadata of a given BAM file.
@@ -1034,7 +1040,7 @@ just for the BAM header block.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.bam.BamReader">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bam.</span></span><span class="sig-name descname"><span class="pre">BamReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_sq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duplicate_filehandle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_truncation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bam.html#BamReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bam.BamReader" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bam.</span></span><span class="sig-name descname"><span class="pre">BamReader</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_cache</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">128</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_sq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filepath_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">require_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duplicate_filehandle</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_truncation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bam.html#BamReader"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bam.BamReader" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#bamnostic.bgzf.BgzfReader" title="bamnostic.bgzf.BgzfReader"><code class="xref py py-class docutils literal notranslate"><span class="pre">BgzfReader</span></code></a></p>
 <p>The BAM reader. Heavily modified from Peter Cock’s BgzfReader.</p>
 <dl class="py attribute">
@@ -1165,7 +1171,7 @@ will not happen any time soon (30 May 2018).</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id0">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nocoordinate</span></span><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nocoordinate</span></span><a class="headerlink" href="#id0" title="Link to this definition">¶</a></dt>
 <dd><p>Get the number of reads without coordiantes according to the statistics recorded in the index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1179,7 +1185,7 @@ will not happen any time soon (30 May 2018).</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="bamnostic.bam.BamReader.mapped">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mapped</span></span><a class="headerlink" href="#bamnostic.bam.BamReader.mapped" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mapped</span></span><a class="headerlink" href="#bamnostic.bam.BamReader.mapped" title="Link to this definition">¶</a></dt>
 <dd><p>Get the number of mapped reads according  to the statistics recorded in the index.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1193,7 +1199,7 @@ will not happen any time soon (30 May 2018).</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id2">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unmapped</span></span><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">unmapped</span></span><a class="headerlink" href="#id2" title="Link to this definition">¶</a></dt>
 <dd><p>Get the number of unmapped reads without coordiantes <strong>and</strong>
 without coordinate.</p>
 <dl class="field-list simple">
@@ -1208,7 +1214,7 @@ without coordinate.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id3">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">references</span></span><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">references</span></span><a class="headerlink" href="#id3" title="Link to this definition">¶</a></dt>
 <dd><p>Get all references used in alignment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1222,7 +1228,7 @@ without coordinate.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id4">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nreferences</span></span><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nreferences</span></span><a class="headerlink" href="#id4" title="Link to this definition">¶</a></dt>
 <dd><p>Get the number of references listed in alignment</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1236,7 +1242,7 @@ without coordinate.</p>
 
 <dl class="py property">
 <dt class="sig sig-object py" id="id5">
-<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lengths</span></span><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">lengths</span></span><a class="headerlink" href="#id5" title="Link to this definition">¶</a></dt>
 <dd><p>Get all reference lengths used in alignment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -1307,7 +1313,7 @@ without coordinate.</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">bam</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">next</span><span class="p">(</span><span class="n">bam</span><span class="o">.</span><span class="n">fetch</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span> 
 <span class="go">EAS56_57:6:190:289:82 ... MF:C:192</span>
 </pre></div>
 </div>
@@ -1494,7 +1500,7 @@ AlignmentFile.count_coverage(‘chr1’)</p>
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">bam</span><span class="o">.</span><span class="n">count_coverage</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">bam</span><span class="o">.</span><span class="n">count_coverage</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">):</span> 
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;array(&#39;</span><span class="si">{}</span><span class="s2">&#39;, </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">typecode</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">arr</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))))</span>
 <span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])</span>
 <span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 15, 0, 14, 0, 0])</span>
@@ -1502,7 +1508,7 @@ AlignmentFile.count_coverage(‘chr1’)</p>
 <span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 15, 0, 14, 0])</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">bam</span><span class="o">.</span><span class="n">count_coverage</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">quality_threshold</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">base_quality_threshold</span><span class="o">=</span><span class="mi">25</span><span class="p">):</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">arr</span> <span class="ow">in</span> <span class="n">bam</span><span class="o">.</span><span class="n">count_coverage</span><span class="p">(</span><span class="s1">&#39;chr1&#39;</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">150</span><span class="p">,</span> <span class="n">quality_threshold</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">base_quality_threshold</span><span class="o">=</span><span class="mi">25</span><span class="p">):</span> 
 <span class="gp">... </span>    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;array(&#39;</span><span class="si">{}</span><span class="s2">&#39;, </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">arr</span><span class="o">.</span><span class="n">typecode</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">arr</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))))</span>
 <span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 0, 0, 0, 0, 0])</span>
 <span class="go">array(&#39;L&#39;, [0, 0, 0, 0, ..., 13, 0, 14, 0, 0])</span>
@@ -1591,7 +1597,7 @@ to GRCh38, ‘chr10’ comes before ‘chr1’ in the header. Therefore,
 </dl>
 <p class="rubric">Examples</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">get_reference_name</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">get_reference_name</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> 
 <span class="go">&#39;chr1&#39;</span>
 </pre></div>
 </div>
@@ -1694,11 +1700,11 @@ footprint of your analysis.</p>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span> <span class="o">=</span> <span class="n">bamnostic</span><span class="o">.</span><span class="n">AlignmentFile</span><span class="p">(</span><span class="n">bamnostic</span><span class="o">.</span><span class="n">example_bam</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">multiple_iterators</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">multiple_iterators</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> 
 <span class="go">EAS56_57:6:190:289:82       ...     MF:C:192</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">bam</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="n">n</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> 
 <span class="go">EAS56_57:6:190:289:82       ...     UQ:C:0</span>
 </pre></div>
 </div>
@@ -1725,7 +1731,7 @@ file has associated index file (BAI)</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.bam.BamWriter">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bam.</span></span><span class="sig-name descname"><span class="pre">BamWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compresslevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">b''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_lengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bam.html#BamWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bam.BamWriter" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bam.</span></span><span class="sig-name descname"><span class="pre">BamWriter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath_or_object</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'xb'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compresslevel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">6</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">b''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_lengths</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bam.html#BamWriter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bam.BamWriter" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#bamnostic.bgzf.BgzfWriter" title="bamnostic.bgzf.BgzfWriter"><code class="xref py py-class docutils literal notranslate"><span class="pre">BgzfWriter</span></code></a></p>
 <dl class="py method">
 <dt class="sig sig-object py" id="bamnostic.bam.BamWriter.write_header">
@@ -1754,7 +1760,7 @@ file has associated index file (BAI)</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bam.unpack_int32">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bam.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bam.unpack_int32" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bam.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bam.unpack_int32" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -1763,7 +1769,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bam.unpack_int32L">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bam.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bam.unpack_int32L" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bam.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bam.unpack_int32L" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -1790,7 +1796,7 @@ as such, random access queries directly into the associated BAM file is availabl
 tools within bamnostic</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bai.unpack_chunk">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_chunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_chunk" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_chunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_chunk" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -1799,7 +1805,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bai.unpack_intervals">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_intervals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_intervals" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_intervals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_intervals" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -1808,7 +1814,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bai.unpack_bid_nchunk">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_bid_nchunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_bid_nchunk" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_bid_nchunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_bid_nchunk" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -1817,7 +1823,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bai.unpack_unmapped">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_unmapped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_unmapped" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_unmapped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_unmapped" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -1826,7 +1832,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.bai.RefIdx">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">RefIdx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.RefIdx" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">RefIdx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end_offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bins</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.RefIdx" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">tuple</span></code></p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="bamnostic.bai.RefIdx.end_offset">
@@ -1890,7 +1896,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.bai.Bai">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">Bai</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bai.html#Bai"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bai.Bai" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">Bai</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/bai.html#Bai"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.bai.Bai" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>This class defines the bam index file object and its interface.</p>
 <p>The purpose of this class is the binary parsing of the bam index file (BAI) associated with
@@ -2224,7 +2230,7 @@ the region of interest’s start offset</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bai.unpack_int32">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_int32" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_int32" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -2233,7 +2239,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.bai.unpack_int32L">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_int32L" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.bai.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.bai.unpack_int32L" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -2260,7 +2266,7 @@ as such, random access queries directly into the associated BAM file is availabl
 tools within bamnostic</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.csi.unpack_chunk">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">unpack_chunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.csi.unpack_chunk" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">unpack_chunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.csi.unpack_chunk" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -2269,7 +2275,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.csi.unpack_bid_loffset_nchunk">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">unpack_bid_loffset_nchunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.csi.unpack_bid_loffset_nchunk" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">unpack_bid_loffset_nchunk</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.csi.unpack_bid_loffset_nchunk" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -2278,7 +2284,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.csi.unpack_unmapped">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">unpack_unmapped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.csi.unpack_unmapped" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">unpack_unmapped</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.csi.unpack_unmapped" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -2327,7 +2333,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.csi.Csi">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">Csi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/csi.html#Csi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.csi.Csi" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">Csi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/csi.html#Csi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.csi.Csi" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#bamnostic.bai.Bai" title="bamnostic.bai.Bai"><code class="xref py py-class docutils literal notranslate"><span class="pre">Bai</span></code></a></p>
 <p>This class defines the bam CSI index file object and its interface.</p>
 <p>The purpose of this class is the binary parsing of the bam index file (CSI) associated with
@@ -2571,7 +2577,7 @@ the region of interest’s start offset</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.csi.unpack_int32">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.csi.unpack_int32" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.csi.unpack_int32" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -2580,7 +2586,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.csi.unpack_int32L">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.csi.unpack_int32L" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.csi.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.csi.unpack_int32L" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -2611,7 +2617,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.utils.unpack_int32">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.utils.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.utils.unpack_int32" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.utils.</span></span><span class="sig-name descname"><span class="pre">unpack_int32</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.utils.unpack_int32" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -2620,7 +2626,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="bamnostic.utils.unpack_int32L">
-<span class="sig-prename descclassname"><span class="pre">bamnostic.utils.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.utils.unpack_int32L" title="Link to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">bamnostic.utils.</span></span><span class="sig-name descname"><span class="pre">unpack_int32L</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bamnostic.utils.unpack_int32L" title="Link to this definition">¶</a></dt>
 <dd><p>Return a tuple containing unpacked values.</p>
 <p>Unpack according to the format string Struct.format. The buffer’s size
 in bytes must be Struct.size.</p>
@@ -2629,7 +2635,7 @@ in bytes must be Struct.size.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.utils.Roi">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.utils.</span></span><span class="sig-name descname"><span class="pre">Roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#Roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.utils.Roi" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.utils.</span></span><span class="sig-name descname"><span class="pre">Roi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">contig</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tid</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#Roi"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.utils.Roi" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Small __slots__ class for region of interest parsing</p>
 </dd></dl>
@@ -2878,7 +2884,7 @@ within_block_offset within the (decompressed) block (unsigned
 
 <dl class="py class">
 <dt class="sig sig-object py" id="bamnostic.utils.LruDict">
-<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.utils.</span></span><span class="sig-name descname"><span class="pre">LruDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#LruDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.utils.LruDict" title="Link to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">bamnostic.utils.</span></span><span class="sig-name descname"><span class="pre">LruDict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/bamnostic/utils.html#LruDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#bamnostic.utils.LruDict" title="Link to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">OrderedDict</span></code></p>
 <p>Simple least recently used (LRU) based dictionary that caches a given
 number of items.</p>
@@ -2933,7 +2939,7 @@ doesn’t go through <cite>dict.__setitem__</cite>, this is used to ensure it do
 </dd>
 </dl>
 <p class="rubric">Examples</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_cigar</span><span class="p">(</span><span class="s1">&#39;3M1I3M1D5M&#39;</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">parse_cigar</span><span class="p">(</span><span class="s1">&#39;3M1I3M1D5M&#39;</span><span class="p">)</span> 
 <span class="go">[((&#39;BAM_CMATCH&#39;, 0), 3), ..., ((&#39;BAM_CMATCH&#39;, 0), 5)]</span>
 </pre></div>
 </div>
